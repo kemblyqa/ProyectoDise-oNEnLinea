@@ -1,0 +1,1 @@
+db.ID_usuario.createIndex( { nickname: "text" }, {unique:true} );

@@ -1,0 +1,101 @@
+
+/*gama de colores para la ficha */
+.red {
+  background-color: red;
+}
+.green {
+  background-color: green;
+}
+.blue {
+  background-color: blue;
+}
+.yellow {
+  background-color: yellow;
+}
+.purple {
+    background-color: blueviolet;
+}
+.brown{
+    background-color: brown;
+}
+
+/*cada ficha que se estara colocando en el tablero*/
+.sphere{
+  height: 100px;
+  width: 100px;
+  border-radius: 50%;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 100%;
+  position: relative;
+  display: inline-block;
+  margin: 5%;
+}
+.sphere::after {
+  background-color: rgba(255, 255, 255, 0.3);
+  content: '';
+  height: 45%;
+  width: 12%;
+  position: absolute;
+  top: 4%;
+  left: 15%;
+  border-radius: 50%;
+  transform: rotate(40deg);
+}
+
+
+/*relacionado a cada celda y el marco*/
+.cell{
+	width:50px;
+	height:50px;
+	position:relative;
+	overflow:hidden;
+	float:left;
+  border:10px solid rgb(69, 170, 184)
+}
+
+.cell:before{
+	content: '';
+	position: absolute;
+	bottom: 0%;
+	width: 100%;
+	height: 100%;
+	border-radius: 100%;
+	box-shadow: 0px 300px 0px 345px rgb(69, 170, 184);
+}
+
+.board {
+	width:100%;
+	margin:0 auto;
+	position:relative;
+  background:white;
+}
+
+.active-r .cell:after {
+	background-color: rgba(240, 107, 80,0.2);
+	content: ' ';
+	height: 120px;
+	width: 120px;
+	display: block;
+	display:none;
+}
+.active-y .cell:after {
+	background-color: rgba(225, 215, 114,0.2);
+	content: ' ';
+	height: 120px;
+	width: 120px;
+	display: block;
+	display:none;
+}
+.cell:hover {
+  display:block;
+  background: rgb(221, 226, 145); 
+}
+.cell.active-r:after {
+	display:block;
+	background-color: rgba(240, 107, 80,0.9);
+}
+.cell.active-y:after {
+	display:block;
+	background-color: rgba(225, 216, 114, 0.63);
+}
