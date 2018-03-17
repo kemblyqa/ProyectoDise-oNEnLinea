@@ -45,7 +45,7 @@ db.system.js.save({
 			db.Usuarios.updateOne(
 		   { _id: idUsuario },
 		   {
-		     $set: { detalles: nick }
+		     $set: { nickname: nick }
 		   }
 		);
 			return true;
@@ -59,43 +59,64 @@ db.system.js.save({
 
 db.system.js.save({
 	_id: "linkUsuarioPartida",
-	value: function (idUsuario,idPartida) 
+	value: function (idUsuario,idPartida,color) 
 	{ 
 		try{
+			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] == idUsuario || db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] == idUsuario)
+				return false;
+			ok = false;
+			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] ==0 && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][1]!=color){
+				db.Partidas.update({_id:1},{$set : {'usuarios.0.0' : idUsuario}});
+				db.Partidas.update({_id:1},{$set : {'usuarios.0.1' : color}});
+				ok=true;
+			}
+			else if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][0] == 0  && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][1]!=color){
+				db.Partidas.update({_id:1},{$set : {'usuarios.1.0' : idUsuario}});
+				db.Partidas.update({_id:1},{$set : {'usuarios.1.1' : color}});
+				ok=true;
+			}
+			if (ok){
 			db.Usuarios.update(
 			   { _id: idUsuario },
-			   { $push: { partidas: idPartida } }
-			);
-			return true;
+			   { $push: { partidas: idPartida } });
+				return true;
+			}
+		else
+			return false;
 		}
 		catch(e){
 
 			return false;
 		}
 	}
-});   
+}); 
 
 db.system.js.save({
-	_id: "chat",
-	value: function (idEmisor,idReceptor,msg) 
+	_id: "chat", 
+	value : function (idEmisor,idReceptor,msg) 
 	{ 
-        idReceptor='chats.'+idReceptor;
-		db.Usuarios.update(
-		   { _id: idEmisor },
-		   { $push: { [idReceptor]:  [Date(),msg]} }
-		);
-		return true;	}
-});  
+            if (db.Usuarios.find({_id:idEmisor}).toArray()[0]!=null && db.Usuarios.find({_id:idReceptor}).toArray()[0]!=null){
+        		idReceptor='chats.'+idReceptor;
+				db.Usuarios.update(
+		   			{ _id: idEmisor },
+		   			{ $push: { [idReceptor]:  [Date(),msg]} });
+				return true;
+			}
+            else{
+            	return false
+            }
+        }
+    });
 
 db.system.js.save({
-	_id: "getChatLog",
-	value: function (idOne,idTwo) 
+	_id: "getChatLog", 
+	value : function (idOne,idTwo) 
 	{ 
                 var R1=db.Usuarios.find({_id:idOne},{['chats.'+idTwo]:1,_id:0}).toArray()[0].chats[idTwo];
                 var R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
-                return [{id:idOne,log:R1},{id:idTwo,data:R2}];
+                return [{id:idOne,log:R1},{id:idTwo,log:R2}];
 		}
-}); 
+    });
 
 db.system.js.save({
 	_id: "nuevaSesion",
@@ -216,5 +237,12 @@ db.system.js.save({
 	{ 
 		path="rondas."+[ronda];
         return db.Partidas.find({_id:idPartida},{['rondas'+ronda]:1}).toArray()[0].rondas[ronda];
+		}
+}); 
+db.system.js.save({
+	_id: "checkUsuario",
+	value: function (idUsuario) 
+	{ 
+        return db.Usuarios.find({_id:idUsuario}).toArray()[0]!=null;
 		}
 }); 
