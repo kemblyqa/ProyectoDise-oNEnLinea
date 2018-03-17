@@ -8,12 +8,14 @@ import { TableroComponent } from './tablero/tablero.component';
 import { RouterModule } from "@angular/router";
 import { ROUTES } from './app.routing';
 import { LoginComponent } from './login/login.component';
+import { MainMenuComponent } from './main-menu/main-menu.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TableroComponent,
-    LoginComponent
+    LoginComponent,
+    MainMenuComponent
   ],
   imports: [
     BrowserModule,

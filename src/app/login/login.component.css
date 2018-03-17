@@ -1,0 +1,17 @@
+.cardlogin{
+    margin: auto;
+    width: 50%;
+    margin-top: 5%;
+}
+
+.centerBtn{
+    text-align: center;
+}
+#loginTitle {
+    text-align: center;
+}
+
+.icons {
+    height: 50;
+    width: 50;
+}

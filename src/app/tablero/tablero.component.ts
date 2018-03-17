@@ -14,7 +14,7 @@ export class TableroComponent implements OnInit {
   //style binding
   notPlayed:boolean
   constructor() { 
-    this.tab = new BuildTablero(9,4)
+    this.tab = new BuildTablero(8,5)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
 
@@ -27,9 +27,8 @@ export class TableroComponent implements OnInit {
   //button event
   touchButton(e){
     //get button id and properties
-
-    //when is his turn paint as the color he choose
     let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
+    //when is his turn paint as the color he choose
     paintButton.style.backgroundColor = this.tab.getColorTurn() 
     this.tab.switchPlayer() 
   }
