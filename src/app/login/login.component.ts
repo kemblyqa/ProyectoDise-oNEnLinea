@@ -9,13 +9,30 @@ import { BuildTablero } from "../models/tablero.model";
 })
 export class LoginComponent implements OnInit {
   
-  tablero:Array<any>;
+  idButtonGrid:Array<any>
+  tab:BuildTablero
+
+  //style binding
+  notPlayed:boolean
 
   constructor(){
-    let tab:BuildTablero = new BuildTablero();
-    tab.llenar()
-    this.tablero = tab.tamTablero()
-    console.log(this.tablero)
+    this.tab = new BuildTablero()
+    //this create all the ids in the grid and set values in other grid
+    this.tab.fill()
+
+    //this get the ids and render the buttons in the template
+    this.idButtonGrid = this.tab.getIdButtonCells()
   } 
   ngOnInit() { }
+
+  //button event
+  touchButton(e){
+    //get button id and properties
+
+    //when is his turn paint as the color he choose
+    let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
+    paintButton.style.backgroundColor = this.tab.getColorTurn() 
+    this.tab.isNConnected()
+    this.tab.switchPlayer() 
+  }
 }

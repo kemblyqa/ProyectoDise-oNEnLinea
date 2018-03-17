@@ -1,3 +1,15 @@
+table {
+	border-collapse: collapse;
+}
+
+.cellbutton {
+	border-radius: 50%;
+	min-width: 60px;
+	max-width: 60px;
+	min-height: 60px;
+	max-height: 60px;
+	background-color: #0000ff
+}
 
 /*gama de colores para la ficha */
 .red {
@@ -16,11 +28,11 @@
     background-color: blueviolet;
 }
 .brown{
-    background-color: brown;
+    background-color: rgb(54, 8, 8);
 }
 
 /*cada ficha que se estara colocando en el tablero*/
-.sphere{
+.sphere .cell:active{
   height: 100px;
   width: 100px;
   border-radius: 50%;

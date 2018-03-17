@@ -1,9 +1,11 @@
 <div class="container board" style="margin-top: 20px" >
     <table class="table-game">
-        <tr style="border:hidden" class="cell-border" *ngFor= "let i of tablero">
-            <th style="border:hidden" *ngFor= "let j of tablero">
-                <div class="cell"></div>
-            </th>
-        </tr>
+        <div class="btn-group">
+            <div *ngFor= "let column of idButtonGrid">
+                <div *ngFor= "let cell of column">
+                    <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
+                </div>
+            </div>
+        </div>
     </table>
 </div>
