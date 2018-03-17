@@ -89,7 +89,6 @@ export class BuildTablero{
     /**is called in the tablero.component.ts**/
     isNConnected(col:number, row:number){
         //verify if is N connected
-        console.log(this.charGrid)
         if(this.verticalWin(row,col)){
             console.log("winner: vertical... "+this.getPlayerTurn())
         }
