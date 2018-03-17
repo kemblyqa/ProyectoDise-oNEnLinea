@@ -1,3 +1,11 @@
-<div>
-  
+<div class="container board">
+    <table>
+        <div class="btn-group">
+            <div *ngFor= "let column of idButtonGrid">
+                <div *ngFor= "let cell of column">
+                    <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
+                </div>
+            </div>
+        </div>
+    </table>
 </div>
