@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   notPlayed:boolean
 
   constructor(){
-    this.tab = new BuildTablero()
+    this.tab = new BuildTablero(9,4)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
 
@@ -32,7 +32,6 @@ export class LoginComponent implements OnInit {
     //when is his turn paint as the color he choose
     let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
     paintButton.style.backgroundColor = this.tab.getColorTurn() 
-    this.tab.isNConnected()
     this.tab.switchPlayer() 
   }
 }
