@@ -1,3 +1,58 @@
-<p>
-  main-menu works!
-</p>
+<div class="container justify-content-center">
+  <div class="card centerMenu">
+    <div class="card-header">
+      <h4 class="centerTitle">OPCIONES</h4>
+    </div>
+    <div class="card-body">
+      <div class="centerMenuBtn">
+        <button type="button" (click)="parametersBegin()" class="btn btn-primary centerMenuBtn">Jugar</button>
+      </div>
+      <div class="centerMenuBtn">
+        <button type="button" [routerLink]="['/login']" class="btn btn-primary centerMenuBtn">Salir</button>
+      </div>
+      <div class="centerMenuBtn">
+          <button type="button" (click)="registersBegin()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Parameters Modal -->
+<div class="modal fade" id="parameters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Parámetros del juego</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+            <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" id="boardSize" placeholder="Password">
+            </div>
+        </div>
+        <div class="form-group row">
+          <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="nSize" placeholder="Password">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="nColor" class="col-sm-6 col-form-label">Color de ficha</label>
+          <div class="col-sm-6">
+            <select id="nColor" class="form-control">
+              <option selected>Choose...</option>
+              <option>...</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" [routerLink]="['/tablero']" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
