@@ -148,7 +148,15 @@ export class BuildTablero{
     }
 
     diagonalRightWin(row:number, col:number){
-        var count = 0
+        return this.verDiagRightDown(row,col)+this.verDiagRightUp(row-1,col-1) >= this.nSize ? true : false
+    }
+
+    diagonalLeftWin(row:number, col:number){
+        return this.verDiagLeftUp(row,col)+this.verDiagLeftDown(row+1,col-1) >= this.nSize ? true : false
+    }
+
+    verDiagRightDown(row:number, col:number){
+        var count = 0;
         for (let i = col; i < this.gridSize; i++) {
             if(this.charGrid[i][row] == this.getPlayerTurn()){
                 row++;count++
@@ -156,7 +164,11 @@ export class BuildTablero{
                 break
             }
         }
-        row--;col--;
+        return count;
+    }
+
+    verDiagRightUp(row:number,col:number){
+        var count = 0;
         for (let j = col; j >= 0; j--) {
             if(this.charGrid[j][row] == this.getPlayerTurn()){
                 row--;count++
@@ -164,28 +176,32 @@ export class BuildTablero{
                 break
             }
         }
-        return count >= this.nSize ? true : false
+        return count;
     }
 
-    diagonalLeftWin(row:number, col:number){
-        var count = 0
-        //to down right
+    verDiagLeftUp(row:number,col:number){
+        var count = 0;
         for (let i = col; i < this.gridSize; i++) {
             if(this.charGrid[i][row] == this.getPlayerTurn()){
+                console.log("col++..."+i+" row--..."+row)
                 row--;count++
             } else {
                 break
             }
         }
-        row++; col--;
-        //to up left
+        return count
+    }
+
+    verDiagLeftDown(row:number,col:number){
+        var count=0;
         for (let j = col; j >= 0; j--) {
-            if(this.charGrid[col][j] == this.getPlayerTurn()){
-                col--;count++
+            if(this.charGrid[j][row] == this.getPlayerTurn()){
+                console.log("col--..."+j+" row++..."+row)
+                row++;count++
             } else {
                 break
             }
         }
-        return count >= this.nSize ? true : false
+        return count;
     }
 }
