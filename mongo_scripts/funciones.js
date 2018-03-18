@@ -192,6 +192,20 @@ db.system.js.save({
 }); 
 
 db.system.js.save({
+	_id: "setTablero",
+	value: function (idPartida,ronda,tablero) 
+	{ 
+            try{
+                db.Partidas.update({_id:idPartida},{$set : {['rondas.'+ronda+'.tablero']:tablero}});
+                return true
+            }
+            catch(e){
+                return false
+            }
+		}
+}); 
+
+db.system.js.save({
 	_id: "getGameLog",
 	value: function (idPartida,ronda) 
 	{ 
