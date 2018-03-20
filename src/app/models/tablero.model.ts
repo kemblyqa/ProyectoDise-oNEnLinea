@@ -7,6 +7,7 @@ export class BuildTablero{
     charGrid:Array<any>
     gridSize:number
     nSize:number
+    status:string
 
     //inicial values current first player
     playerTurn:boolean = true
@@ -16,6 +17,7 @@ export class BuildTablero{
         this.charGrid = []
         this.gridSize = gridSize
         this.nSize = nSize
+        this.status = "p"
     }
 
     fill() {
@@ -40,15 +42,15 @@ export class BuildTablero{
         return this.charGrid
     }
 
+    getGameStatus(){
+        return this.status;
+    }
+
     getUpdateGridLayout(id){
-        // console.log(this.buttonIDs)
-        // console.log(this.charGrid)
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
                 //if id is found, then we need the column
                 if(this.buttonIDs[i][j] == id){
-                    // console.log("columna... "+i)
-                    // console.log("id but... "+this.buttonIDs[i][j])
                     return this.setCellInGrid(i)
                 }
             }
@@ -89,23 +91,34 @@ export class BuildTablero{
     /**is called in the tablero.component.ts**/
     isNConnected(col:number, row:number){
         //verify if is N connected
-        if(this.verticalWin(row,col)){
-            console.log("winner: vertical... "+this.getPlayerTurn())
-        }
-        if (this.horizontalWin(row,col)){
-            console.log("winner: horizontal... "+this.getPlayerTurn())
+        if(this.verticalWin(row,col)  || 
+        this.horizontalWin(row,col)   ||
+        this.diagonalRightWin(row,col)  ||
+        this.diagonalLeftWin(row,col))
+        {
+            this.status = "w"
+            return
         } 
-        if (this.diagonalRightWin(row,col)){
-            console.log("winner: diagonal derecha... "+this.getPlayerTurn())
+        
+        if (!this.isTie())
+            this.status = "p"
+        else 
+            this.status = "t"
+    }
+    
+    isTie(){
+        for (let i = 0; i < this.gridSize; i++) {
+            for (let j = 0; j < this.gridSize; j++) {
+                if(this.charGrid[i][j] == "n"){
+                    return false;
+                }
+            }
         }
-        if (this.diagonalLeftWin(row,col)){
-            console.log("winner: diagonal izquierda... "+this.getPlayerTurn())
-        }
+        return true;
     }
 
     horizontalWin(row:number,col:number){
         var count = 0
-
         //to right
         for (let i = col; i < this.gridSize; i++) {
             if(this.charGrid[i][row] == this.getPlayerTurn()){
@@ -124,13 +137,11 @@ export class BuildTablero{
                 break
             }
         }
-        console.log("TOTH:... " +  count)
-        return count == this.nSize ? true : false
+        return count >= this.nSize ? true : false
     }
 
     verticalWin(row:number,col:number){
         var count = 0
-
         //to down
         for (let i = row; i < this.gridSize; i++) {
             if(this.charGrid[col][i] == this.getPlayerTurn()){
@@ -149,60 +160,64 @@ export class BuildTablero{
                 break
             }
         }
-        console.log("TOTV:... " +  count)
-        return count == this.nSize ? true : false
+        return count >= this.nSize ? true : false
     }
 
     diagonalRightWin(row:number, col:number){
-        var count = 0
+        return this.verDiagRightDown(row,col)+this.verDiagRightUp(row-1,col-1) >= this.nSize ? true : false
+    }
 
-        //to down right
+    diagonalLeftWin(row:number, col:number){
+        return this.verDiagLeftUp(row,col)+this.verDiagLeftDown(row+1,col-1) >= this.nSize ? true : false
+    }
+
+    verDiagRightDown(row:number, col:number){
+        var count = 0;
         for (let i = col; i < this.gridSize; i++) {
             if(this.charGrid[i][row] == this.getPlayerTurn()){
-                //console.log("down right.. "+this.charGrid[i][row])
                 row++;count++
             } else {
                 break
             }
         }
-        //to up left
-        for (let j = col - 1; j >= 0; j--) {
-            if(this.charGrid[j][row] == this.getPlayerTurn()){
-                //console.log("up left.. "+this.buttonIDs[j][row])
-                row--
-                count++
-            } else {
-                break
-            }
-        }
-        console.log("TOTH:... " +  count)
-        return count == this.nSize ? true : false
+        return count;
     }
 
-    diagonalLeftWin(row:number, col:number){
-        var count = 0
+    verDiagRightUp(row:number,col:number){
+        var count = 0;
+        for (let j = col; j >= 0; j--) {
+            if(this.charGrid[j][row] == this.getPlayerTurn()){
+                row--;count++
+            } else {
+                break
+            }
+        }
+        return count;
+    }
 
-        //to down right
-        for (let i = row; i < this.gridSize; i++) {
-            if(this.charGrid[col][i] == this.getPlayerTurn()){
-                //console.log("down right.. "+this.charGrid[col][i])
-                col--
-                count++
+    verDiagLeftUp(row:number,col:number){
+        var count = 0;
+        for (let i = col; i < this.gridSize; i++) {
+            if(this.charGrid[i][row] == this.getPlayerTurn()){
+                console.log("col++..."+i+" row--..."+row)
+                row--;count++
             } else {
                 break
             }
         }
-        //to up left
-        for (let j = row - 1; j >= 0; j--) {
-            if(this.charGrid[col][j] == this.getPlayerTurn()){
-                //console.log("up left.. "+this.buttonIDs[col][j])
-                col++
-                count++
+        return count
+    }
+
+    verDiagLeftDown(row:number,col:number){
+        var count=0;
+        for (let j = col; j >= 0; j--) {
+            if(this.charGrid[j][row] == this.getPlayerTurn()){
+                console.log("col--..."+j+" row++..."+row)
+                row++;count++
             } else {
                 break
             }
         }
-        console.log("TOTH:... " +  count)
-        return count == this.nSize ? true : false
+        return count;
     }
 }

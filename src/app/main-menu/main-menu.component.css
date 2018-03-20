@@ -1,0 +1,53 @@
+.centerMenu{
+    margin: auto;
+    width: 50%;
+    margin-top: 5%;
+}
+
+.centerMenuBtn{
+    margin:0 auto;
+    margin-top: 2%;
+    width: 100%;
+}
+
+/* colors */
+
+.blueViolet {
+    background-color: blueviolet
+}
+
+.chartreuse{
+    background-color: chartreuse
+}
+
+.crimson{
+    background-color: crimson
+}
+
+.darkBlue{
+    background-color: darkblue
+}
+
+.gold{
+    background-color: gold
+}
+
+.deepPink{
+    background-color: deeppink
+}
+
+.fireBrick{
+    background-color: firebrick
+}
+
+.green{
+    background-color: green
+}
+
+.orangeRed{
+    background-color: orangered
+}
+
+.teal{
+    background-color: teal
+}

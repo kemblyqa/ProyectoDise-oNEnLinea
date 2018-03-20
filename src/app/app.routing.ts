@@ -1,9 +1,10 @@
+import { MainMenuComponent } from './main-menu/main-menu.component';
 //importacion componentes
 import { TableroComponent } from "./tablero/tablero.component";
+import { LoginComponent } from "./login/login.component";
 
 //importacion modulos
 import { Routes } from "@angular/router";
-import { LoginComponent } from "./login/login.component";
 
 export const ROUTES: Routes = [
     {
@@ -14,5 +15,8 @@ export const ROUTES: Routes = [
     },
     {
         path: 'login', component: LoginComponent
+    },
+    {
+        path: 'menu', component: MainMenuComponent
     }
 ]

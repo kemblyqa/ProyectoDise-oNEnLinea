@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
+declare var jquery:any;
+declare var $ :any;
 //models
 import { BuildTablero } from "../models/tablero.model";
 
@@ -8,29 +10,63 @@ import { BuildTablero } from "../models/tablero.model";
   styleUrls: ['./tablero.component.css']
 })
 export class TableroComponent implements OnInit {
+  //needed in build of the board
   idButtonGrid:Array<any>
   tab:BuildTablero
+  
+  //needed in dialogs and notificatios
+  size:number
+  dialogTitleEndGame:string
+  dialogEndGame:string
 
-  //style binding
-  notPlayed:boolean
-  constructor() { 
-    this.tab = new BuildTablero(9,4)
+  constructor() {
+    this.tab = new BuildTablero(5,5)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
-
+    //get the size to use it in dialogs
+    this.size = this.tab.nSize
     //this get the ids and render the buttons in the template
     this.idButtonGrid = this.tab.getIdButtonCells()
   }
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
+  
   //button event
   touchButton(e){
     //get button id and properties
-
-    //when is his turn paint as the color he choose
     let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
+    //when is his turn paint as the color he choose
     paintButton.style.backgroundColor = this.tab.getColorTurn() 
-    this.tab.switchPlayer() 
+    this.verifyIfIsEnded()
+    this.tab.switchPlayer()  
+  }
+
+  openModalEndGame(){
+    $("#end").modal('show');
+  }
+
+  verifyIfIsEnded(){
+    switch(this.tab.getGameStatus()){
+      case "w":
+        this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
+        this.dialogTitleEndGame = "VICTORIA...."
+        this.openModalEndGame()
+        break
+      case "l":
+        this.dialogEndGame = "Oh!! Has perdido lamentablemente "
+        this.dialogTitleEndGame = "DERROTA...."
+        this.openModalEndGame()
+        break
+      case "t":
+        this.dialogEndGame = "Umm!! Pues ha sido empate "
+        this.dialogTitleEndGame = "EMPATE...."
+        this.openModalEndGame()
+        break
+      case "p":
+        break;
+    }
+  }
+
+  backToMenu(){
+
   }
 }
