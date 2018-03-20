@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuModel } from '../models/menu.model';
 declare var jquery:any;
 declare var $ :any;
 
@@ -8,8 +9,12 @@ declare var $ :any;
   styleUrls: ['./main-menu.component.css']
 })
 export class MainMenuComponent implements OnInit {
-
-  constructor() { }
+  menuModel:MenuModel
+  colors:Array<any>
+  constructor() { 
+    this.menuModel = new MenuModel()
+    this.colors = this.menuModel.getColorList()
+  }
 
   parametersBegin(){
     $("#parameters").modal('show');

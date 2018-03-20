@@ -20,7 +20,7 @@ export class TableroComponent implements OnInit {
   dialogEndGame:string
 
   constructor() {
-    this.tab = new BuildTablero(5,2)
+    this.tab = new BuildTablero(5,5)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
     //get the size to use it in dialogs
@@ -47,17 +47,17 @@ export class TableroComponent implements OnInit {
   verifyIfIsEnded(){
     switch(this.tab.getGameStatus()){
       case "w":
-        this.dialogEndGame = "Yeahh!! Has ganado exitosamente en "
+        this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
         this.dialogTitleEndGame = "VICTORIA...."
         this.openModalEndGame()
         break
       case "l":
-        this.dialogEndGame = "Oh!! Has perdido lamentablemente en "
+        this.dialogEndGame = "Oh!! Has perdido lamentablemente "
         this.dialogTitleEndGame = "DERROTA...."
         this.openModalEndGame()
         break
       case "t":
-        this.dialogEndGame = "Umm!! Pues ha sido empate en "
+        this.dialogEndGame = "Umm!! Pues ha sido empate "
         this.dialogTitleEndGame = "EMPATE...."
         this.openModalEndGame()
         break
