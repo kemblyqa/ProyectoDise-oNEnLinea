@@ -1,0 +1,14 @@
+TypeScript
+
+dependencias de produccion
+npm init
+npm install -g typescript
+npm install -g nodemon
+npm install body-parser
+npm install mongoose
+npm install express
+[npm install --save body-parser mongoose express]
+
+dependencias de desarrollo
+npm install -D @types/node  @types/express @types/mongoose
+

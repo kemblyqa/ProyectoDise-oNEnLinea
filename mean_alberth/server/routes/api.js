@@ -140,6 +140,16 @@ router.get('/getTablero', (req, res) => {
     });
 });
 
+// Post setTablero
+router.post('/setTablero', (req, res) => {
+    var idPartida=req.query.idPartida;
+    var ronda=req.query.ronda;
+    var tablero=req.query.tablero;
+    connection((db) => {
+            db.eval("setTablero("+idPartida+","+ronda+","+tablero+")", function(error, result) { response.data=result;res.json(response.data) });
+    });
+});
+
 // Post jugada
 router.post('/jugada', (req, res) => {
     var idPartida=req.query.idPartida;
