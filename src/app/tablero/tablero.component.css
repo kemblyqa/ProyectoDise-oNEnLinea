@@ -14,6 +14,14 @@
 	background: lightgreen;
 } */
 
+.card {
+  max-width: max-content;
+}
+
+table {
+  margin:5% 5% 5% 5%;
+}
+
   body {
     overflow-x: hidden;
   }
@@ -38,7 +46,7 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #000;
+    background: rgb(128, 95, 12);
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -80,13 +88,13 @@
   .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    color: #999999;
+    color: black;
   }
   
   .sidebar-nav li a:hover {
     text-decoration: none;
     color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.267);
   }
   
   .sidebar-nav li a:active, .sidebar-nav li a:focus {
@@ -100,7 +108,7 @@
   }
   
   .sidebar-nav>.sidebar-brand a {
-    color: #999999;
+    color:black;
   }
   
   .sidebar-nav>.sidebar-brand a:hover {
