@@ -21,7 +21,7 @@ export class TableroComponent implements OnInit {
   dialogEndGame:string
 
   constructor() {
-    this.tab = new BuildTablero(10,3)
+    this.tab = new BuildTablero(30,3)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
     this.sideBarItems= this.tab.getSideBarItems()

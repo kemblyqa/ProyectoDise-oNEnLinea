@@ -6,6 +6,10 @@
 	max-height: 60px;
 	background-color: #0000ff
 }
+
+li {
+    margin-left: 2%
+}
 /* .board {
 	margin-top:5%;
 	margin-bottom: 5%;
@@ -14,7 +18,7 @@
 	background: lightgreen;
 } */
 .navbar {
-	background-color: rgb(40, 163, 163)
+    background-color: rgb(40, 163, 163);
 }
 .centerBoardCard{
     margin: auto;
