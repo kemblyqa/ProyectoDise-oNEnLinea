@@ -6,10 +6,6 @@
 	max-height: 60px;
 	background-color: #0000ff
 }
-
-li {
-    margin-left: 2%
-}
 /* .board {
 	margin-top:5%;
 	margin-bottom: 5%;
@@ -66,3 +62,13 @@ li {
   .sidenav {padding-top: 15px;}
   .sidenav a {font-size: 18px;}
 }
+
+/* navbar */
+/* @media (min-width: 768px) {
+    .navbar-nav.navbar-center {
+      position: absolute;
+      left: 50%;
+      transform: translatex(-50%);
+    }
+  } */
+
