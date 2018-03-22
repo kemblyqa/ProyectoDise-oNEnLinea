@@ -71,16 +71,6 @@ export class TableroComponent implements OnInit {
   }
 
   backToMenu(){
-
-  }
-
-  /* Set the width of the side navigation to 250px and the left margin of the page content to 250px */
-  openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-  }
-
-/* Set the width of the side navigation to 0 and the left margin of the page content to 0 */
-  closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
+    $("#wrapper").toggleClass("toggled");
   }
 }

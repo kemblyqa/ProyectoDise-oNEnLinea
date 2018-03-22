@@ -1,81 +1,62 @@
-<!-- navbar menu -->
-<!-- <nav class="navbar navbar-expand-lg navbar-dark" role="navigation">
-    <div class="navbar-header">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navBarCollapseResponsive" aria-controls="navBarCollapseResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-    </div>
-    <div class="collapse navbar-collapse" id="navBarCollapseResponsive">
-        <ul class="nav navbar-nav navbar-left">
-            <li class="nav-item">
-                <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="openNav()">&#9776;</span>
+<div id="wrapper">
+  <!-- Sidebar -->
+  <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+          <li class="sidebar-brand">
+              <a>
+                  N en línea!
+              </a>
+          </li>
+          <div *ngFor="let i of sideBarItems">
+            <li>
+              <a routerLink="/{{i.href}}" routerLinkActive="active">{{i.text}}</a>
             </li>
-        </ul>
-        <ul class="nav navbar-nav navbar-center">
-            <li class="nav-item">
-                <a class="navbar-brand" routerLink="/menu" routerLinkActive="active">Volver a menú</a>
-            </li>
-            <li class="nav-item">
-                <a class="navbar-brand" routerLink="/menu" routerLinkActive="active">Volver a menú</a>
-            </li>
-        </ul>
-    </div>
-</nav> -->
-<!-- sidebar menu -->
-<!-- <div id="mySidenav" class="sidenav">
-  <a class="closebtn" (click)="closeNav()">&times;</a>
-  <div *ngFor="let i of sideBarItems">
-    <a routerLink="/{{i.href}}" routerLinkActive="active">{{i.text}}</a>
+          </div>
+      </ul>
   </div>
-</div> -->
+  <!-- /#sidebar-wrapper -->
 
-<div class="container-fluid h-100">
-    <div class="row h-100">
-        <aside class="col-12 col-md-2 p-0 bg-dark">
-            <nav class="navbar navbar-expand navbar-dark bg-dark flex-md-column flex-row align-items-start">
-                <div class="collapse navbar-collapse">
-                    <ul class="flex-md-column flex-row navbar-nav w-100 justify-content-between">
-                        <li class="nav-item">
-                            <a class="nav-link pl-0" href="#">Link</a>
-                        </li>
-                        ..
-                    </ul>
-                </div>
-            </nav>
-        </aside>
-        <main class="col">
-            <div id="main">
-                <div class="container-fluid">
-                  <div class="row">
-                    <div class="card centerBoardCard">
-                      <div class="container board centerDiv">
-                        <div class="btn-group">
-                          <div *ngFor= "let column of idButtonGrid">
-                            <div *ngFor= "let cell of column">
-                              <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
-                            </div>
-                          </div>
+  <!-- Page Content -->
+  <div id="page-content-wrapper">
+      <div class="container-fluid">
+        <div id="main">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-sm-3">
+                <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
+              </div>
+              <div class="col-sm-9">
+                <div class="card centerBoardCard">
+                  <div class="container board centerDiv">
+                    <div class="btn-group">
+                      <div *ngFor= "let column of idButtonGrid">
+                        <div *ngFor= "let cell of column">
+                          <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
                         </div>
-                      </div> 
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-sm-4">
-                      <label class="list-group-item">Cras justo odio</label>
                       </div>
-                    <div class="col-sm-4">
-                      <label class="list-group-item">Cras justo odio</label>
-                      </div>
-                    <div class="col-sm-4">
-                      <label class="list-group-item">Cras justo odio</label>
                     </div>
-                  </div>
+                  </div> 
                 </div>
               </div>
-        </main>
-    </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
+                </div>
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
+                </div>
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+  <!-- /#page-content-wrapper -->
 </div>
-
+<!-- /#wrapper -->
 
 <!-- end game modal -->
 <div class="modal fade" id="end" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
