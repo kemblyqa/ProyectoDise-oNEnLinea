@@ -10,8 +10,22 @@
     width: 100%;
 }
 
-/* colors */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
 
+.sectionBoard {
+    float: left;
+    width: 70%;
+}
+
+.sectionInfoGame {
+    margin-top: 15%
+}
+
+/* colors */
 .blueViolet {
     background-color: blueviolet
 }

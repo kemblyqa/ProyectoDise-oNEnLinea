@@ -12,6 +12,7 @@ import { BuildTablero } from "../models/tablero.model";
 export class TableroComponent implements OnInit {
   //needed in build of the board
   idButtonGrid:Array<any>
+  sideBarItems: Array<any>
   tab:BuildTablero
   
   //needed in dialogs and notificatios
@@ -20,13 +21,16 @@ export class TableroComponent implements OnInit {
   dialogEndGame:string
 
   constructor() {
-    this.tab = new BuildTablero(5,5)
+    this.tab = new BuildTablero(10,3)
     //this create all the ids in the grid and set values in other grid
     this.tab.fill()
+    this.sideBarItems= this.tab.getSideBarItems()
     //get the size to use it in dialogs
     this.size = this.tab.nSize
     //this get the ids and render the buttons in the template
     this.idButtonGrid = this.tab.getIdButtonCells()
+
+    
   }
   ngOnInit() {}
   
@@ -67,6 +71,6 @@ export class TableroComponent implements OnInit {
   }
 
   backToMenu(){
-
+    $("#wrapper").toggleClass("toggled");
   }
 }

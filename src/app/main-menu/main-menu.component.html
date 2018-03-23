@@ -5,14 +5,17 @@
     </div>
     <div class="card-body">
       <div class="centerMenuBtn">
-        <button type="button" (click)="parametersBegin()" class="btn btn-primary centerMenuBtn">Jugar</button>
+        <button type="button" (click)="parametersBegin()" class="btn btn-primary centerMenuBtn">Jugar contra jugador</button>
+      </div>
+      <div class="centerMenuBtn">
+        <button type="button" (click)="optionsAIBegin()" class="btn btn-primary centerMenuBtn">Jugar contra computadora</button>
+      </div>
+      <div class="centerMenuBtn">
+        <button type="button" (click)="registersBegin()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
       </div>
       <div class="centerMenuBtn">
         <button type="button" [routerLink]="['/login']" class="btn btn-primary centerMenuBtn">Salir</button>
       </div>
-      <div class="centerMenuBtn">
-          <button type="button" (click)="registersBegin()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
-        </div>
     </div>
   </div>
 </div>
@@ -29,10 +32,10 @@
       </div>
       <div class="modal-body">
         <div class="form-group row">
-            <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
-            </div>
+          <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
+          <div class="col-sm-6">
+              <input type="text" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+          </div>
         </div>
         <div class="form-group row">
           <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
@@ -56,3 +59,5 @@
     </div>
   </div>
 </div>
+
+<!-- AI modal -->

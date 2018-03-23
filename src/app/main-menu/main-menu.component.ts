@@ -22,4 +22,8 @@ export class MainMenuComponent implements OnInit {
   ngOnInit() {
   }
 
+  optionsAIBegin(){
+    $("#").modal('show');
+  }
+
 }

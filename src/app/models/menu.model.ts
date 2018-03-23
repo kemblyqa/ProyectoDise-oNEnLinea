@@ -1,6 +1,5 @@
 export class MenuModel{
     private colors:Array<any>
-    styleColors: Array<any>
     constructor(){
         this.colors = [{
             id: 1,

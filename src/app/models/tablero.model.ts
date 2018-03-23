@@ -2,6 +2,7 @@ export class BuildTablero{
     //in the board are col-row filled
     //this is row-col
     buttonIDs:Array<any>
+    private sideBarItems: Array<any>
 
     //this need to set col-row filled
     charGrid:Array<any>
@@ -18,6 +19,39 @@ export class BuildTablero{
         this.gridSize = gridSize
         this.nSize = nSize
         this.status = "p"
+        this.sideBarItems = [{
+            id:1,
+            text:"Nueva partida",
+            href:"/menu"
+        },{
+            id:2,
+            text:"En curso",
+            href:"/menu"
+        },{
+            id:3,
+            text:"Buscar partida",
+            href:"/menu"
+        },{
+            id:4,
+            text:"Jugadores",
+            href:"/menu"
+        },{
+            id:5,
+            text:"Amigos",
+            href:"/menu"
+        },{
+            id:6,
+            text:"Perfil",
+            href:"/menu"
+        },{
+            id:7,
+            text:"Cerrar",
+            href:"/menu"
+        }]
+    }
+
+    getSideBarItems(){
+        return this.sideBarItems
     }
 
     fill() {
