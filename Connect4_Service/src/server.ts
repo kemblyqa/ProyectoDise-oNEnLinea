@@ -1,19 +1,23 @@
-import controladorPersona from "./routes/ControladorPersona";
 import * as express from 'express';
 import * as mongoose from 'mongoose';
 import * as bodyParser from 'body-parser';
+import * as path from 'path';
+import controladorPersona from './routes/ControladorPersona';
+
+
 
 class Server{
-    public app: express.Application;
-    constructor() {
-        this.app = express();
-        this.config();
-        this.routes();
-    }
-    // application config
+  public app: express.Application;
+  constructor() {
+      this.app = express();
+      this.config();
+      this.routes();
+  }
+  // application config
+
   public config() {
 
-    const MONGO_URI: string = 'mongodb://localhost/WebsiteComunidad'; 
+    const MONGO_URI: string = 'mongodb://localhost/WebsiteComunidad';
     mongoose.connect(MONGO_URI, {
       useMongoClient: true,
 
@@ -34,7 +38,7 @@ class Server{
     });
   }
 
-  // application routes
+
   public routes(): void {
 
     let router: express.Router;
@@ -43,7 +47,7 @@ class Server{
       res.json({
         message: 'Ruta inicial del backend'
       })
-    })
+    });
     this.app.use('/', router);
     this.app.use('/api', controladorPersona);
   }

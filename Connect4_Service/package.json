@@ -4,7 +4,9 @@
   "description": "Curso de TypeScript Por Justin",
   "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "ts": "tsc -w",
+    "server": "nodemon ./build/index.js",
+    "start": "tsc && nodemon ./build/index.js"
   },
   "author": "Alberth Salas",
   "license": "ISC",

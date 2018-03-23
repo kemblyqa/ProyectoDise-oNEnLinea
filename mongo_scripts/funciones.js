@@ -114,7 +114,26 @@ db.system.js.save({
 	{ 
                 var R1=db.Usuarios.find({_id:idOne},{['chats.'+idTwo]:1,_id:0}).toArray()[0].chats[idTwo];
                 var R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
-                return [{id:idOne,log:R1},{id:idTwo,log:R2}];
+                lista=[];
+                while(R1.length>0 || R2.length>0){
+	                if(R1.length>0 && R2.length>0){
+	                    fechaOne = Date.parse(R1[0][0]);
+	                    fechaTwo = Date.parse(R2[0][0]);
+	                    if(fechaOne<fechaTwo)
+	                        lista.unshift([0,R1.shift()[1]]);
+	                    else
+	                        lista.unshift([1,R2.shift()[1]]);
+	                }
+	                else if(R1.length>0){
+	                    while(R1.length>0)
+	                        lista.unshift([0,R1.shift()[1]]);
+	                }
+	                else{
+	                    while(R2.length>0)
+	                        lista.unshift([1,R2.shift()[1]]);
+	                }
+            }
+                return lista.reverse();
 		}
     });
 
@@ -122,6 +141,7 @@ db.system.js.save({
 	_id: "nuevaSesion",
 	value: function (idJ1,color1,idJ2,color2,size,lineSize,nRondas) 
 	{ 
+		try{
 			fila='[0';
 			for(x=1;x<size;x++){
 				fila=fila+',0';
@@ -146,13 +166,20 @@ db.system.js.save({
                         db.Usuarios.update(
    			{_id: idJ2},
    			{ $push: { partidas: [db.Partidas.find().count()] } });
+            return true;
 		}
+		catch{
+			return false;
+		}
+	}
 }); 
 
 db.system.js.save({
 	_id: "jugada",
-	value: function (idPartida,ronda,fila,columna) 
+	value: function (idPartida,ronda,fila,columna,idJugador) 
 	{ 
+		if(db.Partidas.find({_id:idPartida,usuarios:{$elemMatch:{$elemMatch:{$in:[idJugador]}}}}).toArray()[0]==null)
+			return false;
         try{
             path="rondas."+[ronda]+".jugadas";
 			db.Partidas.update(
@@ -171,7 +198,7 @@ db.system.js.save({
 	_id: "getInfoPartida",
 	value: function (idPartida) 
 	{ 
-                return db.Partidas.find({_id:idPartida},{_id:1,estado:1,tamano:1,tamano_linea:1,usuarios:1}).toArray()[0];
+        return db.Partidas.find({_id:idPartida},{_id:1,estado:1,tamano:1,tamano_linea:1,usuarios:1}).toArray()[0];
 		}
 });  
 
