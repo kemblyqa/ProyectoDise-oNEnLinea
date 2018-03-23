@@ -21,23 +21,21 @@
         <div class="container-fluid">
           <!-- First row with the board -->
           <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-1">
               <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-11">
 
               <!-- board -->
-              <div class="card centerBoardCard">
-                <div class="container board centerDiv">
-                  <table>
+                <div class="container centerDiv">
+                  <table class="board">
                     <td *ngFor= "let column of idButtonGrid">
                       <tr *ngFor= "let cell of column">
                         <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
                       </tr>
                     </td>
                   </table>
-                </div> 
-              </div>
+                </div>
               <!-- /#board -->
 
             </div>
