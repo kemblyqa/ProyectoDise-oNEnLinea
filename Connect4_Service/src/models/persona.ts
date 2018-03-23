@@ -1,8 +1,8 @@
 // importar schema y modelo
-import { Schema, model } from "mongoose";
+import { Schema, model } from 'mongoose';
 
-//hacemos el modelo
-let EsquemaPersona : Schema = new Schema({
+// hacemos el modelo
+const EsquemaPersona: Schema = new Schema({
     Cedula :{
         type : Number,
         required : true
@@ -31,6 +31,6 @@ let EsquemaPersona : Schema = new Schema({
     hijos : {
         type : Array
     }
-})
+});
 
-export default model('Personas',EsquemaPersona)
+export default model('Personas', EsquemaPersona);

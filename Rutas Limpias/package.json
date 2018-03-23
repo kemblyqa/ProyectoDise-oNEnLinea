@@ -1,0 +1,26 @@
+{
+  "name": "connectnserver",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "ts": "tsc -w",
+    "server": "nodemon ./build/index.js",
+    "start": "tsc -w && nodemon ./build/index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "~2.6.9",
+    "express": "^4.16.3",
+    "http-errors": "~1.6.2",
+    "jade": "~1.11.0",
+    "mongoose": "^5.0.11",
+    "morgan": "~1.9.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/mongoose": "^5.0.7",
+    "@types/node": "^9.4.7"
+  }
+}
