@@ -21,19 +21,16 @@
         <div class="container-fluid">
           <!-- First row with the board -->
           <div class="row">
-            <div class="col-sm-1">
+            <div class="col-md-11">
               <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
-            </div>
-            <div class="col-sm-11">
-
               <!-- board -->
                 <div class="container centerDiv">
-                  <table class="board">
-                    <td *ngFor= "let column of idButtonGrid">
-                      <tr *ngFor= "let cell of column">
-                        <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton"></button>
-                      </tr>
-                    </td>
+                  <table class="board" id="tableBoard">
+                    <tr *ngFor= "let column of idButtonGrid">
+                      <td *ngFor= "let cell of column">
+                        <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton btn"></button>
+                      </td>
+                    </tr>
                   </table>
                 </div>
               <!-- /#board -->
@@ -42,17 +39,17 @@
           </div>
           <!-- /#First row -->
           <!-- Second row with info -->
-          <div class="row" style="margin-top: 2%">
-            <div class="col-sm-4">
-              <label class="list-group-item">Cras justo odio</label>
+            <div class="row" style="margin-top: 2%">
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
+                </div>
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
+                </div>
+              <div class="col-sm-4">
+                <label class="list-group-item">Cras justo odio</label>
               </div>
-            <div class="col-sm-4">
-              <label class="list-group-item">Cras justo odio</label>
-              </div>
-            <div class="col-sm-4">
-              <label class="list-group-item">Cras justo odio</label>
             </div>
-          </div>
           <!-- /#Second row -->
         </div>
       </div>

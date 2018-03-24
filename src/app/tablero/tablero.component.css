@@ -1,26 +1,31 @@
 .cellbutton {
 	border-radius: 50%;
-	width: 60px;
+	/* width: 100%; */
 	/* max-width: 60px; */
-	height: 60px;
-	/* max-height: 60px; */
+	/* height: 100%; */
+  max-height: 60px;
+  min-height: 60px;
+  max-width: 60px;
+  min-width: 60px;
 	background-color: #0000ff
 }
 .board {
-	margin-top:5%;
-	margin-bottom: 5%;
-	width: max-content;
-	position:relative;
-	background: lightgreen;
+  margin:5% 5% 5% 5%;
+  position:relative;
+  background: lightgreen;
+  text-align: center;
 }
 
-.card {
+.container {
   width: 100%;
+  height: 100%;
   max-width: max-content;
 }
 
 table {
   margin:5% 5% 5% 5%;
+  /* width: 600;height: 600; */
+  background-color: brown;
 }
 
 body {
@@ -68,7 +73,6 @@ body {
   position: absolute;
   margin-right: -250px;
 }
-
 
 /* Sidebar Styles */
 

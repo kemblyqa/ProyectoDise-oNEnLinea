@@ -81,11 +81,11 @@ export class BuildTablero{
     }
 
     getUpdateGridLayout(id){
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
+        for (let rowI = 0; rowI < this.gridSize; rowI++) {
+            for (let colI = 0; colI < this.gridSize; colI++) {
                 //if id is found, then we need the column
-                if(this.buttonIDs[i][j] == id){
-                    return this.setCellInGrid(i)
+                if(this.buttonIDs[rowI][colI] == id){
+                    return this.setCellInGrid(colI)
                 }
             }
         }
@@ -105,25 +105,25 @@ export class BuildTablero{
         return this.playerTurn ? color1 : color2
     }
 
-    setCellInGrid(col:number){
-        for (let i = 0; i < this.gridSize; i++) {
-            if(this.charGrid[col][i] != "n"){
+    setCellInGrid(colParam:number){
+        for (let rowItem = 0; rowItem < this.gridSize; rowItem++) {
+            if(this.charGrid[rowItem][colParam] != "n"){
                 //find where the button need to be set and update the grid
-                this.charGrid[col][i-1] = this.getPlayerTurn()
+                this.charGrid[rowItem-1][colParam] = this.getPlayerTurn()
                 //verify if is connected
-                this.isNConnected(col,i-1)
+                this.isNConnected(rowItem-1,colParam)
                 //return button id to set color
-                return this.buttonIDs[col][i-1]
+                return this.buttonIDs[rowItem-1][colParam]
             }
         }
         //when it is the fisrt piece to be droped
-        this.charGrid[col][this.gridSize-1] = this.getPlayerTurn()  
-        this.isNConnected(col,this.gridSize-1)
-        return this.buttonIDs[col][this.gridSize-1]
+        this.charGrid[this.gridSize-1][colParam] = this.getPlayerTurn()  
+        this.isNConnected(this.gridSize-1,colParam)
+        return this.buttonIDs[this.gridSize-1][colParam]
     }
 
     /**is called in the tablero.component.ts**/
-    isNConnected(col:number, row:number){
+    isNConnected(row:number, col:number){
         //verify if is N connected
         if(this.verticalWin(row,col)  || 
         this.horizontalWin(row,col)   ||
@@ -155,8 +155,7 @@ export class BuildTablero{
         var count = 0
         //to right
         for (let i = col; i < this.gridSize; i++) {
-            if(this.charGrid[i][row] == this.getPlayerTurn()){
-                //console.log("right.. "+this.charGrid[i][row])
+            if(this.charGrid[row][i] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -164,8 +163,7 @@ export class BuildTablero{
         }
         //to left
         for (let j = col - 1; j >= 0; j--) {
-            if(this.charGrid[j][row] == this.getPlayerTurn()){
-                //console.log("left.. "+this.buttonIDs[j][row])
+            if(this.charGrid[row][j] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -178,8 +176,7 @@ export class BuildTablero{
         var count = 0
         //to down
         for (let i = row; i < this.gridSize; i++) {
-            if(this.charGrid[col][i] == this.getPlayerTurn()){
-                //console.log("down.. "+this.buttonIDs[col][i])
+            if(this.charGrid[i][col] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -187,8 +184,7 @@ export class BuildTablero{
         }
         //to up
         for (let j = row - 1; j >= 0; j--) {
-            if(this.charGrid[col][j] == this.getPlayerTurn()){
-                //console.log("up.. "+this.buttonIDs[col][j])
+            if(this.charGrid[j][col] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -207,51 +203,55 @@ export class BuildTablero{
 
     verDiagRightDown(row:number, col:number){
         var count = 0;
-        for (let i = col; i < this.gridSize; i++) {
-            if(this.charGrid[i][row] == this.getPlayerTurn()){
-                row++;count++
+        for (let i = row; i < this.gridSize; i++) {
+            if(this.charGrid[i][col] == this.getPlayerTurn()){
+                col++;count++
             } else {
                 break
             }
         }
+        console.log("tot verDiagRightDown..."+count)
         return count;
     }
 
     verDiagRightUp(row:number,col:number){
         var count = 0;
-        for (let j = col; j >= 0; j--) {
-            if(this.charGrid[j][row] == this.getPlayerTurn()){
-                row--;count++
+        for (let j = row; j >= 0; j--) {
+            if(this.charGrid[j][col] == this.getPlayerTurn()){
+                col--;count++
             } else {
                 break
             }
         }
+        console.log("tot verDiagRightUp..."+count)
         return count;
     }
 
     verDiagLeftUp(row:number,col:number){
         var count = 0;
-        for (let i = col; i < this.gridSize; i++) {
-            if(this.charGrid[i][row] == this.getPlayerTurn()){
-                console.log("col++..."+i+" row--..."+row)
-                row--;count++
+        for (let i = row; i >= 0; i--) {
+            if(this.charGrid[i][col] == this.getPlayerTurn()){
+                console.log("col++..."+col+" row--..."+i)
+                col++;count++
             } else {
                 break
             }
         }
+        console.log("tot verDiagLeftUp..."+count)
         return count
     }
 
     verDiagLeftDown(row:number,col:number){
         var count=0;
-        for (let j = col; j >= 0; j--) {
-            if(this.charGrid[j][row] == this.getPlayerTurn()){
-                console.log("col--..."+j+" row++..."+row)
-                row++;count++
+        for (let j = row; j < this.gridSize ; j++) {
+            if(this.charGrid[j][col] == this.getPlayerTurn()){
+                console.log("col--..."+col+" row++..."+j)
+                col--;count++
             } else {
                 break
             }
         }
+        console.log("tot verDiagLeftDown..."+count)
         return count;
     }
 }
