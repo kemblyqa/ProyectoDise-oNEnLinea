@@ -66,6 +66,7 @@ export class BuildTablero{
                 c++
             }
         }
+        return c-1
     }
 
     getIdButtonCells(){
@@ -210,7 +211,6 @@ export class BuildTablero{
                 break
             }
         }
-        console.log("tot verDiagRightDown..."+count)
         return count;
     }
 
@@ -223,7 +223,6 @@ export class BuildTablero{
                 break
             }
         }
-        console.log("tot verDiagRightUp..."+count)
         return count;
     }
 
@@ -231,13 +230,11 @@ export class BuildTablero{
         var count = 0;
         for (let i = row; i >= 0; i--) {
             if(this.charGrid[i][col] == this.getPlayerTurn()){
-                console.log("col++..."+col+" row--..."+i)
                 col++;count++
             } else {
                 break
             }
         }
-        console.log("tot verDiagLeftUp..."+count)
         return count
     }
 
@@ -245,13 +242,11 @@ export class BuildTablero{
         var count=0;
         for (let j = row; j < this.gridSize ; j++) {
             if(this.charGrid[j][col] == this.getPlayerTurn()){
-                console.log("col--..."+col+" row++..."+j)
                 col--;count++
             } else {
                 break
             }
         }
-        console.log("tot verDiagLeftDown..."+count)
         return count;
     }
 }

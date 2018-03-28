@@ -19,25 +19,27 @@ export class TableroComponent implements OnInit {
   size:number
   dialogTitleEndGame:string
   dialogEndGame:string
+  gSize:number
+  cells:number
 
   constructor() {
-    this.tab = new BuildTablero(6,3)
+    //create the tablero model
+    this.tab = new BuildTablero(10,3)
+
     //this create all the ids in the grid and set values in other grid
-    this.tab.fill()
-    this.sideBarItems= this.tab.getSideBarItems()
+    this.cells = this.tab.fill()
+
+    //create the items of sidebar
+    this.sideBarItems = this.tab.getSideBarItems()
+
     //get the size to use it in dialogs
     this.size = this.tab.nSize
+    this.gSize = this.tab.gridSize
+
     //this get the ids and render the buttons in the template
     this.idButtonGrid = this.tab.getIdButtonCells()
-    
-    //set custom size to the board
-    let tSize = document.getElementById("tableBoard")
-    
   }
-  ngOnInit() {}
-
-  resize(){
-
+  ngOnInit() {
   }
   
   //button event

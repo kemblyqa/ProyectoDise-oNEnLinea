@@ -13,6 +13,7 @@
     </ul>
   </div>
   <!-- /#sidebar-wrapper -->
+
   <!-- Page Content -->
   <div id="page-content-wrapper">
     <div class="container-fluid">
@@ -23,18 +24,22 @@
           <div class="row">
             <div class="col-md-11">
               <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
+              
               <!-- board -->
                 <div class="container centerDiv">
-                  <table class="board" id="tableBoard">
-                    <tr *ngFor= "let column of idButtonGrid">
-                      <td *ngFor= "let cell of column">
-                        <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton btn"></button>
-                      </td>
-                    </tr>
-                  </table>
+                  <div class="tBoard">
+                      <table class="board" id="tableBoard">
+                          <tr *ngFor= "let column of idButtonGrid">
+                            <td *ngFor= "let cell of column">
+                              <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton btn"></button>
+                            </td>
+                          </tr>
+                        </table>
+                  </div>
+                  
                 </div>
               <!-- /#board -->
-
+            
             </div>
           </div>
           <!-- /#First row -->
