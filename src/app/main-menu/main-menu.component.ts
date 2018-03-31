@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuModel } from '../models/menu.model';
-declare var jquery:any;
-declare var $ :any;
+declare var jquery: any;
+declare var $ : any;
 
 @Component({
   selector: 'app-main-menu',
@@ -9,21 +9,24 @@ declare var $ :any;
   styleUrls: ['./main-menu.component.css']
 })
 export class MainMenuComponent implements OnInit {
-  menuModel:MenuModel
-  colors:Array<any>
-  constructor() { 
-    this.menuModel = new MenuModel()
-    this.colors = this.menuModel.getColorList()
+  menuModel: MenuModel;
+  colors: Array<any>;
+  constructor() {
+    this.menuModel = new MenuModel();
+    this.colors = this.menuModel.getColorList();
   }
 
-  parametersBegin(){
-    $("#parameters").modal('show');
+  parametersBegin() {
+    $('#parameters').modal('show');
   }
   ngOnInit() {
   }
 
-  optionsAIBegin(){
-    $("#").modal('show');
+  optionsAIBegin() {
+    $('#').modal('show');
+  }
+  registersBegin(){
+    //Esta funcion es provisional, ya que el html la necesita (no sé para que)
   }
 
 }

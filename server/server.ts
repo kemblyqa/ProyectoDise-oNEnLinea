@@ -15,7 +15,7 @@ class Server{
     // application config
     public config() {
         // Angular DIST output folder
-        this.app.use(express.static(path.join(__dirname, 'dist')));
+        this.app.use(express.static(path.join(__dirname, '../dist')));
 
         // express middleware
         this.app.use(bodyParser.urlencoded({ extended: true }));
@@ -34,21 +34,11 @@ class Server{
     // application routes
     public routes(): void {
 
-        let router: express.Router;
-        router = express.Router();
-        router.get('', (req, res) => {
-            res.json({
-                message: 'Ruta inicial del backend'
-            })
-        });
-        this.app.use('/', router);
         this.app.use('/user', UserController);
         this.app.use('/game', GameController);
-
-        // Send all other requests to the Angular app
-              this.app.get('*', (req, res) => {
-                res.sendFile(path.join(__dirname, 'dist/index.html'));
-              });
+        this.app.all('*', (req, res) => {
+            res.sendFile(path.join(__dirname, '../dist/index.html'));
+        });
     }
 }
 

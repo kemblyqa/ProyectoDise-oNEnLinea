@@ -4,6 +4,8 @@ var UserController_1 = require("./routes/UserController");
 var GameController_1 = require("./routes/GameController");
 var express = require("express");
 var bodyParser = require("body-parser");
+var path = require('path');
+var http = require('http');
 var Server = /** @class */ (function () {
     function Server() {
         this.app = express();
@@ -12,6 +14,8 @@ var Server = /** @class */ (function () {
     }
     // application config
     Server.prototype.config = function () {
+        // Angular DIST output folder
+        this.app.use(express.static(path.join(__dirname, '../dist')));
         // express middleware
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(bodyParser.json());
@@ -26,16 +30,11 @@ var Server = /** @class */ (function () {
     };
     // application routes
     Server.prototype.routes = function () {
-        var router;
-        router = express.Router();
-        router.get('', function (req, res) {
-            res.json({
-                message: 'Ruta inicial del backend'
-            });
-        });
-        this.app.use('/', router);
         this.app.use('/user', UserController_1.default);
         this.app.use('/game', GameController_1.default);
+        this.app.all('*', function (req, res) {
+            res.sendFile(path.join(__dirname, '../dist/index.html'));
+        });
     };
     return Server;
 }());
