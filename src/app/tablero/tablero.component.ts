@@ -1,4 +1,5 @@
 import { Component, OnInit, TemplateRef } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 declare var jquery:any;
 declare var $ :any;
 //models

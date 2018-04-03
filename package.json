@@ -32,6 +32,7 @@
     "jquery": "^3.3.1",
     "mongoose": "^5.0.12",
     "ngx-bootstrap": "^2.0.3",
+    "nodemon": "^1.17.3",
     "npm-run-all": "^4.1.2",
     "rxjs": "^5.0.1",
     "ts-helpers": "^1.1.1",
