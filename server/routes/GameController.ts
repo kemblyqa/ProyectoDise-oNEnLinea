@@ -1,17 +1,21 @@
 //importar objetos desde express
 import {Router, Request, Response} from "express";
+import gameModel from './../models/game.model'
 
-const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/connect4');
-
+let mongoose = require('mongoose');
+let async = require('async')
 function consulta(query: string, res: Response) {
-    mongoose.connection.db.eval(query)
-        .then(result =>{
-            res.json(result);
+    mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+        mongoose.connection.db.eval(query)
+            .then(result =>{
+                res.json(result);
         })
-        .catch(err =>{
-            res.json(err);
+            .catch(err =>{
+                res.json(err);
         });
+
+    })
+    .catch(() => {res.json("Error de conexion")});
 }
 
 class GameController{
@@ -57,16 +61,62 @@ class GameController{
         consulta("getTablero("+idPartida+","+ronda+")",res);
     }
 
-    public static setTablero(req: Request, res: Response){
+    public static jugada(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
         let fila = req.query.fila;
         let columna = req.query.columna;
         let idJugador = req.query.idJugador;
-        consulta("jugada("+idPartida+","+ronda+","+fila+","+columna+","+idJugador+")",res);
+        async.waterfall([
+            function(callback){
+                mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+                    mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
+                        .then(result1 =>{
+                            if (result1.estado.finalizador!=""){
+                                res.json(false);
+                                return;
+                            }
+                            mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
+                            .then(result2 =>{
+                                let jugadas : Array<Array<any>> = result1.jugadas;
+                                let jugador : number;
+                                if (result2.usuarios[0][0] == idJugador){
+                                    jugador=0;}
+                                else if (result2.usuarios[1][0] == idJugador){
+                                    jugador=1;}
+                                else{
+                                    jugador=-1;}
+                                callback(null,result1.tablero,result2.tamano_linea,jugadas.length,jugador)})
+                            .catch(err =>{
+                                res.json(err);});
+                        })
+                        .catch(err =>{
+                            res.json(err);})
+                            })
+                    .catch(err =>{
+                        res.json(err);});
+            },
+            function(tablero,size,turno : number,jugador,callback){
+                console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: "+ turno + "\njugador: " +jugador);
+                let model = new gameModel(tablero,size);
+                if (turno%2==jugador){
+                    let tupla = model.getCellInGrid(columna,jugador);
+                    if (tupla !=null){
+                        consulta("jugada("+idPartida+","+ronda+","+tupla[0]+","+tupla[1]+","+jugador+")",res);
+                        let estado = model.isNConnected(tupla[0],tupla[1],jugador);
+                        if (estado !="p")
+                        mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+","+idJugador+","+estado+")")
+                                .then(result1 =>{res.json(estado)})});
+                        return;
+                    }
+                }
+                res.json(false)
+            }
+        ])
     }
 
-    public static jugada(req: Request, res: Response){
+    public static setTablero(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
         let tablero=req.query.tablero;
