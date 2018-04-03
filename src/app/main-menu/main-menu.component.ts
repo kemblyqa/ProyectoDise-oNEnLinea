@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MenuModel } from '../models/menu.model';
 declare var jquery: any;
 declare var $ : any;
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-main-menu',
@@ -11,7 +12,13 @@ declare var $ : any;
 export class MainMenuComponent implements OnInit {
   menuModel: MenuModel;
   colors: Array<any>;
-  constructor() {
+
+  //board parameters
+  nSize: number
+  bSize: number
+  nColor: number
+  
+  constructor(private http: HttpClient) {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
   }

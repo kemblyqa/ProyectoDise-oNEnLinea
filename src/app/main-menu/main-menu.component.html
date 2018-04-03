@@ -34,19 +34,19 @@
         <div class="form-group row">
           <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
           <div class="col-sm-6">
-              <input type="text" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+              <input type="text" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
           </div>
         </div>
         <div class="form-group row">
           <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
           <div class="col-sm-6">
-            <input type="text" class="form-control" id="nSize" placeholder="Tamaño en digitos..">
+            <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
           </div>
         </div>
         <div class="form-group row">
           <label for="nColor" class="col-sm-6 col-form-label">Color de ficha</label>
           <div class="col-sm-6">
-            <select id="nColor" class="form-control">
+            <select id="selectedColor" [(ngModel)]="nColor" class="form-control">
               <option class="{{col.styleName}}" *ngFor="let col of colors"
                 [value]="col.id">{{col.name}}</option>
             </select>
