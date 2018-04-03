@@ -246,8 +246,7 @@ db.system.js.save({
 		path="rondas."+[ronda];
         db.Partidas.update(
         	{_id:idPartida},
-        	{$set:{['rondas.'+ronda+'.estado.finalizador']:idFinalizador}},
-        	{$set:{['rondas.'+ronda+'.estado.causa']:razon}});
+        	{$set:{['rondas.'+ronda+'.estado.causa']:razon,['rondas.'+ronda+'.estado.finalizador']:idFinalizador}});
         	return true
 		}
 		catch(e){

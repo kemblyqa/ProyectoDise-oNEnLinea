@@ -39,7 +39,7 @@ export default class gameModel{
     isTie = function () {
         for (var i = 0; i < this.gridSize; i++) {
             for (var j = 0; j < this.gridSize; j++) {
-                if (this.charGrid[i][j] == "n") {
+                if (this.charGrid[i][j] == -1) {
                     return false;
                 }
             }

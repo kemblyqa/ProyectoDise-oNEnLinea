@@ -106,7 +106,7 @@ class GameController{
                         let estado = model.isNConnected(tupla[0],tupla[1],jugador);
                         if (estado !="p")
                         mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
-                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+","+idJugador+","+estado+")")
+                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+","+idJugador+",'"+estado+"')")
                                 .then(result1 =>{res.json(estado)})});
                         return;
                     }
@@ -138,6 +138,7 @@ class GameController{
         let size = req.query.size;
         let lineSize = req.query.lineSize;
         let nRondas = req.query.nRondas;
+        console.log("nuevaSesion("+idJ1+",'"+color1+"',"+idJ2+",'"+color2+"',"+size+","+lineSize+","+nRondas+")");
         consulta("nuevaSesion("+idJ1+",'"+color1+"',"+idJ2+",'"+color2+"',"+size+","+lineSize+","+nRondas+")",res);
     }
 

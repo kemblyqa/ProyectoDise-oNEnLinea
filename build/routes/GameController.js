@@ -104,7 +104,7 @@ var GameController = /** @class */ (function () {
                         var estado_1 = model.isNConnected(tupla[0], tupla[1], jugador);
                         if (estado_1 != "p")
                             mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
-                                mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + "," + idJugador + "," + estado_1 + ")")
+                                mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + "," + idJugador + ",'" + estado_1 + "')")
                                     .then(function (result1) { res.json(estado_1); });
                             });
                         return;
@@ -134,6 +134,7 @@ var GameController = /** @class */ (function () {
         var size = req.query.size;
         var lineSize = req.query.lineSize;
         var nRondas = req.query.nRondas;
+        console.log("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
         consulta("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")", res);
     };
     GameController.prototype.routes = function () {
