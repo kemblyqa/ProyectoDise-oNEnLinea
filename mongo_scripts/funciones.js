@@ -142,9 +142,9 @@ db.system.js.save({
 	value: function (idJ1,color1,idJ2,color2,size,lineSize,nRondas) 
 	{ 
 		try{
-			fila='[0';
+			fila='[-1';
 			for(x=1;x<size;x++){
-				fila=fila+',0';
+				fila=fila+',-1';
 			}
 			fila=fila+']';
 			tablero='['+fila;
@@ -168,7 +168,7 @@ db.system.js.save({
    			{ $push: { partidas: [db.Partidas.find().count()] } });
             return true;
 		}
-		catch{
+		catch(err){
 			return false;
 		}
 	}
@@ -176,19 +176,17 @@ db.system.js.save({
 
 db.system.js.save({
 	_id: "jugada",
-	value: function (idPartida,ronda,fila,columna,idJugador) 
+	value: function (idPartida,ronda,fila,columna,jugador) 
 	{ 
-		if(db.Partidas.find({_id:idPartida,usuarios:{$elemMatch:{$elemMatch:{$in:[idJugador]}}}}).toArray()[0]==null)
-			return false;
         try{
             path="rondas."+[ronda]+".jugadas";
 			db.Partidas.update(
 			   { _id: idPartida },
 			   { $push: {[path] : [fila,columna] } });
+			db.Partidas.update({_id:idPartida},{$set : {['rondas.'+ronda+'.tablero.'+fila+'.'+columna]:jugador}});
 			return true;
 		}
 		catch(e){
-
 			return false;
 		}
 	}
@@ -248,7 +246,8 @@ db.system.js.save({
 		path="rondas."+[ronda];
         db.Partidas.update(
         	{_id:idPartida},
-        	{$set:{['rondas.'+ronda+'.estado']:[idFinalizador,razon]}});
+        	{$set:{['rondas.'+ronda+'.estado.finalizador']:idFinalizador}},
+        	{$set:{['rondas.'+ronda+'.estado.causa']:razon}});
         	return true
 		}
 		catch(e){
