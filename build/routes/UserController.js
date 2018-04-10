@@ -18,10 +18,6 @@ var ControladorPersona = /** @class */ (function () {
         this.router = express_1.Router();
         this.routes();
     }
-    ControladorPersona.getInfoPartida = function (req, res) {
-        var idPartida = req.query.idPartida;
-        consulta("getInfoPartida(" + idPartida + ")", res);
-    };
     ControladorPersona.crearUsuario = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var nick = req.query.nick;
@@ -50,7 +46,6 @@ var ControladorPersona = /** @class */ (function () {
         consulta("uNickname(" + idUsuario + ",'" + nick + "')", res);
     };
     ControladorPersona.prototype.routes = function () {
-        this.router.get('/idPartida', ControladorPersona.getInfoPartida);
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg', ControladorPersona.chat);
         this.router.get('/getChatlog', ControladorPersona.getChat);

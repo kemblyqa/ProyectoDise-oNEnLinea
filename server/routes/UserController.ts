@@ -21,11 +21,6 @@ class ControladorPersona{
         this.routes();
     }
 
-    public static  getInfoPartida(req: Request, res: Response): void{
-        let idPartida = req.query.idPartida;
-        consulta("getInfoPartida("+idPartida+")", res);
-    }
-
     public static crearUsuario(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let nick = req.query.nick;
@@ -58,7 +53,6 @@ class ControladorPersona{
         consulta("uNickname("+idUsuario+",'"+nick+"')", res);
     }
     public routes(): void{
-        this.router.get('/idPartida',ControladorPersona.getInfoPartida);
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
         this.router.get('/getChatlog',ControladorPersona.getChat);
