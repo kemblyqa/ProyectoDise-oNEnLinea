@@ -22,16 +22,16 @@ class ControladorPersona{
     }
 
     public static crearUsuario(req: Request, res: Response){
-        let idUsuario = req.query.idUsuario;
-        let nick = req.query.nick;
-        let det = req.query.det;
+        let idUsuario = req.body.idUsuario;
+        let nick = req.body.nick;
+        let det = req.body.det;
         consulta("cUsuario("+idUsuario+",'"+nick+"','"+det+"')",res);
     }
 
     public static chat(req: Request, res: Response){
-        let idEmisor    = req.query.idEmisor;
-        let idReceptor  = req.query.idReceptor;
-        let msg         = req.query.msg;
+        let idEmisor    = req.body.idEmisor;
+        let idReceptor  = req.body.idReceptor;
+        let msg         = req.body.msg;
         consulta("chat("+idEmisor+","+idReceptor+",'"+msg+"')",res);
     }
 
@@ -42,14 +42,14 @@ class ControladorPersona{
     }
 
     public  static setDetails(req: Request, res: Response){
-        let idUsuario = req.query.idUsuario;
-        let det = req.query.det;
+        let idUsuario = req.body.idUsuario;
+        let det = req.body.det;
         consulta("uDetalles("+idUsuario+",'"+det+"')", res);
     }
 
     public static changeNick(req: Request, res: Response){
-        let idUsuario = req.query.idUsuario;
-        let nick = req.query.nick;
+        let idUsuario = req.body.idUsuario;
+        let nick = req.body.nick;
         consulta("uNickname("+idUsuario+",'"+nick+"')", res);
     }
     public routes(): void{

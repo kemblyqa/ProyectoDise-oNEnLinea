@@ -26,15 +26,15 @@ class GameController{
     }
 
     public static finPartida(req: Request, res: Response){
-        let idPartida = req.query.idPartida;
+        let idPartida = req.body.idPartida;
         consulta("finalizarPartida("+idPartida+")", res);
     }
 
     public static finRonda(req: Request, res: Response){
-        let idPartida=req.query.idPartida;
-        let ronda=req.query.ronda;
-        let idFinalizador = req.query.idFinalizador;
-        let razon = req.query.razon;
+        let idPartida=req.body.idPartida;
+        let ronda=req.body.ronda;
+        let idFinalizador = req.body.idFinalizador;
+        let razon = req.body.razon;
         consulta("finalizarRonda("+idPartida+","+ronda+","+idFinalizador+",'"+razon+"')", res);
     }
 
@@ -62,11 +62,11 @@ class GameController{
     }
 
     public static jugada(req: Request, res: Response){
-        let idPartida=req.query.idPartida;
-        let ronda=req.query.ronda;
-        let fila = req.query.fila;
-        let columna = req.query.columna;
-        let idJugador = req.query.idJugador;
+        let idPartida=req.body.idPartida;
+        let ronda=req.body.ronda;
+        let fila = req.body.fila;
+        let columna = req.body.columna;
+        let idJugador = req.body.idJugador;
         async.waterfall([
             function(callback){
                 mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
@@ -134,27 +134,27 @@ class GameController{
     }
 
     public static setTablero(req: Request, res: Response){
-        let idPartida=req.query.idPartida;
-        let ronda=req.query.ronda;
-        let tablero=req.query.tablero;
+        let idPartida=req.body.idPartida;
+        let ronda=req.body.ronda;
+        let tablero=req.body.tablero;
         consulta("setTablero("+idPartida+","+ronda+","+tablero+")",res);
     }
 
     public static linkUsuario(req: Request, res: Response){
-        let idPartida=req.query.idPartida;
-        let idUsuario=req.query.idUsuario;
-        let color=req.query.color;
+        let idPartida=req.body.idPartida;
+        let idUsuario=req.body.idUsuario;
+        let color=req.body.color;
         consulta("linkUsuarioPartida("+idPartida+","+idUsuario+",'"+color+"')",res);
     }
 
     public static newGame(req: Request, res: Response){
-        let idJ1 = req.query.idJ1;
-        let color1 = req.query.color1;
-        let idJ2 = req.query.idJ2;
-        let color2 = req.query.color2;
-        let size = req.query.size;
-        let lineSize = req.query.lineSize;
-        let nRondas = req.query.nRondas;
+        let idJ1 = req.body.idJ1;
+        let color1 = req.body.color1;
+        let idJ2 = req.body.idJ2;
+        let color2 = req.body.color2;
+        let size = req.body.size;
+        let lineSize = req.body.lineSize;
+        let nRondas = req.body.nRondas;
         console.log("nuevaSesion("+idJ1+",'"+color1+"',"+idJ2+",'"+color2+"',"+size+","+lineSize+","+nRondas+")");
         consulta("nuevaSesion("+idJ1+",'"+color1+"',"+idJ2+",'"+color2+"',"+size+","+lineSize+","+nRondas+")",res);
     }
@@ -207,17 +207,17 @@ class GameController{
     }
 
     public routes(): void{
-        this.router.get('/finPartida',GameController.finPartida);
-        this.router.post('/finRonda',GameController.finRonda);
+        this.router.get('/update',GameController.update);
         this.router.get('/getGamelog',GameController.getRegistro);
         this.router.get('/getInfoPartida',GameController.getInfoPartida);
         this.router.get('/getInfoRonda',GameController.getInfoRonda);
         this.router.get('/getTablero',GameController.getTablero);
+        this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);
         this.router.post('/jugada',GameController.jugada);
         this.router.post('/linkUsuarioPartida',GameController.linkUsuario);
         this.router.post('/nuevaSesion',GameController.newGame);
-        this.router.get('/update',GameController.update)
+        this.router.post('/finRonda',GameController.finRonda);
     }
 }
 

@@ -23,14 +23,14 @@ var GameController = /** @class */ (function () {
         this.routes();
     }
     GameController.finPartida = function (req, res) {
-        var idPartida = req.query.idPartida;
+        var idPartida = req.body.idPartida;
         consulta("finalizarPartida(" + idPartida + ")", res);
     };
     GameController.finRonda = function (req, res) {
-        var idPartida = req.query.idPartida;
-        var ronda = req.query.ronda;
-        var idFinalizador = req.query.idFinalizador;
-        var razon = req.query.razon;
+        var idPartida = req.body.idPartida;
+        var ronda = req.body.ronda;
+        var idFinalizador = req.body.idFinalizador;
+        var razon = req.body.razon;
         consulta("finalizarRonda(" + idPartida + "," + ronda + "," + idFinalizador + ",'" + razon + "')", res);
     };
     GameController.getRegistro = function (req, res) {
@@ -53,11 +53,11 @@ var GameController = /** @class */ (function () {
         consulta("getTablero(" + idPartida + "," + ronda + ")", res);
     };
     GameController.jugada = function (req, res) {
-        var idPartida = req.query.idPartida;
-        var ronda = req.query.ronda;
-        var fila = req.query.fila;
-        var columna = req.query.columna;
-        var idJugador = req.query.idJugador;
+        var idPartida = req.body.idPartida;
+        var ronda = req.body.ronda;
+        var fila = req.body.fila;
+        var columna = req.body.columna;
+        var idJugador = req.body.idJugador;
         async.waterfall([
             function (callback) {
                 mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
@@ -135,25 +135,25 @@ var GameController = /** @class */ (function () {
         ]);
     };
     GameController.setTablero = function (req, res) {
-        var idPartida = req.query.idPartida;
-        var ronda = req.query.ronda;
-        var tablero = req.query.tablero;
+        var idPartida = req.body.idPartida;
+        var ronda = req.body.ronda;
+        var tablero = req.body.tablero;
         consulta("setTablero(" + idPartida + "," + ronda + "," + tablero + ")", res);
     };
     GameController.linkUsuario = function (req, res) {
-        var idPartida = req.query.idPartida;
-        var idUsuario = req.query.idUsuario;
-        var color = req.query.color;
+        var idPartida = req.body.idPartida;
+        var idUsuario = req.body.idUsuario;
+        var color = req.body.color;
         consulta("linkUsuarioPartida(" + idPartida + "," + idUsuario + ",'" + color + "')", res);
     };
     GameController.newGame = function (req, res) {
-        var idJ1 = req.query.idJ1;
-        var color1 = req.query.color1;
-        var idJ2 = req.query.idJ2;
-        var color2 = req.query.color2;
-        var size = req.query.size;
-        var lineSize = req.query.lineSize;
-        var nRondas = req.query.nRondas;
+        var idJ1 = req.body.idJ1;
+        var color1 = req.body.color1;
+        var idJ2 = req.body.idJ2;
+        var color2 = req.body.color2;
+        var size = req.body.size;
+        var lineSize = req.body.lineSize;
+        var nRondas = req.body.nRondas;
         console.log("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
         consulta("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")", res);
     };
@@ -210,17 +210,17 @@ var GameController = /** @class */ (function () {
         });
     };
     GameController.prototype.routes = function () {
-        this.router.get('/finPartida', GameController.finPartida);
-        this.router.post('/finRonda', GameController.finRonda);
+        this.router.get('/update', GameController.update);
         this.router.get('/getGamelog', GameController.getRegistro);
         this.router.get('/getInfoPartida', GameController.getInfoPartida);
         this.router.get('/getInfoRonda', GameController.getInfoRonda);
         this.router.get('/getTablero', GameController.getTablero);
+        this.router.post('/finPartida', GameController.finPartida);
         this.router.post('/setTablero', GameController.setTablero);
         this.router.post('/jugada', GameController.jugada);
         this.router.post('/linkUsuarioPartida', GameController.linkUsuario);
         this.router.post('/nuevaSesion', GameController.newGame);
-        this.router.get('/update', GameController.update);
+        this.router.post('/finRonda', GameController.finRonda);
     };
     return GameController;
 }());

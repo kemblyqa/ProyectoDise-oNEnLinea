@@ -19,15 +19,15 @@ var ControladorPersona = /** @class */ (function () {
         this.routes();
     }
     ControladorPersona.crearUsuario = function (req, res) {
-        var idUsuario = req.query.idUsuario;
-        var nick = req.query.nick;
-        var det = req.query.det;
+        var idUsuario = req.body.idUsuario;
+        var nick = req.body.nick;
+        var det = req.body.det;
         consulta("cUsuario(" + idUsuario + ",'" + nick + "','" + det + "')", res);
     };
     ControladorPersona.chat = function (req, res) {
-        var idEmisor = req.query.idEmisor;
-        var idReceptor = req.query.idReceptor;
-        var msg = req.query.msg;
+        var idEmisor = req.body.idEmisor;
+        var idReceptor = req.body.idReceptor;
+        var msg = req.body.msg;
         consulta("chat(" + idEmisor + "," + idReceptor + ",'" + msg + "')", res);
     };
     ControladorPersona.getChat = function (req, res) {
@@ -36,13 +36,13 @@ var ControladorPersona = /** @class */ (function () {
         consulta("getChatLog(" + idOne + "," + idTwo + ")", res);
     };
     ControladorPersona.setDetails = function (req, res) {
-        var idUsuario = req.query.idUsuario;
-        var det = req.query.det;
+        var idUsuario = req.body.idUsuario;
+        var det = req.body.det;
         consulta("uDetalles(" + idUsuario + ",'" + det + "')", res);
     };
     ControladorPersona.changeNick = function (req, res) {
-        var idUsuario = req.query.idUsuario;
-        var nick = req.query.nick;
+        var idUsuario = req.body.idUsuario;
+        var nick = req.body.nick;
         consulta("uNickname(" + idUsuario + ",'" + nick + "')", res);
     };
     ControladorPersona.prototype.routes = function () {
