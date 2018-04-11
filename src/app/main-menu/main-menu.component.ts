@@ -1,3 +1,4 @@
+import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
 import { MenuModel } from '../models/menu.model';
 declare var jquery: any;
@@ -12,13 +13,17 @@ import { HttpClient } from '@angular/common/http';
 export class MainMenuComponent implements OnInit {
   menuModel: MenuModel;
   colors: Array<any>;
+  //get player data
+  idP1:number = 1
+  idP2:number = 2
 
   //board parameters
   nSize: number
   bSize: number
-  nColor: number
+  nRounds: number
+  nColor: string
   
-  constructor(private http: HttpClient) {
+  constructor(private service: Service) {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
   }
@@ -32,8 +37,17 @@ export class MainMenuComponent implements OnInit {
   optionsAIBegin() {
     $('#').modal('show');
   }
-  registersBegin(){
-    //Esta funcion es provisional, ya que el html la necesita (no sé para que)
+  newGame(){
+    let apiUrl:string = "/game/nuevaSesion"
+    const params = {
+      idJ1: this.idP1,
+      color1: this.nColor,
+      idJ2: this.idP2,
+      color2: this.nColor,  
+      size: this.bSize,
+      lineSize: this.nSize,
+      nRondas : this.nRounds 
+    }
+    this.service.postData(apiUrl, params)
   }
-
 }

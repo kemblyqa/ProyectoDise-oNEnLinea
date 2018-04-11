@@ -43,18 +43,30 @@
             <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
           </div>
         </div>
+        <div class="form-group row"> 
+          <label for="rSize" class="col-sm-6 col-form-label">Número de rondas</label> 
+          <div class="col-sm-6"> 
+            <input type="text" [(ngModel)]="nRounds" class="form-control" id="rSize" placeholder="Tamaño en digitos.."> 
+          </div> 
+        </div> 
+        <div class="form-group row"> 
+          <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
+          <div class="col-sm-6"> 
+            <input type="text" [(ngModel)]="player" class="form-control" id="player" placeholder="Tamaño en digitos.."> 
+          </div> 
+        </div> 
         <div class="form-group row">
           <label for="nColor" class="col-sm-6 col-form-label">Color de ficha</label>
           <div class="col-sm-6">
             <select id="selectedColor" [(ngModel)]="nColor" class="form-control">
               <option class="{{col.styleName}}" *ngFor="let col of colors"
-                [value]="col.id">{{col.name}}</option>
+                [value]="col.color">{{col.name}}</option> 
             </select>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" [routerLink]="['/tablero']" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" [routerLink]="['/tablero']" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>

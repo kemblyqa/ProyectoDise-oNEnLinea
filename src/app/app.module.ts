@@ -1,3 +1,4 @@
+import { Service } from './services/connect4.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -25,7 +26,7 @@ import { HttpClientModule } from '@angular/common/http';
     RouterModule.forRoot(ROUTES),
     HttpClientModule
   ],
-  providers: [],
+  providers: [Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
