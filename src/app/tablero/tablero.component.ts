@@ -1,3 +1,4 @@
+import { Service } from './../services/connect4.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 declare var jquery:any;
@@ -11,6 +12,9 @@ import { BuildTablero } from "../models/tablero.model";
   styleUrls: ['./tablero.component.css']
 })
 export class TableroComponent implements OnInit {
+  //url to get the initial data
+  url:string = "/game/getInfoPartida"
+
   //needed in build of the board
   idButtonGrid:Array<any>
   sideBarItems: Array<any>
@@ -23,7 +27,7 @@ export class TableroComponent implements OnInit {
   gSize:number
   cells:number
 
-  constructor() {
+  constructor(private service:Service) {
     //create the tablero model
     this.tab = new BuildTablero(10,3)
 
@@ -41,6 +45,8 @@ export class TableroComponent implements OnInit {
     this.idButtonGrid = this.tab.getIdButtonCells()
   }
   ngOnInit() {
+    const params = {}
+    this.service.getData(this.url,params)
   }
   
   //button event
