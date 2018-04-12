@@ -162,10 +162,10 @@ db.system.js.save({
                         db.Partidas.insertOne(JSON.parse([query]));
                         db.Usuarios.update(
    			{_id: idJ1},
-   			{ $push: { partidas: [db.Partidas.find().count()] } });
+   			{ $push: { partidas: db.Partidas.find().count() } });
                         db.Usuarios.update(
    			{_id: idJ2},
-   			{ $push: { partidas: [db.Partidas.find().count()] } });
+   			{ $push: { partidas: db.Partidas.find().count() } });
             return true;
 		}
 		catch(err){
