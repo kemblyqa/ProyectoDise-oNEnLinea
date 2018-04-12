@@ -1,3 +1,4 @@
+import { UserDetails } from './models/user.model';
 import { Service } from './services/connect4.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';

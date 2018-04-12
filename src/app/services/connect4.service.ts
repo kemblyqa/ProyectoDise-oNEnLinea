@@ -15,8 +15,8 @@ export class Service {
         this.http.get(`${this.host}${url}`, params) 
             .subscribe( 
                 data => { 
-                    console.log(data) 
-                    return data 
+                    console.log("data... "+data) 
+                    //return data
                 }, 
                 err => { 
                     console.log("Error") 

@@ -1,3 +1,4 @@
+import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -13,7 +14,8 @@ import { BuildTablero } from "../models/tablero.model";
 })
 export class TableroComponent implements OnInit {
   //url to get the initial data
-  url:string = "/game/getInfoPartida"
+  urlGameListFilter:string = "/user/gameListFilter"
+  allGamesUser:any
 
   //needed in build of the board
   idButtonGrid:Array<any>
@@ -45,8 +47,11 @@ export class TableroComponent implements OnInit {
     this.idButtonGrid = this.tab.getIdButtonCells()
   }
   ngOnInit() {
-    const params = {}
-    this.service.getData(this.url,params)
+    //get the active games of the current user
+    //this.allGamesUser = this.service.getData(this.urlGameListFilter,{idUsuario: UserDetails.Instance.getUserID, filtro: true})
+
+    //then use the game to verify and load the board
+
   }
   
   //button event

@@ -1,3 +1,4 @@
+import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
 import { MenuModel } from '../models/menu.model';
@@ -14,8 +15,10 @@ export class MainMenuComponent implements OnInit {
   menuModel: MenuModel;
   colors: Array<any>;
   //get player data
-  idP1:number = 1
+  idP1:any
   idP2:number = 2
+  activeGames:Array<any>
+  urlGameListFilter:string = "/user/gameList"
 
   //board parameters
   nSize: number
@@ -26,12 +29,16 @@ export class MainMenuComponent implements OnInit {
   constructor(private service: Service) {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
+    this.idP1 = UserDetails.Instance.getUserID
+    this.retrieveInfoGames()
   }
 
   parametersBegin() {
     $('#parameters').modal('show');
   }
   ngOnInit() {
+    //get the active games of the current user
+    
   }
 
   optionsAIBegin() {
@@ -43,11 +50,23 @@ export class MainMenuComponent implements OnInit {
       idJ1: this.idP1,
       color1: this.nColor,
       idJ2: this.idP2,
-      color2: this.nColor,  
+      color2: "#8A2BE2",  
       size: this.bSize,
       lineSize: this.nSize,
       nRondas : this.nRounds 
     }
     this.service.postData(apiUrl, params)
+  }
+
+  retrieveInfoGames(){
+    console.log(UserDetails.Instance.getUserID)
+    let v:any = this.service.getData(this.urlGameListFilter,{idUsuario: UserDetails.Instance.getUserID})
+
+    // let urlGetInfoGame = "/game/getInfoPartida"
+    // //retrieve the info for each game
+    // for(let game of activeGames){
+    //     // this.activeGames.push(this.service.getData(urlGetInfoGame,{idPartida:game})) 
+    //     console.log(game)
+    // }
   }
 }

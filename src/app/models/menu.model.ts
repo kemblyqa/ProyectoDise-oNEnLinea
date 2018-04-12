@@ -1,5 +1,10 @@
+import { UserDetails } from './user.model';
+import { Service } from './../services/connect4.service';
+
 export class MenuModel{
+    //colors
     private colors:Array<any>
+
     constructor(){
         this.colors = [{
             id: 1,
