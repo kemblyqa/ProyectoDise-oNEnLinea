@@ -45,12 +45,23 @@ var ControladorPersona = /** @class */ (function () {
         var nick = req.body.nick;
         consulta("uNickname(" + idUsuario + ",'" + nick + "')", res);
     };
+    ControladorPersona.checkUsuario = function (req, res) {
+        var idUsuario = req.query.idUsuario;
+        console.log("checkUsuario(" + idUsuario + ")");
+        consulta("checkUsuario(" + idUsuario + ")", res);
+    };
+    ControladorPersona.gameList = function (req, res) {
+        var idUsuario = req.query.idUsuario;
+        consulta("gameList(" + idUsuario + ")", res);
+    };
     ControladorPersona.prototype.routes = function () {
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg', ControladorPersona.chat);
         this.router.get('/getChatlog', ControladorPersona.getChat);
         this.router.post('/setDetails', ControladorPersona.setDetails);
         this.router.post('/changeNick', ControladorPersona.changeNick);
+        this.router.get('/checkUsuario', ControladorPersona.checkUsuario);
+        this.router.get('/gameList', ControladorPersona.gameList);
     };
     return ControladorPersona;
 }());

@@ -52,12 +52,25 @@ class ControladorPersona{
         let nick = req.body.nick;
         consulta("uNickname("+idUsuario+",'"+nick+"')", res);
     }
+
+    public static checkUsuario(req: Request, res: Response){
+        let idUsuario = req.query.idUsuario;
+        console.log("checkUsuario("+idUsuario+")");
+        consulta("checkUsuario("+idUsuario+")", res);
+    }
+
+    public static gameList(req: Request, res: Response){
+        let idUsuario = req.query.idUsuario;
+        consulta("gameList("+idUsuario+")", res);
+    }
     public routes(): void{
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
         this.router.get('/getChatlog',ControladorPersona.getChat);
         this.router.post('/setDetails',ControladorPersona.setDetails);
         this.router.post('/changeNick',ControladorPersona.changeNick);
+        this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
+        this.router.get('/gameList',ControladorPersona.gameList);
     }
 }
 

@@ -283,6 +283,14 @@ db.system.js.save({
 	_id: "checkUsuario",
 	value: function (idUsuario) 
 	{ 
-        return db.Usuarios.find({_id:idUsuario}).toArray()[0]!=null;
+        return db.Usuarios.find({_id:idUsuario},{nickname:1,detalles:1}).toArray()[0];
+		}
+}); 
+
+db.system.js.save({
+	_id: "gameList",
+	value: function (idUsuario) 
+	{ 
+        return db.Usuarios.find({_id:idUsuario},{partidas:1}).toArray()[0];
 		}
 }); 
