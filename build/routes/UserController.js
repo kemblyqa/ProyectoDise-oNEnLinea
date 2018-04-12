@@ -54,6 +54,11 @@ var ControladorPersona = /** @class */ (function () {
         var idUsuario = req.query.idUsuario;
         consulta("gameList(" + idUsuario + ")", res);
     };
+    ControladorPersona.gameListFilter = function (req, res) {
+        var idUsuario = req.query.idUsuario;
+        var filtro = req.query.filtro;
+        consulta("gameListFilter(" + idUsuario + "," + filtro + ")", res);
+    };
     ControladorPersona.prototype.routes = function () {
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg', ControladorPersona.chat);
@@ -62,6 +67,7 @@ var ControladorPersona = /** @class */ (function () {
         this.router.post('/changeNick', ControladorPersona.changeNick);
         this.router.get('/checkUsuario', ControladorPersona.checkUsuario);
         this.router.get('/gameList', ControladorPersona.gameList);
+        this.router.get('/gameListFilter', ControladorPersona.gameListFilter);
     };
     return ControladorPersona;
 }());

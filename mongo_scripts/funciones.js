@@ -294,3 +294,21 @@ db.system.js.save({
         return db.Usuarios.find({_id:idUsuario},{partidas:1}).toArray()[0];
 		}
 }); 
+
+db.system.js.save({
+	_id: "gameListFilter",
+	value: function (idUsuario,activo) 
+	{ 
+		let result = db.Usuarios.find({_id:idUsuario},{partidas:1}).toArray()[0];
+		let retorno = [];
+		if (result!=null){
+			let listaPartidas = result.partidas;
+			listaPartidas.forEach(function(x){
+				if(db.Partidas.find({_id:x,estado:activo}).toArray()[0]!=null)
+					retorno.push(x);
+			});
+		}
+
+        return retorno;
+		}
+}); 

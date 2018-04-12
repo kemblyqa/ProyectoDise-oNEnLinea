@@ -63,6 +63,12 @@ class ControladorPersona{
         let idUsuario = req.query.idUsuario;
         consulta("gameList("+idUsuario+")", res);
     }
+
+    public static gameListFilter(req: Request, res: Response){
+        let idUsuario = req.query.idUsuario;
+        let filtro = req.query.filtro;
+        consulta("gameListFilter("+idUsuario+","+filtro+")", res);
+    }
     public routes(): void{
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
@@ -71,6 +77,7 @@ class ControladorPersona{
         this.router.post('/changeNick',ControladorPersona.changeNick);
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
         this.router.get('/gameList',ControladorPersona.gameList);
+        this.router.get('/gameListFilter',ControladorPersona.gameListFilter);
     }
 }
 
