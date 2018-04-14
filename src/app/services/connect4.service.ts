@@ -16,14 +16,6 @@ export class Service {
     }
 
     postData(url: string, body: any){ 
-        this.http.post(`${this.host}${url}`, body) 
-            .subscribe( 
-                data=>{ 
-                    console.log(data) 
-                }, 
-                err => { 
-                    console.log(err) 
-                } 
-            ) 
+        return this.http.post(`${this.host}${url}`, body) 
     } 
 }

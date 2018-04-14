@@ -1,3 +1,4 @@
+import { Game } from './../models/game.model';
 import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
@@ -55,5 +56,26 @@ export class MainMenuComponent implements OnInit {
       nRondas : this.nRounds 
     }
     this.service.postData(apiUrl, params)
+      .subscribe( 
+        data=>{ 
+            console.log(data) 
+        }, 
+        err => { 
+            console.log(err) 
+        } 
+      ) 
+  }
+
+  play(){
+    this.service.getData(this.urlGameListFilter,{params:{idUsuario: 1, filtro: true}})
+      .subscribe( 
+        data => { 
+            console.log(data) 
+            UserDetails.Instance.setCurrentGameID(data["partidas"][0])
+        }, 
+        err => { 
+            console.log("Error") 
+        } 
+      )
   }
 }

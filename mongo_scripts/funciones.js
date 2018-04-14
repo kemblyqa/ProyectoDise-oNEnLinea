@@ -312,3 +312,19 @@ db.system.js.save({
         return retorno;
 		}
 }); 
+
+db.system.js.save({
+	_id: "rondaActiva",
+	value: function (idPartida) 
+	{ 
+		let result = db.Partidas.find({_id:idPartida},{rondas:1,nRondas:1}).toArray()[0];
+		if (result!=null){
+			let listaRondas = result.rondas;
+			for (let x = 0; x < result.nRondas;x++){
+				if(listaRondas[x].estado.finalizador=="")
+					return x;
+			}
+		}
+        return -1;
+		}
+});

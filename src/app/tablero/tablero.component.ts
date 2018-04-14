@@ -6,6 +6,7 @@ declare var jquery:any;
 declare var $ :any;
 //models
 import { BuildTablero } from "../models/tablero.model";
+import { Z_ASCII } from 'zlib';
 
 @Component({
   selector: 'app-tablero',
@@ -13,9 +14,13 @@ import { BuildTablero } from "../models/tablero.model";
   styleUrls: ['./tablero.component.css']
 })
 export class TableroComponent implements OnInit {
-  //url to get the initial data
-  urlGameListFilter:string = "/user/gameListFilter"
-  allGamesUser:any
+  //get the initial data
+  status:boolean
+  nSize:number
+  gSize:number
+  users:Array<any>
+  nRounds:number
+  lastRound:number
 
   //needed in build of the board
   idButtonGrid:Array<any>
@@ -23,50 +28,62 @@ export class TableroComponent implements OnInit {
   tab:BuildTablero
   
   //needed in dialogs and notificatios
-  size:number
+  
   dialogTitleEndGame:string
   dialogEndGame:string
-  gSize:number
+  
   cells:number
 
   constructor(private service:Service) {
-    this.initBoard()
-    //create the tablero model
-    this.tab = new BuildTablero(10,3)
+    // get the init board data
+    this.service.getData("/game/getInfoPartida",{params: {idPartida: 3}})
+      .subscribe(
+        res => {
+          // get content to be rendered
+          this.status = res["estado"]
+          this.gSize = res["tamano"]
+          this.nSize = res["tamano_linea"]
+          this.users = res["usuarios"]
+          this.nRounds = res["nRondas"]
 
-    //this create all the ids in the grid and set values in other grid
+          //then init the board
+          this.initBoard()
+        },
+        err => {
+          console.log(err)
+        }
+      )
+  }
+  ngOnInit() {}
+
+  initBoard(){
+    this.tab = new BuildTablero(this.gSize, this.nSize);
+
+    
+
     this.cells = this.tab.fill()
 
     //create the items of sidebar
     this.sideBarItems = this.tab.getSideBarItems()
 
     //get the size to use it in dialogs
-    this.size = this.tab.nSize
+    this.nSize = this.tab.nSize
     this.gSize = this.tab.gridSize
 
     //this get the ids and render the buttons in the template
     this.idButtonGrid = this.tab.getIdButtonCells()
-  }
-  ngOnInit() {
-    this.service.getData(this.urlGameListFilter,{params:{idUsuario: 1, filtro: true}})
-      .subscribe( 
-        data => { 
-            console.log(data) 
-        }, 
-        err => { 
-            console.log("Error") 
-        } 
-      )  
-      
-      // let urlGetInfoGame = "/game/getInfoPartida"
-      // //retrieve the info for each game
-      // for(let game of activeGames){
-      //     // this.activeGames.push(this.service.getData(urlGetInfoGame,{idPartida:game})) 
-      //     console.log(game)
-      // }
-  }
 
-  initBoard(){
+
+    //this create all the ids in the grid and set values in other grid
+    this.service.getData("/game/rondaActiva",{params:{idPartida: 3}})
+      .subscribe(
+        res => {
+          console.log(res)
+        },
+        err => {
+          console.log(err)
+        }
+      )
     
   }
   
