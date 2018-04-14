@@ -69,6 +69,12 @@ class ControladorPersona{
         let filtro = req.query.filtro;
         consulta("gameListFilter("+idUsuario+","+filtro+")", res);
     }
+
+    public static rondaActiva(req: Request, res: Response){
+        let idPartida = req.query.idPartida;
+        console.log("rondaActiva("+idPartida+")")
+        consulta("rondaActiva("+idPartida+")", res);
+    }
     public routes(): void{
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
@@ -78,6 +84,7 @@ class ControladorPersona{
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
         this.router.get('/gameList',ControladorPersona.gameList);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);
+        this.router.get('/rondaActiva',ControladorPersona.rondaActiva);
     }
 }
 
