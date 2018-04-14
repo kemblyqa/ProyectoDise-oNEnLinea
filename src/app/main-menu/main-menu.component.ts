@@ -30,7 +30,6 @@ export class MainMenuComponent implements OnInit {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
     this.idP1 = UserDetails.Instance.getUserID
-    this.retrieveInfoGames()
   }
 
   parametersBegin() {
@@ -56,17 +55,5 @@ export class MainMenuComponent implements OnInit {
       nRondas : this.nRounds 
     }
     this.service.postData(apiUrl, params)
-  }
-
-  retrieveInfoGames(){
-    console.log(UserDetails.Instance.getUserID)
-    let v:any = this.service.getData(this.urlGameListFilter,{idUsuario: UserDetails.Instance.getUserID})
-
-    // let urlGetInfoGame = "/game/getInfoPartida"
-    // //retrieve the info for each game
-    // for(let game of activeGames){
-    //     // this.activeGames.push(this.service.getData(urlGetInfoGame,{idPartida:game})) 
-    //     console.log(game)
-    // }
   }
 }

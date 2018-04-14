@@ -11,17 +11,8 @@ export class Service {
  
     constructor(private http: HttpClient){} 
  
-    getData(url: string, params: any){ 
-        this.http.get(`${this.host}${url}`, params) 
-            .subscribe( 
-                data => { 
-                    console.log("data... "+data) 
-                    //return data
-                }, 
-                err => { 
-                    console.log("Error") 
-                } 
-            )        
+    getData(url: string, params: any){
+        return this.http.get(`${this.host}${url}`, params)       
     }
 
     postData(url: string, body: any){ 

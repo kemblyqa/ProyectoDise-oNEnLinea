@@ -30,6 +30,7 @@ export class TableroComponent implements OnInit {
   cells:number
 
   constructor(private service:Service) {
+    this.initBoard()
     //create the tablero model
     this.tab = new BuildTablero(10,3)
 
@@ -47,11 +48,26 @@ export class TableroComponent implements OnInit {
     this.idButtonGrid = this.tab.getIdButtonCells()
   }
   ngOnInit() {
-    //get the active games of the current user
-    //this.allGamesUser = this.service.getData(this.urlGameListFilter,{idUsuario: UserDetails.Instance.getUserID, filtro: true})
+    this.service.getData(this.urlGameListFilter,{params:{idUsuario: 1, filtro: true}})
+      .subscribe( 
+        data => { 
+            console.log(data) 
+        }, 
+        err => { 
+            console.log("Error") 
+        } 
+      )  
+      
+      // let urlGetInfoGame = "/game/getInfoPartida"
+      // //retrieve the info for each game
+      // for(let game of activeGames){
+      //     // this.activeGames.push(this.service.getData(urlGetInfoGame,{idPartida:game})) 
+      //     console.log(game)
+      // }
+  }
 
-    //then use the game to verify and load the board
-
+  initBoard(){
+    
   }
   
   //button event
