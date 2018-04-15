@@ -16,7 +16,7 @@ export class BuildBoard{
     gameStatus:string
     turn:any
 
-    //inicial values current first player
+    //inicial values current first player [0]
     playerTurn:boolean = true
 
     constructor(
@@ -115,8 +115,20 @@ export class BuildBoard{
         return this.gridBoard
     }
 
-    getGameStatus(){
+    getReasonStatus(){
         return this.gameStatus;
+    }
+
+    switchPlayer(){
+        this.playerTurn = !this.playerTurn
+    }
+
+    getPlayerTurn(){
+        return this.playerTurn ? this.users[0][0] : this.users[1][0]
+    }
+
+    getColorUser(){
+        return this.playerTurn ? this.users[0][1] : this.users[1][1]
     }
 
     getRowColButtonID(id){
@@ -130,161 +142,16 @@ export class BuildBoard{
         }
     }
 
-    switchPlayer(){
-        this.playerTurn = !this.playerTurn
-    }
-
-    getPlayerTurn(){
-        return this.playerTurn ? "1" : "2"
-    }
-
-    getColorTurn(){
-        let color1 = "#fff125"
-        let color2 = "#f177ff"
-        return this.playerTurn ? color1 : color2
-    }
-
-    setCellInGrid(colParam:number){
-        for (let rowItem = 0; rowItem < this.gridSize; rowItem++) {
-            if(this.gridBoard[rowItem][colParam] != "n"){
-                //find where the button need to be set and update the grid
-                this.gridBoard[rowItem-1][colParam] = this.getPlayerTurn()
-                //verify if is connected
-                this.isNConnected(rowItem-1,colParam)
-                //return button id to set color
-                return this.buttonIDs[rowItem-1][colParam]
-            }
-        }
-        //when it is the fisrt piece to be droped
-        this.gridBoard[this.gridSize-1][colParam] = this.getPlayerTurn()  
-        this.isNConnected(this.gridSize-1,colParam)
-        return this.buttonIDs[this.gridSize-1][colParam]
-    }
-
-    /**is called in the tablero.component.ts**/
-    isNConnected(row:number, col:number){
-        //verify if is N connected
-        if(this.verticalWin(row,col)  || 
-        this.horizontalWin(row,col)   ||
-        this.diagonalRightWin(row,col)  ||
-        this.diagonalLeftWin(row,col))
-        {
-            this.gameStatus = "w"
-            return
-        } 
-        
-        if (!this.isTie())
-            this.gameStatus = "p"
-        else 
-            this.gameStatus = "t"
-    }
-    
-    isTie(){
-        for (let i = 0; i < this.gridSize; i++) {
-            for (let j = 0; j < this.gridSize; j++) {
-                if(this.gridBoard[i][j] == "n"){
-                    return false;
+    updateBoardGrid(status:any, board: Array<any>, turn:any){
+        //fill the buttons with players
+        for (let rowI = 0; rowI < this.gridSize; rowI++) {
+            for (let colI = 0; colI < this.gridSize; colI++) {
+                if(board[rowI][colI] != -1){
+                    board[rowI][colI] != 0 ? document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[0][1] : document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[1][1]                    
                 }
             }
         }
-        return true;
-    }
-
-    horizontalWin(row:number,col:number){
-        var count = 0
-        //to right
-        for (let i = col; i < this.gridSize; i++) {
-            if(this.gridBoard[row][i] == this.getPlayerTurn()){
-                count++
-            } else {
-                break
-            }
-        }
-        //to left
-        for (let j = col - 1; j >= 0; j--) {
-            if(this.gridBoard[row][j] == this.getPlayerTurn()){
-                count++
-            } else {
-                break
-            }
-        }
-        return count >= this.nSize ? true : false
-    }
-
-    verticalWin(row:number,col:number){
-        var count = 0
-        //to down
-        for (let i = row; i < this.gridSize; i++) {
-            if(this.gridBoard[i][col] == this.getPlayerTurn()){
-                count++
-            } else {
-                break
-            }
-        }
-        //to up
-        for (let j = row - 1; j >= 0; j--) {
-            if(this.gridBoard[j][col] == this.getPlayerTurn()){
-                count++
-            } else {
-                break
-            }
-        }
-        return count >= this.nSize ? true : false
-    }
-
-    diagonalRightWin(row:number, col:number){
-        return this.verDiagRightDown(row,col)+this.verDiagRightUp(row-1,col-1) >= this.nSize ? true : false
-    }
-
-    diagonalLeftWin(row:number, col:number){
-        return this.verDiagLeftUp(row,col)+this.verDiagLeftDown(row+1,col-1) >= this.nSize ? true : false
-    }
-
-    verDiagRightDown(row:number, col:number){
-        var count = 0;
-        for (let i = row; i < this.gridSize; i++) {
-            if(this.gridBoard[i][col] == this.getPlayerTurn()){
-                col++;count++
-            } else {
-                break
-            }
-        }
-        return count;
-    }
-
-    verDiagRightUp(row:number,col:number){
-        var count = 0;
-        for (let j = row; j >= 0; j--) {
-            if(this.gridBoard[j][col] == this.getPlayerTurn()){
-                col--;count++
-            } else {
-                break
-            }
-        }
-        return count;
-    }
-
-    verDiagLeftUp(row:number,col:number){
-        var count = 0;
-        for (let i = row; i >= 0; i--) {
-            if(this.gridBoard[i][col] == this.getPlayerTurn()){
-                col++;count++
-            } else {
-                break
-            }
-        }
-        return count
-    }
-
-    verDiagLeftDown(row:number,col:number){
-        var count=0;
-        for (let j = row; j < this.gridSize ; j++) {
-            if(this.gridBoard[j][col] == this.getPlayerTurn()){
-                col--;count++
-            } else {
-                break
-            }
-        }
-        return count;
+        //change the player [testing]
+        //this.switchPlayer()
     }
 }

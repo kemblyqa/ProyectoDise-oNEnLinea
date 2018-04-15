@@ -10,19 +10,29 @@ import {Router} from "@angular/router";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  player:number = 1
-  nickName:string = "k"
-  det:string = "no tengo idea"
+  idUser:number
+  nickname:string
+  details:string
 
   constructor(private service: Service, private router: Router){}
 
   //only once, I need only one player
   login(){
+    this.service.getData("/user/checkUsuario",{
+      params: {idUsuario: this.idUser}
+    })
+      .subscribe(
+        resUser => {
+          if(resUser == null){
+
+          }
+        }
+      )
     let url:string = "/user/crearUsuario"
     const params = {
-        idUsuario: this.player,
-        nick: this.nickName,
-        det: this.det
+        idUsuario: this.idUser,
+        nick: this.nickname,
+        det: this.details
     }
     // this.service.postData(url,params)
     //   .subscribe(
@@ -31,7 +41,11 @@ export class LoginComponent {
     //       this.router.navigate(['/menu'])
     //     }
     //   )
-    UserDetails.Instance.setUserID(this.player)
+    UserDetails.Instance.setUserID(this.idUser)
     this.router.navigate(['/menu'])
+  }
+
+  register(){
+    
   }
 }
