@@ -37,8 +37,9 @@ export class MainMenuComponent implements OnInit {
         data => { 
             console.log("partidas: "+data["partidas"]) 
             this.games = data["partidas"]
-            // UserDetails.Instance.setCurrentGameID(data["partidas"][0])
-            UserDetails.Instance.setCurrentGameID(3)
+            //UserDetails.Instance.setCurrentGameID(data["partidas"][0])
+            console.log(data["partidas"][0])
+            //console.log(UserDetails.Instance.getCurrentGameID())
         }, 
         err => { 
             console.log("Error") 
@@ -62,7 +63,7 @@ export class MainMenuComponent implements OnInit {
       idJ1: this.idP1,
       color1: this.nColor,
       idJ2: this.idP2,
-      color2: "#8A2BE2",  
+      color2: "#00FA9A",  
       size: this.bSize,
       lineSize: this.nSize,
       nRondas : this.nRounds 

@@ -12,3 +12,41 @@
         </div>
       </div>
 </div>
+
+
+<!-- Register Modal -->
+<div class="modal fade" id="parameters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Parámetros del juego</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label for="boardSize" class="col-sm-6 col-form-label">ID usuario</label>
+          <div class="col-sm-6">
+              <input type="text" [(ngModel)]="idUser" class="form-control" id="boardSize" placeholder="....">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="nSize" class="col-sm-6 col-form-label">Nickname</label>
+          <div class="col-sm-6">
+            <input type="text" [(ngModel)]="nickname" class="form-control" id="nbSize" placeholder="....">
+          </div>
+        </div>
+        <div class="form-group row"> 
+          <label for="rSize" class="col-sm-6 col-form-label">Detalles</label> 
+          <div class="col-sm-6"> 
+            <input type="text" [(ngModel)]="details" class="form-control" id="rSize" placeholder="...."> 
+          </div> 
+        </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)=login() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>

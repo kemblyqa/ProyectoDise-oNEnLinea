@@ -27,10 +27,11 @@ export class TableroComponent implements OnInit {
   dialogTitleEndGame:string
   dialogEndGame:string
 
+  //partida actual prueba
+  partida:number = 6
+
   constructor(private service:Service) {
-    // console.log(UserDetails.Instance.getCurrentGameID)
-    // get the init board data
-    this.service.getData("/game/getInfoPartida",{params: {idPartida: 3}})
+    this.service.getData("/game/getInfoPartida",{params: {idPartida: this.partida}})
       .subscribe(
         res => {
           //add data to BuildTablero
@@ -55,11 +56,11 @@ export class TableroComponent implements OnInit {
 
   initBoard(){
     //get the board to fill
-    this.service.getData("/user/rondaActiva",{params:{idPartida: UserDetails.Instance.getCurrentGameID}})
+    this.service.getData("/user/rondaActiva",{params:{idPartida: this.partida}})
       .subscribe(
         resLastRound => {
           this.tab.setActiveRound(resLastRound)
-          this.service.getData("/game/getTablero",{params:{idPartida: UserDetails.Instance.getCurrentGameID, ronda:resLastRound}})
+          this.service.getData("/game/getTablero",{params:{idPartida: this.partida, ronda:resLastRound}})
             .subscribe(
               resBoard => {
                 this.tab.setGrid(resBoard)
@@ -82,37 +83,33 @@ export class TableroComponent implements OnInit {
     this.movePosition = this.tab.getRowColButtonID(e.target.id)
     //post the move
     this.service.postData("/game/jugada",{
-      idPartida: 3,//esto es de UserDetails
-      ronda: 3,
-      fila: 3,
-      columna: 3,
-      idJugador: 1
+      idPartida: this.partida,//esto es de UserDetails
+      ronda: this.tab.getActiveRound(),
+      fila: this.movePosition[0],
+      columna: this.movePosition[1],
+      idJugador: this.tab.getPlayerTurn()
       })
       .subscribe(
         status => {
           console.log(status)
           this.service.getData("/game/update",{
-            idPartida: 3,
-            ronda: 3,
-            idJugador: 1
+            params: {
+              idPartida: this.partida,
+              ronda: this.tab.getActiveRound(),
+              idJugador: this.tab.getPlayerTurn()
+            }
           })
             .subscribe(
               resMove =>{
                 console.log(JSON.stringify(resMove))
+                this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
               },
               err => {
                 console.log(JSON.stringify(err))
               }
             )
         }
-      )
-
-    //get button id and properties
-    //let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
-    //when is his turn paint as the color he choose
-    //paintButton.style.backgroundColor = this.tab.getColorTurn() 
-    //this.verifyIfIsEnded()
-    //this.tab.switchPlayer()  
+      ) 
   }
 
   openModalEndGame(){
@@ -120,7 +117,7 @@ export class TableroComponent implements OnInit {
   }
 
   verifyIfIsEnded(){
-    switch(this.tab.getGameStatus()){
+    switch(this.tab.getReasonStatus()){
       case "w":
         this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
         this.dialogTitleEndGame = "VICTORIA...."
