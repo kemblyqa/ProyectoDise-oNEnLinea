@@ -72,7 +72,6 @@ class ControladorPersona{
 
     public static rondaActiva(req: Request, res: Response){
         let idPartida = req.query.idPartida;
-        console.log("rondaActiva("+idPartida+")")
         consulta("rondaActiva("+idPartida+")", res);
     }
     public routes(): void{
