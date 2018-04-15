@@ -22,42 +22,41 @@ var ControladorPersona = /** @class */ (function () {
         var idUsuario = req.body.idUsuario;
         var nick = req.body.nick;
         var det = req.body.det;
-        consulta("cUsuario(" + idUsuario + ",'" + nick + "','" + det + "')", res);
+        consulta("cUsuario('" + idUsuario + "','" + nick + "','" + det + "')", res);
     };
     ControladorPersona.chat = function (req, res) {
         var idEmisor = req.body.idEmisor;
         var idReceptor = req.body.idReceptor;
         var msg = req.body.msg;
-        consulta("chat(" + idEmisor + "," + idReceptor + ",'" + msg + "')", res);
+        consulta("chat('" + idEmisor + "','" + idReceptor + "','" + msg + "')", res);
     };
     ControladorPersona.getChat = function (req, res) {
         var idOne = req.query.idOne;
         var idTwo = req.query.idTwo;
-        consulta("getChatLog(" + idOne + "," + idTwo + ")", res);
+        consulta("getChatLog('" + idOne + "','" + idTwo + "')", res);
     };
     ControladorPersona.setDetails = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var det = req.body.det;
-        consulta("uDetalles(" + idUsuario + ",'" + det + "')", res);
+        consulta("uDetalles('" + idUsuario + "','" + det + "')", res);
     };
     ControladorPersona.changeNick = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var nick = req.body.nick;
-        consulta("uNickname(" + idUsuario + ",'" + nick + "')", res);
+        consulta("uNickname('" + idUsuario + "','" + nick + "')", res);
     };
     ControladorPersona.checkUsuario = function (req, res) {
         var idUsuario = req.query.idUsuario;
-        console.log("checkUsuario(" + idUsuario + ")");
-        consulta("checkUsuario(" + idUsuario + ")", res);
+        consulta("checkUsuario('" + idUsuario + "')", res);
     };
     ControladorPersona.gameList = function (req, res) {
         var idUsuario = req.query.idUsuario;
-        consulta("gameList(" + idUsuario + ")", res);
+        consulta("gameList('" + idUsuario + "')", res);
     };
     ControladorPersona.gameListFilter = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var filtro = req.query.filtro;
-        consulta("gameListFilter(" + idUsuario + "," + filtro + ")", res);
+        consulta("gameListFilter('" + idUsuario + "'," + filtro + ")", res);
     };
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;

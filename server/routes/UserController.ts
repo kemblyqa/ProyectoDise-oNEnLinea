@@ -25,49 +25,48 @@ class ControladorPersona{
         let idUsuario = req.body.idUsuario;
         let nick = req.body.nick;
         let det = req.body.det;
-        consulta("cUsuario("+idUsuario+",'"+nick+"','"+det+"')",res);
+        consulta("cUsuario('"+idUsuario+"','"+nick+"','"+det+"')",res);
     }
 
     public static chat(req: Request, res: Response){
         let idEmisor    = req.body.idEmisor;
         let idReceptor  = req.body.idReceptor;
         let msg         = req.body.msg;
-        consulta("chat("+idEmisor+","+idReceptor+",'"+msg+"')",res);
+        consulta("chat('"+idEmisor+"','"+idReceptor+"','"+msg+"')",res);
     }
 
     public static getChat(req: Request, res: Response){
         let idOne   = req.query.idOne;
         let idTwo   = req.query.idTwo;
-        consulta("getChatLog("+idOne+","+idTwo+")",res);
+        consulta("getChatLog('"+idOne+"','"+idTwo+"')",res);
     }
 
     public  static setDetails(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let det = req.body.det;
-        consulta("uDetalles("+idUsuario+",'"+det+"')", res);
+        consulta("uDetalles('"+idUsuario+"','"+det+"')", res);
     }
 
     public static changeNick(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let nick = req.body.nick;
-        consulta("uNickname("+idUsuario+",'"+nick+"')", res);
+        consulta("uNickname('"+idUsuario+"','"+nick+"')", res);
     }
 
     public static checkUsuario(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
-        console.log("checkUsuario("+idUsuario+")");
-        consulta("checkUsuario("+idUsuario+")", res);
+        consulta("checkUsuario('"+idUsuario+"')", res);
     }
 
     public static gameList(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
-        consulta("gameList("+idUsuario+")", res);
+        consulta("gameList('"+idUsuario+"')", res);
     }
 
     public static gameListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
-        consulta("gameListFilter("+idUsuario+","+filtro+")", res);
+        consulta("gameListFilter('"+idUsuario+"',"+filtro+")", res);
     }
 
     public static rondaActiva(req: Request, res: Response){

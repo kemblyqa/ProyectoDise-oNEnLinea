@@ -142,6 +142,8 @@ db.system.js.save({
 	value: function (idJ1,color1,idJ2,color2,size,lineSize,nRondas) 
 	{ 
 		try{
+			if ((db.Usuarios.find({_id:idJ1}).toArray()[0]==null && (idJ1!="e" && idJ1!="m" &&idJ1!="h")) || (db.Usuarios.find({_id:idJ2}).toArray()[0]==null && (idJ2!="e" && idJ2!="m" &&idJ2!="h")) || color1==color2)
+				return false;
 			fila='[-1';
 			for(x=1;x<size;x++){
 				fila=fila+',-1';
