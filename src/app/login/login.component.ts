@@ -18,13 +18,19 @@ export class LoginComponent {
 
   //only once, I need only one player
   login(){
-    // let url:string = "/user/crearUsuario"
-    // const params = {
-    //     idUsuario: this.player,
-    //     nick: this.nickName,
-    //     det: this.det
-    // }
+    let url:string = "/user/crearUsuario"
+    const params = {
+        idUsuario: this.player,
+        nick: this.nickName,
+        det: this.det
+    }
     // this.service.postData(url,params)
+    //   .subscribe(
+    //     res => {
+    //       UserDetails.Instance.setUserID(this.player)
+    //       this.router.navigate(['/menu'])
+    //     }
+    //   )
     UserDetails.Instance.setUserID(this.player)
     this.router.navigate(['/menu'])
   }

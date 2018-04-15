@@ -29,14 +29,13 @@
                 <div class="container centerDiv">
                   <div class="tBoard">
                       <table class="board" id="tableBoard">
-                          <tr *ngFor= "let column of idButtonGrid">
+                          <tr *ngFor= "let column of buttonIDs">
                             <td *ngFor= "let cell of column">
                               <button type="button" id="{{cell}}" (click)="touchButton($event)" class="cellbutton btn"></button>
                             </td>
                           </tr>
                         </table>
                   </div>
-                  
                 </div>
               <!-- /#board -->
             
@@ -76,7 +75,7 @@
         </button>
       </div>
       <div class="modal-body">
-        {{dialogEndGame}} en {{size}} en linea! Gracias por jugar.
+        {{dialogEndGame}} en {{nSize}} en linea! Gracias por jugar.
       </div>
       <div class="modal-footer">
         <button type="button" [routerLink]="['/menu']" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
