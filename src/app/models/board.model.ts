@@ -1,24 +1,45 @@
-export class BuildTablero{
-    //in the board are col-row filled
-    //this is row-col
+export class BuildBoard{
+    //in the board are filled
     buttonIDs:Array<any>
+
+    //sidebar
     private sideBarItems: Array<any>
 
     //this need to set col-row filled
-    charGrid:Array<any>
-    gridSize:number
+    activeStatus:boolean
     nSize:number
-    status:string
+    gridSize:number
+    nRounds:number
+    lastRound:any
+    gridBoard:Array<any>
+    users:Array<any>    
+    gameStatus:string
+    turn:any
 
     //inicial values current first player
     playerTurn:boolean = true
 
-    constructor(gridSize:number, nSize:number){
+    constructor(
+        gridSize:number, 
+        nSize:number,
+        activeStatus:boolean,
+        roundSize:number,
+        usersIDsColors:Array<any>
+    ){        
+        //init arrays
         this.buttonIDs = []
-        this.charGrid = []
+        this.gridBoard = []
+        this.users = []
+
+        //params
+        this.activeStatus = activeStatus
         this.gridSize = gridSize
         this.nSize = nSize
-        this.status = "p"
+        this.nRounds = roundSize
+        this.users[0] = [usersIDsColors[0][0], usersIDsColors[0][1]]
+        this.users[1] = [usersIDsColors[1][0], usersIDsColors[1][1]]
+        
+        //sidebar elems
         this.sideBarItems = [{
             id:1,
             text:"Nueva partida",
@@ -50,43 +71,60 @@ export class BuildTablero{
         }]
     }
 
-    getSideBarItems(){
-        return this.sideBarItems
-    }
-
     fill() {
         let c = 1
         for (let i = 0; i < this.gridSize; i++) {
             this.buttonIDs.push([])
-            this.charGrid.push([])
-
             for (let j = 0; j < this.gridSize; j++) {
                 this.buttonIDs[i][j] = c
-                this.charGrid[i][j] = "n"
                 c++
             }
         }
-        return c-1
+    }
+
+    setTurn(turn:any){
+        this.turn = turn
+    }
+
+    getTurn(){
+        return this.turn
+    }
+
+    setActiveRound(lastR:any){
+        this.lastRound = lastR
+    }
+
+    getActiveRound(){
+        return this.lastRound
+    }
+
+    getSideBarItems(){
+        return this.sideBarItems
+    }
+
+    setGrid(grid: any){
+        this.gridBoard = grid
     }
 
     getIdButtonCells(){
+        this.fill()
         return this.buttonIDs
     }
 
     getGridCharCells(){
-        return this.charGrid
+        return this.gridBoard
     }
 
     getGameStatus(){
-        return this.status;
+        return this.gameStatus;
     }
 
-    getUpdateGridLayout(id){
+    getRowColButtonID(id){
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
                 //if id is found, then we need the column
                 if(this.buttonIDs[rowI][colI] == id){
-                    return this.setCellInGrid(colI)
+                    return [rowI, colI]
                 }
             }
         }
@@ -108,9 +146,9 @@ export class BuildTablero{
 
     setCellInGrid(colParam:number){
         for (let rowItem = 0; rowItem < this.gridSize; rowItem++) {
-            if(this.charGrid[rowItem][colParam] != "n"){
+            if(this.gridBoard[rowItem][colParam] != "n"){
                 //find where the button need to be set and update the grid
-                this.charGrid[rowItem-1][colParam] = this.getPlayerTurn()
+                this.gridBoard[rowItem-1][colParam] = this.getPlayerTurn()
                 //verify if is connected
                 this.isNConnected(rowItem-1,colParam)
                 //return button id to set color
@@ -118,7 +156,7 @@ export class BuildTablero{
             }
         }
         //when it is the fisrt piece to be droped
-        this.charGrid[this.gridSize-1][colParam] = this.getPlayerTurn()  
+        this.gridBoard[this.gridSize-1][colParam] = this.getPlayerTurn()  
         this.isNConnected(this.gridSize-1,colParam)
         return this.buttonIDs[this.gridSize-1][colParam]
     }
@@ -131,20 +169,20 @@ export class BuildTablero{
         this.diagonalRightWin(row,col)  ||
         this.diagonalLeftWin(row,col))
         {
-            this.status = "w"
+            this.gameStatus = "w"
             return
         } 
         
         if (!this.isTie())
-            this.status = "p"
+            this.gameStatus = "p"
         else 
-            this.status = "t"
+            this.gameStatus = "t"
     }
     
     isTie(){
         for (let i = 0; i < this.gridSize; i++) {
             for (let j = 0; j < this.gridSize; j++) {
-                if(this.charGrid[i][j] == "n"){
+                if(this.gridBoard[i][j] == "n"){
                     return false;
                 }
             }
@@ -156,7 +194,7 @@ export class BuildTablero{
         var count = 0
         //to right
         for (let i = col; i < this.gridSize; i++) {
-            if(this.charGrid[row][i] == this.getPlayerTurn()){
+            if(this.gridBoard[row][i] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -164,7 +202,7 @@ export class BuildTablero{
         }
         //to left
         for (let j = col - 1; j >= 0; j--) {
-            if(this.charGrid[row][j] == this.getPlayerTurn()){
+            if(this.gridBoard[row][j] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -177,7 +215,7 @@ export class BuildTablero{
         var count = 0
         //to down
         for (let i = row; i < this.gridSize; i++) {
-            if(this.charGrid[i][col] == this.getPlayerTurn()){
+            if(this.gridBoard[i][col] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -185,7 +223,7 @@ export class BuildTablero{
         }
         //to up
         for (let j = row - 1; j >= 0; j--) {
-            if(this.charGrid[j][col] == this.getPlayerTurn()){
+            if(this.gridBoard[j][col] == this.getPlayerTurn()){
                 count++
             } else {
                 break
@@ -205,7 +243,7 @@ export class BuildTablero{
     verDiagRightDown(row:number, col:number){
         var count = 0;
         for (let i = row; i < this.gridSize; i++) {
-            if(this.charGrid[i][col] == this.getPlayerTurn()){
+            if(this.gridBoard[i][col] == this.getPlayerTurn()){
                 col++;count++
             } else {
                 break
@@ -217,7 +255,7 @@ export class BuildTablero{
     verDiagRightUp(row:number,col:number){
         var count = 0;
         for (let j = row; j >= 0; j--) {
-            if(this.charGrid[j][col] == this.getPlayerTurn()){
+            if(this.gridBoard[j][col] == this.getPlayerTurn()){
                 col--;count++
             } else {
                 break
@@ -229,7 +267,7 @@ export class BuildTablero{
     verDiagLeftUp(row:number,col:number){
         var count = 0;
         for (let i = row; i >= 0; i--) {
-            if(this.charGrid[i][col] == this.getPlayerTurn()){
+            if(this.gridBoard[i][col] == this.getPlayerTurn()){
                 col++;count++
             } else {
                 break
@@ -241,7 +279,7 @@ export class BuildTablero{
     verDiagLeftDown(row:number,col:number){
         var count=0;
         for (let j = row; j < this.gridSize ; j++) {
-            if(this.charGrid[j][col] == this.getPlayerTurn()){
+            if(this.gridBoard[j][col] == this.getPlayerTurn()){
                 col--;count++
             } else {
                 break

@@ -5,14 +5,14 @@ export class UserDetails {
     private userID:number
     private nickName:string
     private details?:string
-    private currentGameID:number
+    private currentGameID:any
     private static instance:UserDetails
 
     setUserID(userID:number){
         this.userID = userID
     }
 
-    setCurrentGameID(id:number){
+    setCurrentGameID(id:any){
         this.currentGameID = id
     }
 

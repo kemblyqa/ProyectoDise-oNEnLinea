@@ -6,6 +6,7 @@ import { MenuModel } from '../models/menu.model';
 declare var jquery: any;
 declare var $ : any;
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-menu',
@@ -18,19 +19,31 @@ export class MainMenuComponent implements OnInit {
   //get player data
   idP1:any
   idP2:number = 2
-  activeGames:Array<any>
-  urlGameListFilter:string = "/user/gameList"
 
   //board parameters
   nSize: number
   bSize: number
   nRounds: number
   nColor: string
+  games:any
   
-  constructor(private service: Service) {
+  constructor(private service: Service, private router: Router) {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
-    this.idP1 = UserDetails.Instance.getUserID
+    this.idP1 = 1
+    //get the games of user
+    this.service.getData("/user/gameList",{params:{idUsuario: 1, filtro: true}})
+      .subscribe( 
+        data => { 
+            console.log("partidas: "+data["partidas"]) 
+            this.games = data["partidas"]
+            // UserDetails.Instance.setCurrentGameID(data["partidas"][0])
+            UserDetails.Instance.setCurrentGameID(3)
+        }, 
+        err => { 
+            console.log("Error") 
+        } 
+      )
   }
 
   parametersBegin() {
@@ -45,8 +58,7 @@ export class MainMenuComponent implements OnInit {
     $('#').modal('show');
   }
   newGame(){
-    let apiUrl:string = "/game/nuevaSesion"
-    const params = {
+    this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
       color1: this.nColor,
       idJ2: this.idP2,
@@ -54,11 +66,10 @@ export class MainMenuComponent implements OnInit {
       size: this.bSize,
       lineSize: this.nSize,
       nRondas : this.nRounds 
-    }
-    this.service.postData(apiUrl, params)
+    })
       .subscribe( 
-        data=>{ 
-            console.log(data) 
+        data => { 
+            this.play()
         }, 
         err => { 
             console.log(err) 
@@ -67,15 +78,16 @@ export class MainMenuComponent implements OnInit {
   }
 
   play(){
-    this.service.getData(this.urlGameListFilter,{params:{idUsuario: 1, filtro: true}})
-      .subscribe( 
-        data => { 
-            console.log(data) 
-            UserDetails.Instance.setCurrentGameID(data["partidas"][0])
-        }, 
-        err => { 
-            console.log("Error") 
-        } 
-      )
+    // this.service.getData("/user/gameList",{params:{idUsuario: 1, filtro: true}})
+    //   .subscribe( 
+    //     data => { 
+    //         console.log("partidas: "+data) 
+    //         UserDetails.Instance.setCurrentGameID(data["partidas"][0])
+             this.router.navigate(['/tablero'])
+    //     }, 
+    //     err => { 
+    //         console.log("Error") 
+    //     } 
+    //   )
   }
 }

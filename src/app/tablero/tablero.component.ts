@@ -5,8 +5,7 @@ import { HttpClient } from '@angular/common/http';
 declare var jquery:any;
 declare var $ :any;
 //models
-import { BuildTablero } from "../models/tablero.model";
-import { Z_ASCII } from 'zlib';
+import { BuildBoard } from "../models/board.model";
 
 @Component({
   selector: 'app-tablero',
@@ -14,38 +13,36 @@ import { Z_ASCII } from 'zlib';
   styleUrls: ['./tablero.component.css']
 })
 export class TableroComponent implements OnInit {
-  //get the initial data
-  status:boolean
-  nSize:number
-  gSize:number
-  users:Array<any>
-  nRounds:number
-  lastRound:number
-
   //needed in build of the board
-  idButtonGrid:Array<any>
-  sideBarItems: Array<any>
-  tab:BuildTablero
+  buttonIDs:Array<any>
+  sideBarItems: Array<any> 
+  nSize:number
+  movePosition:Array<any>
+  playerTurn:any
+
+  //board model
+  tab:BuildBoard
   
   //needed in dialogs and notificatios
-  
   dialogTitleEndGame:string
   dialogEndGame:string
-  
-  cells:number
 
   constructor(private service:Service) {
+    // console.log(UserDetails.Instance.getCurrentGameID)
     // get the init board data
     this.service.getData("/game/getInfoPartida",{params: {idPartida: 3}})
       .subscribe(
         res => {
-          // get content to be rendered
-          this.status = res["estado"]
-          this.gSize = res["tamano"]
-          this.nSize = res["tamano_linea"]
-          this.users = res["usuarios"]
-          this.nRounds = res["nRondas"]
-
+          //add data to BuildTablero
+          this.tab = new BuildBoard(
+            res["tamano"],
+            res["tamano_linea"], 
+            res["estado"],
+            res["nRondas"],
+            res["usuarios"]
+          )
+          //get the nSize to show in modal after finish
+          this.nSize = this.tab.nSize
           //then init the board
           this.initBoard()
         },
@@ -57,48 +54,69 @@ export class TableroComponent implements OnInit {
   ngOnInit() {}
 
   initBoard(){
-    this.tab = new BuildTablero(this.gSize, this.nSize);
-
-    
-
-    this.cells = this.tab.fill()
-
-    //create the items of sidebar
-    this.sideBarItems = this.tab.getSideBarItems()
-
-    //get the size to use it in dialogs
-    this.nSize = this.tab.nSize
-    this.gSize = this.tab.gridSize
-
-    //this get the ids and render the buttons in the template
-    this.idButtonGrid = this.tab.getIdButtonCells()
-
-
-    //this create all the ids in the grid and set values in other grid
-    this.service.getData("/game/rondaActiva",{params:{idPartida: 3}})
+    //get the board to fill
+    this.service.getData("/user/rondaActiva",{params:{idPartida: UserDetails.Instance.getCurrentGameID}})
       .subscribe(
-        res => {
-          console.log(res)
+        resLastRound => {
+          this.tab.setActiveRound(resLastRound)
+          this.service.getData("/game/getTablero",{params:{idPartida: UserDetails.Instance.getCurrentGameID, ronda:resLastRound}})
+            .subscribe(
+              resBoard => {
+                this.tab.setGrid(resBoard)
+                //this get the ids and render the buttons in the template
+                this.buttonIDs = this.tab.getIdButtonCells()
+              }
+            )
         },
         err => {
           console.log(err)
         }
       )
-    
+    //create the items of sidebar
+    this.sideBarItems = this.tab.getSideBarItems()
   }
   
   //button event
   touchButton(e){
+    //get the row and column
+    this.movePosition = this.tab.getRowColButtonID(e.target.id)
+    //post the move
+    this.service.postData("/game/jugada",{
+      idPartida: 3,//esto es de UserDetails
+      ronda: 3,
+      fila: 3,
+      columna: 3,
+      idJugador: 1
+      })
+      .subscribe(
+        status => {
+          console.log(status)
+          this.service.getData("/game/update",{
+            idPartida: 3,
+            ronda: 3,
+            idJugador: 1
+          })
+            .subscribe(
+              resMove =>{
+                console.log(JSON.stringify(resMove))
+              },
+              err => {
+                console.log(JSON.stringify(err))
+              }
+            )
+        }
+      )
+
     //get button id and properties
-    let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
+    //let paintButton = document.getElementById(this.tab.getUpdateGridLayout(e.target.id))
     //when is his turn paint as the color he choose
-    paintButton.style.backgroundColor = this.tab.getColorTurn() 
-    this.verifyIfIsEnded()
-    this.tab.switchPlayer()  
+    //paintButton.style.backgroundColor = this.tab.getColorTurn() 
+    //this.verifyIfIsEnded()
+    //this.tab.switchPlayer()  
   }
 
   openModalEndGame(){
-    $("#end").modal('show');
+    $("#end").modal('show')
   }
 
   verifyIfIsEnded(){
