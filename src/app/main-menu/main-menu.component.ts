@@ -1,3 +1,4 @@
+import { Game } from './../models/game.model';
 import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
@@ -30,7 +31,6 @@ export class MainMenuComponent implements OnInit {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
     this.idP1 = UserDetails.Instance.getUserID
-    this.retrieveInfoGames()
   }
 
   parametersBegin() {
@@ -56,17 +56,26 @@ export class MainMenuComponent implements OnInit {
       nRondas : this.nRounds 
     }
     this.service.postData(apiUrl, params)
+      .subscribe( 
+        data=>{ 
+            console.log(data) 
+        }, 
+        err => { 
+            console.log(err) 
+        } 
+      ) 
   }
 
-  retrieveInfoGames(){
-    console.log(UserDetails.Instance.getUserID)
-    let v:any = this.service.getData(this.urlGameListFilter,{idUsuario: UserDetails.Instance.getUserID})
-
-    // let urlGetInfoGame = "/game/getInfoPartida"
-    // //retrieve the info for each game
-    // for(let game of activeGames){
-    //     // this.activeGames.push(this.service.getData(urlGetInfoGame,{idPartida:game})) 
-    //     console.log(game)
-    // }
+  play(){
+    this.service.getData(this.urlGameListFilter,{params:{idUsuario: 1, filtro: true}})
+      .subscribe( 
+        data => { 
+            console.log(data) 
+            UserDetails.Instance.setCurrentGameID(data["partidas"][0])
+        }, 
+        err => { 
+            console.log("Error") 
+        } 
+      )
   }
 }
