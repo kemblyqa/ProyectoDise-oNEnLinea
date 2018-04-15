@@ -71,16 +71,19 @@ var GameController = /** @class */ (function () {
                             .then(function (result2) {
                             var jugadas = result1.jugadas;
                             var jugador;
+                            var contrincante;
                             if (result2.usuarios[0][0] == idJugador) {
+                                contrincante = result2.usuarios[1][0];
                                 jugador = 0;
                             }
                             else if (result2.usuarios[1][0] == idJugador) {
+                                contrincante = result2.usuarios[0][0];
                                 jugador = 1;
                             }
                             else {
                                 jugador = -1;
                             }
-                            callback(null, result1.tablero, result2.tamano_linea, jugadas.length, jugador, result2.lastMove, result2.nRondas);
+                            callback(null, result1.tablero, result2.tamano_linea, jugadas.length, jugador, contrincante, result2.lastMove, result2.nRondas);
                         })
                             .catch(function (err) {
                             res.json(err);
@@ -94,7 +97,7 @@ var GameController = /** @class */ (function () {
                     res.json(err);
                 });
             },
-            function (tablero, size, turno, jugador, lastMove, nRondas, callback) {
+            function (tablero, size, turno, jugador, contrincante, lastMove, nRondas, callback) {
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: " + turno + "\njugador: " + jugador);
                 var model = new game_model_1.default(tablero, size);
                 if (turno % 2 == jugador) {
@@ -118,19 +121,37 @@ var GameController = /** @class */ (function () {
                         res.json("a");
                         return;
                     }
-                    var tupla = model.getCellInGrid(columna, jugador);
-                    if (tupla != null) {
-                        consulta("jugada(" + idPartida + "," + ronda + "," + tupla[0] + "," + tupla[1] + "," + jugador + ")", res);
-                        var estado_1 = model.isNConnected(tupla[0], tupla[1], jugador);
-                        if (estado_1 != "p")
-                            mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
-                                mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + "," + idJugador + ",'" + estado_1 + "')")
-                                    .then(function (result1) { res.json(estado_1); });
+                    var tupla_1 = model.getCellInGrid(columna, jugador);
+                    if (tupla_1 != null) {
+                        mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
+                            mongoose.connection.db.eval("jugada(" + idPartida + "," + ronda + "," + tupla_1[0] + "," + tupla_1[1] + "," + jugador + ")").then(function () {
+                                var estado = model.isNConnected(tupla_1[0], tupla_1[1], jugador);
+                                if (estado != "p") {
+                                    mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
+                                        mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + "," + idJugador + ",'" + estado + "')")
+                                            .then(function (result1) { res.json(estado); });
+                                    });
+                                }
+                                else if (contrincante == "e" || contrincante == "m" || contrincante == "h") {
+                                    var resul_1 = model.AIMove(contrincante == "e" ? 1 : contrincante == "m" ? 2 : 3, Math.abs(jugador - 1));
+                                    mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
+                                        console.log(resul_1);
+                                        if (resul_1[1] == "p")
+                                            mongoose.connection.db.eval("jugada(" + idPartida + "," + ronda + "," + resul_1[0][0] + "," + resul_1[0][1] + "," + Math.abs(jugador - 1) + ")").then(function (result0) {
+                                                res.json("p");
+                                            });
+                                        else
+                                            mongoose.connection.db.eval("jugada(" + idPartida + "," + ronda + "," + resul_1[0][0] + "," + resul_1[0][1] + "," + Math.abs(jugador - 1) + ")").then(function (result0) {
+                                                mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + ",'" + contrincante + "','" + resul_1[1] + "')")
+                                                    .then(function (result1) { res.json(resul_1[1] == "w" ? "l" : "t"); });
+                                            });
+                                    });
+                                }
+                                return;
                             });
-                        return;
+                        });
                     }
                 }
-                res.json(false);
             }
         ]);
     };
@@ -154,8 +175,8 @@ var GameController = /** @class */ (function () {
         var size = req.body.size;
         var lineSize = req.body.lineSize;
         var nRondas = req.body.nRondas;
-        console.log("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
-        consulta("nuevaSesion(" + idJ1 + ",'" + color1 + "'," + idJ2 + ",'" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")", res);
+        console.log("nuevaSesion('" + idJ1 + "','" + color1 + "','" + idJ2 + "','" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
+        consulta("nuevaSesion('" + idJ1 + "','" + color1 + "','" + idJ2 + "','" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")", res);
     };
     GameController.update = function (req, res) {
         var idPartida = req.query.idPartida;
@@ -200,11 +221,30 @@ var GameController = /** @class */ (function () {
                             for (var x = 0; x < result1.nRondas; x++) {
                                 _loop_2(x);
                             }
-                            res.json({ "tablero": result.tablero, "estado": [finalizador, "a"], "turno": -1 });
+                            res.json({ "tablero": result.tablero, "estado": { "finalizador": finalizador, "causa": "a" }, "turno": -1 });
                             return;
                         });
                     }
-                    res.json({ "tablero": result.tablero, "estado": ["", ""], "turno": turno });
+                    else if (result1.usuarios[0][0] == "e" || result1.usuarios[0][0] == "m" || result1.usuarios[0][0] == "h")
+                        if (result1.usuarios[1][0] == "e" || result1.usuarios[1][0] == "m" || result1.usuarios[1][0] == "h") {
+                            var turno_1 = result.jugadas.length % 2;
+                            var level = result1.usuarios[turno_1][0] == "e" ? 1 : result1.usuarios[turno_1][0] == "m" ? 2 : 3;
+                            var botGame_1 = new game_model_1.default(result.tablero, result1.tamano_linea);
+                            var resul_2 = botGame_1.AIMove(level, turno_1);
+                            mongoose.connect('mongodb://localhost:27017/connect4')
+                                .then(function () {
+                                mongoose.connection.db.eval("jugada(" + idPartida + "," + ronda + "," + resul_2[0][0] + "," + resul_2[0][1] + "," + turno_1 + ")").then(function () {
+                                    res.json({ "tablero": botGame_1.charGrid, "estado": { "finalizador": resul_2[1] == "p" ? "" : result1.usuarios[turno_1][0], "estado": resul_2[1] == "p" ? "" : resul_2[1] }, "turno": -1 });
+                                    if (resul_2[1] != "p")
+                                        mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + ",'" + result1.usuarios[turno_1][0] + "','" + resul_2[1] + "')");
+                                });
+                            });
+                        }
+                        else
+                            res.json({ "tablero": result.tablero, "estado": ["", ""], "turno": turno });
+                    result.tablero.forEach(function (element) {
+                        console.log(element);
+                    });
                 });
             });
         });

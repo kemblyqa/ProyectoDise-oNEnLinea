@@ -158,7 +158,7 @@ db.system.js.save({
 				rondas=rondas+','+ronda;
 			}
 			rondas=rondas+']';
-                        query='{"_id":'+(db.Partidas.find().count()+1)+', "estado":true, "tamano":'+size+',"tamano_linea":'+lineSize+',"usuarios":[['+idJ1+',"'+color1+'"],['+idJ2+',"'+color2+'"]],"rondas":'+rondas+',"nRondas":'+nRondas+'}';
+                        query='{"_id":'+(db.Partidas.find().count()+1)+', "estado":true, "tamano":'+size+',"tamano_linea":'+lineSize+',"usuarios":[["'+idJ1+'","'+color1+'"],["'+idJ2+'","'+color2+'"]],"rondas":'+rondas+',"nRondas":'+nRondas+'}';
                         db.Partidas.insertOne(JSON.parse([query]));
                         db.Usuarios.update(
    			{_id: idJ1},
@@ -327,4 +327,4 @@ db.system.js.save({
 		}
         return -1;
 		}
-});
+}); 

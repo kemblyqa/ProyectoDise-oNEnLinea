@@ -61,7 +61,6 @@ var ControladorPersona = /** @class */ (function () {
     };
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;
-        console.log("rondaActiva(" + idPartida + ")");
         consulta("rondaActiva(" + idPartida + ")", res);
     };
     ControladorPersona.prototype.routes = function () {
