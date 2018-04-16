@@ -58,10 +58,14 @@ class ControladorPersona{
         consulta("checkUsuario('"+idUsuario+"')", res);
     }
 
+    public static checkNick(req: Request, res: Response){
+        let nick = req.query.nick;
+        consulta("checkNick('"+nick+"')", res);
+    }
+
     public static gameListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
-        let data = [];
         mongoose.connect('mongodb://localhost:27017/connect4')
         .then(() =>{
             mongoose.connection.db.eval("gameListFilter('"+idUsuario+"',"+filtro+")")
@@ -71,18 +75,18 @@ class ControladorPersona{
                     res.json(result0);
                 else{
                     let contador=lista.length;
-                    result0.forEach(element => {
-                        mongoose.connection.db.eval("getInfoPartida("+element+")").then(result1 =>{
+                    let data = [];
+                    for(let x = 0;x<lista.length;x++)
+                        mongoose.connection.db.eval("getInfoPartida("+lista[x]+")").then(result1 =>{
                             mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[0][0]+"')").then(user0 =>{
                                 mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[1][0]+"')").then(user1 =>{
-                                    data[element]={"id_partida":element,"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea}
+                                    data[x]={"id_partida":lista[x],"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea}
                                     contador=contador-1;
                                     if (contador ==0)
                                         res.json(data)
                                 })
                             })
                         })
-                    })
                 }
             })
         })
@@ -95,13 +99,14 @@ class ControladorPersona{
 
     public static friendList(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
-        consulta("friendList('"+idUsuario+"')", res);
+        let page = req.query.page;
+        consulta("friendList('"+idUsuario+"',"+page+")", res);
     }
 
     public static friend(req: Request, res: Response){
         let id1 = req.query.id1;
         let id2 = req.query.id2;
-        consulta("friendList('"+id1+"',"+id2+")", res);
+        consulta("friend('"+id1+"','"+id2+"')", res);
     }
     public routes(): void{
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
@@ -111,9 +116,11 @@ class ControladorPersona{
         this.router.post('/changeNick',ControladorPersona.changeNick);
         this.router.post('/friend',ControladorPersona.friend);
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
+        this.router.get('/checkNick',ControladorPersona.checkNick);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);
         this.router.get('/rondaActiva',ControladorPersona.rondaActiva);
         this.router.get('/friendList',ControladorPersona.friendList);
+
     }
 }
 

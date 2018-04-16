@@ -292,7 +292,14 @@ db.system.js.save({
 			return({"nickname":"Medium Robot","detalles":"Robot medio"})
 		else if (idUsuario=="h")
 			return({"nickname":"Hard Robot","detalles":"Robot dificil"})
-        return db.Usuarios.find({_id:idUsuario},{nickname:1,detalles:1,_id:0}).toArray()[0];
+        return db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
+		}
+}); 
+db.system.js.save({
+	_id: "checkNick",
+	value: function (nick) 
+	{ 
+        return db.Usuarios.findOne({nickname:nick},{_id:1,nickname:1,detalles:1});
 		}
 }); 
 
@@ -351,16 +358,15 @@ db.system.js.save({
 
 db.system.js.save({
 	_id: "friendList",
-	value: function (id1) 
+	value: function (id, page) 
 	{ 
-		if (db.Usuarios.findOne({_id:id1})==null)
+		if (db.Usuarios.findOne({_id:id})==null)
 			return false;
-		let friendList = db.Usuarios.find({_id:id1}).toArray()[0].friends;
+		let friendList = db.Usuarios.find({_id:id}).toArray()[0].friends;
 		if (friendList==null)
 			return false;
 		let richList = [];
-		friendList.forEach(x =>{
-			richList.push([x,db.Usuarios.find({_id:x},{nickname:1,detalles:1,_id:0}).toArray()[0]])
-		})
+		for(let x = (page-1)*10; friendList[x]!=null && x < page*10;x++)
+			richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:0}))
 		return richList;
 }})
