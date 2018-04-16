@@ -66,14 +66,78 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" [routerLink]="['/tablero']" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- AI modal -->
-
+<div class="modal fade" id="paramsAI" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Parámetros del juego</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="boardSize" class="col-sm-6 col-form-label">Tipo de juego</label>
+            <div class="col-sm-6">
+                <input type="text" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+            </div>
+          </div>
+          <div class="form-group row">
+              <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
+              <div class="col-sm-6">
+                  <input type="text" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+              </div>
+            </div>
+          <div class="form-group row">
+            <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
+            <div class="col-sm-6">
+              <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
+            </div>
+          </div>
+          <div class="form-group row"> 
+            <label for="rSize" class="col-sm-6 col-form-label">Número de rondas</label> 
+            <div class="col-sm-6"> 
+              <input type="text" [(ngModel)]="nRounds" class="form-control" id="rSize" placeholder="Tamaño en digitos.."> 
+            </div> 
+          </div> 
+          <div class="form-group row"> 
+            <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
+            <div class="col-sm-6"> 
+              <input type="text" [(ngModel)]="idP2" class="form-control" id="player" placeholder="Nombre.."> 
+            </div> 
+          </div> 
+          <div class="form-group row">
+              <label for="nColor1" class="col-sm-6 col-form-label">Color 1</label>
+              <div class="col-sm-6">
+                <select id="selectedColor1" [(ngModel)]="nColor1" class="form-control">
+                  <option class="{{col.styleName}}" *ngFor="let col of colors"
+                    [value]="col.color">{{col.name}}</option> 
+                </select>
+              </div>
+            </div>
+          <div class="form-group row">
+              <label for="nColor2" class="col-sm-6 col-form-label">Color 2</label>
+              <div class="col-sm-6">
+                <select id="selectedColor2" [(ngModel)]="nColor2" class="form-control">
+                  <option class="{{col.styleName}}" *ngFor="let col of colors"
+                    [value]="col.color">{{col.name}}</option> 
+                </select>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 <!-- Games modal -->
 <div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

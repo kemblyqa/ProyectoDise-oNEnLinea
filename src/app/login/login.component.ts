@@ -2,7 +2,7 @@ import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {Router} from "@angular/router";
+import { Router } from "@angular/router";
 declare var jquery: any;
 declare var $ : any;
 
@@ -43,7 +43,11 @@ export class LoginComponent {
   }
 
   register(){
-    $('#register').modal('show');
+    $('#register').modal('show')
+  }
+
+  optionsAIBegin(){
+    $("#paramsAI").modal("show")
   }
 
   routeTo(){
