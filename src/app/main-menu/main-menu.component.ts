@@ -58,7 +58,7 @@ export class MainMenuComponent {
       .subscribe( 
         data => { 
             this.activeGames = data
-            console.log(JSON.stringify(data))
+            console.log(this.activeGames)
         }, 
         err => { 
             console.log("Error") 
@@ -86,9 +86,9 @@ export class MainMenuComponent {
     })
       .subscribe( 
         data => { 
-          //comprobar conexion con usuario before render
+          //conexion with user before render
           console.log(data)
-          //!data ? this.alertGame() : this.openGame(data)
+          data === false ? this.alertGame() : this.openGame(data)
         }, 
         err => { 
             console.log(err) 

@@ -168,7 +168,7 @@ db.system.js.save({
                         db.Usuarios.update(
    			{_id: idJ2},
    			{ $push: { partidas: db.Partidas.find().count() } });
-            return true;
+            return db.Partidas.find().count();
 		}
 		catch(err){
 			return false;
