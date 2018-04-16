@@ -8,6 +8,7 @@ db.system.js.save({
 			nickname:nick, 
 			detalles:det,
 			partidas:[],
+			friends:[],
 			chats:{}});
 			return true;
 		}
@@ -168,7 +169,7 @@ db.system.js.save({
                         db.Usuarios.update(
    			{_id: idJ2},
    			{ $push: { partidas: db.Partidas.find().count() } });
-            return true;
+            return db.Partidas.find().count();
 		}
 		catch(err){
 			return false;
@@ -327,3 +328,39 @@ db.system.js.save({
         return -1;
 		}
 }); 
+
+db.system.js.save({
+	_id: "friend",
+	value: function (id1,id2) 
+	{ 
+		if (db.Usuarios.findOne({_id:id2})==null || id1==id2)
+			return false;
+		let friendList = db.Usuarios.find({_id:id1}).toArray()[0].friends;
+		if (friendList==null)
+			return false;
+		friendList.forEach(x =>{
+			if (x==id2)
+				return false;
+		})
+		db.Usuarios.update(
+   			{_id: id1},
+   			{ $push: { friends: id2 } });
+		return true;
+}})
+
+
+db.system.js.save({
+	_id: "friendList",
+	value: function (id1) 
+	{ 
+		if (db.Usuarios.findOne({_id:id1})==null)
+			return false;
+		let friendList = db.Usuarios.find({_id:id1}).toArray()[0].friends;
+		if (friendList==null)
+			return false;
+		let richList = [];
+		friendList.forEach(x =>{
+			richList.push([x,db.Usuarios.find({_id:x},{nickname:1,detalles:1,_id:0}).toArray()[0]])
+		})
+		return richList;
+}})
