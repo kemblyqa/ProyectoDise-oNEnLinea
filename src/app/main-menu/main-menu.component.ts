@@ -13,33 +13,52 @@ import { Router } from '@angular/router';
   templateUrl: './main-menu.component.html',
   styleUrls: ['./main-menu.component.css']
 })
-export class MainMenuComponent implements OnInit {
+export class MainMenuComponent {
+  //model
   menuModel: MenuModel;
   colors: Array<any>;
+  allGames:any
+  activeGames:any
+
   //get player data
   idP1:any
-  idP2:number = 2
+  idP2:any
 
   //board parameters
   nSize: number
   bSize: number
   nRounds: number
   nColor: string
-  games:any
+  active: boolean
   
   constructor(private service: Service, private router: Router) {
     this.menuModel = new MenuModel();
     this.colors = this.menuModel.getColorList();
-    this.idP1 = 1
+    this.idP1 = UserDetails.Instance.getUserID()
     //get the games of user
-    this.service.getData("/user/gameList",{params:{idUsuario: 1, filtro: true}})
+    this.fillAllGames()
+    this.fillActiveGames()
+  }
+
+  fillAllGames(){
+    this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
-            console.log("partidas: "+data["partidas"]) 
-            this.games = data["partidas"]
-            //UserDetails.Instance.setCurrentGameID(data["partidas"][0])
-            console.log(data["partidas"][0])
-            //console.log(UserDetails.Instance.getCurrentGameID())
+            this.allGames = data
+            console.log(JSON.stringify(data))
+        }, 
+        err => { 
+            console.log("Error") 
+        } 
+      )
+  }
+
+  fillActiveGames(){
+    this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
+      .subscribe( 
+        data => { 
+            this.activeGames = data
+            console.log(JSON.stringify(data))
         }, 
         err => { 
             console.log("Error") 
@@ -50,14 +69,11 @@ export class MainMenuComponent implements OnInit {
   parametersBegin() {
     $('#parameters').modal('show');
   }
-  ngOnInit() {
-    //get the active games of the current user
-    
-  }
 
   optionsAIBegin() {
     $('#').modal('show');
   }
+
   newGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
@@ -70,7 +86,9 @@ export class MainMenuComponent implements OnInit {
     })
       .subscribe( 
         data => { 
-            this.play()
+          //comprobar conexion con usuario before render
+          console.log(data)
+          //!data ? this.alertGame() : this.openGame(data)
         }, 
         err => { 
             console.log(err) 
@@ -78,17 +96,17 @@ export class MainMenuComponent implements OnInit {
       ) 
   }
 
-  play(){
-    // this.service.getData("/user/gameList",{params:{idUsuario: 1, filtro: true}})
-    //   .subscribe( 
-    //     data => { 
-    //         console.log("partidas: "+data) 
-    //         UserDetails.Instance.setCurrentGameID(data["partidas"][0])
-             this.router.navigate(['/tablero'])
-    //     }, 
-    //     err => { 
-    //         console.log("Error") 
-    //     } 
-    //   )
+  alertGame(){
+    $('#failed').modal('show')
+  }
+
+  seeGames(){
+    $('#gamesRegistered').modal('show');
+  }
+
+  openGame(id:any){
+    UserDetails.Instance.setCurrentGameID(id)
+    console.log(UserDetails.Instance.getCurrentGameID())
+    this.router.navigate(['/tablero'])
   }
 }

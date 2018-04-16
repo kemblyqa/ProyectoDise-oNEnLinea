@@ -2,6 +2,10 @@ import { UserDetails } from './user.model';
 import { Service } from './../services/connect4.service';
 
 export class MenuModel{
+    //partidas IDs
+    private idAllGames:any
+    private idActiveGames:any
+    //data
     //colors
     private colors:Array<any>
 
@@ -57,6 +61,22 @@ export class MenuModel{
             styleName: "teal",
             name: "celeste"	
         }]
+    }
+
+    setIdAllGames(games:any){
+        this.idAllGames = games
+    }
+
+    getIdAllGames(){
+        return this.idAllGames
+    }
+
+    setIdActiveGames(activeGames:any){
+        this.idActiveGames = activeGames
+    }
+
+    getIdActiveGames(){
+        return this.idActiveGames
     }
 
     getColorList(){

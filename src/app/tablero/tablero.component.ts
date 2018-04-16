@@ -12,7 +12,7 @@ import { BuildBoard } from "../models/board.model";
   templateUrl: './tablero.component.html',
   styleUrls: ['./tablero.component.css']
 })
-export class TableroComponent implements OnInit {
+export class TableroComponent {
   //needed in build of the board
   buttonIDs:Array<any>
   sideBarItems: Array<any> 
@@ -31,7 +31,7 @@ export class TableroComponent implements OnInit {
   partida:number = 6
 
   constructor(private service:Service) {
-    this.service.getData("/game/getInfoPartida",{params: {idPartida: this.partida}})
+    this.service.getData("/game/getInfoPartida",{params: {idPartida: UserDetails.Instance.getCurrentGameID()}})
       .subscribe(
         res => {
           //add data to BuildTablero
@@ -52,15 +52,14 @@ export class TableroComponent implements OnInit {
         }
       )
   }
-  ngOnInit() {}
 
   initBoard(){
     //get the board to fill
-    this.service.getData("/user/rondaActiva",{params:{idPartida: this.partida}})
+    this.service.getData("/user/rondaActiva",{params:{idPartida: UserDetails.Instance.getCurrentGameID()}})
       .subscribe(
         resLastRound => {
           this.tab.setActiveRound(resLastRound)
-          this.service.getData("/game/getTablero",{params:{idPartida: this.partida, ronda:resLastRound}})
+          this.service.getData("/game/getTablero",{params:{idPartida: UserDetails.Instance.getCurrentGameID(), ronda:resLastRound}})
             .subscribe(
               resBoard => {
                 this.tab.setGrid(resBoard)
@@ -83,7 +82,7 @@ export class TableroComponent implements OnInit {
     this.movePosition = this.tab.getRowColButtonID(e.target.id)
     //post the move
     this.service.postData("/game/jugada",{
-      idPartida: this.partida,//esto es de UserDetails
+      idPartida: UserDetails.Instance.getCurrentGameID(),
       ronda: this.tab.getActiveRound(),
       fila: this.movePosition[0],
       columna: this.movePosition[1],
@@ -94,7 +93,7 @@ export class TableroComponent implements OnInit {
           console.log(status)
           this.service.getData("/game/update",{
             params: {
-              idPartida: this.partida,
+              idPartida: UserDetails.Instance.getCurrentGameID(),
               ronda: this.tab.getActiveRound(),
               idJugador: this.tab.getPlayerTurn()
             }

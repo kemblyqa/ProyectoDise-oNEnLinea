@@ -11,7 +11,7 @@
         <button type="button" (click)="optionsAIBegin()" class="btn btn-primary centerMenuBtn">Jugar contra computadora</button>
       </div>
       <div class="centerMenuBtn">
-        <button type="button" (click)="registersBegin()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
+        <button type="button" (click)="seeGames()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
       </div>
       <div class="centerMenuBtn">
         <button type="button" [routerLink]="['/login']" class="btn btn-primary centerMenuBtn">Salir</button>
@@ -52,7 +52,7 @@
         <div class="form-group row"> 
           <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
           <div class="col-sm-6"> 
-            <input type="text" [(ngModel)]="player" class="form-control" id="player" placeholder="Tamaño en digitos.."> 
+            <input type="text" [(ngModel)]="idP2" class="form-control" id="player" placeholder="Nombre.."> 
           </div> 
         </div> 
         <div class="form-group row">
@@ -74,28 +74,70 @@
 
 <!-- AI modal -->
 
+
 <!-- Games modal -->
-<div class="modal fade" id="games" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Registro de partidas</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-check">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="active" id="idChk">
+              <label class="form-check-label" for="idChk">
+                Ver solo activos
+              </label>
+            </div>  
+
+          <!-- Show all games or active games -->
+          <div *ngIf="active">
+            <div *ngFor="let game of activeGames">
+              <div class="form-group row">
+                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
+                <div class="col-sm-6">
+                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="btn btn-primary">Jugar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!active">
+            <div *ngFor="let game of allGames">
+              <div class="form-group row">
+                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
+                <div class="col-sm-6">
+                  <button type="button" (click)=review() data-dismiss="modal" class="btn btn-primary">Ver</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="btn btn-primary">Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- something wrong modal -->
+<div class="modal fade" id="failed" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Juegos {{idP1}}....</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Algo salió mal....</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <!-- <div *ngFor="let game of activeGames">
-          <div class="form-group row"> 
-          <label for="rSize" class="col-sm-6 col-form-label">Juego contra</label> 
-            <div class="col-sm-6"> 
-                <button type="button" (click)=loadGame() data-dismiss="modal" class="btn btn-info">Jugar</button>
-            </div> 
-          </div> 
-        </div> -->
+        <label for="rSize" class="col-sm-6 col-form-label">Probablemete el usuario no existe o no está conectado.</label> 
       </div>
       <div class="modal-footer">
-        <button type="button" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
       </div>
     </div>
   </div>
