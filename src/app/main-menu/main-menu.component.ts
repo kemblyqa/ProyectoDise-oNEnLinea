@@ -44,7 +44,8 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
-            this.allGames = data["partidas"]
+            this.allGames = data
+            console.log(JSON.stringify(data))
         }, 
         err => { 
             console.log("Error") 
@@ -56,7 +57,8 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
       .subscribe( 
         data => { 
-            this.activeGames = data["partidas"]
+            this.activeGames = data
+            console.log(JSON.stringify(data))
         }, 
         err => { 
             console.log("Error") 
@@ -85,7 +87,8 @@ export class MainMenuComponent {
       .subscribe( 
         data => { 
           //comprobar conexion con usuario before render
-          !data ? this.alertGame() : this.openGame(data)
+          console.log(data)
+          //!data ? this.alertGame() : this.openGame(data)
         }, 
         err => { 
             console.log(err) 

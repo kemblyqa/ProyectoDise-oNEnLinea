@@ -52,7 +52,7 @@
         <div class="form-group row"> 
           <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
           <div class="col-sm-6"> 
-            <input type="text" [(ngModel)]="player" class="form-control" id="player" placeholder="Tamaño en digitos.."> 
+            <input type="text" [(ngModel)]="idP2" class="form-control" id="player" placeholder="Nombre.."> 
           </div> 
         </div> 
         <div class="form-group row">
@@ -94,22 +94,20 @@
             </div>  
 
           <!-- Show all games or active games -->
-
           <div *ngIf="active">
             <div *ngFor="let game of activeGames">
               <div class="form-group row">
-                <label for="gameInfo" class="col-sm-6 col-form-label">vs</label>
+                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
                 <div class="col-sm-6">
-                  <button type="button" (click)=openGame(game) data-dismiss="modal" class="btn btn-primary">Jugar</button>
+                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="btn btn-primary">Jugar</button>
                 </div>
               </div>
             </div>
           </div>
-
           <div *ngIf="!active">
             <div *ngFor="let game of allGames">
               <div class="form-group row">
-                <!-- <label for="gameInfo" class="col-sm-6 col-form-label">{{}} vs {{}}</label> -->
+                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
                 <div class="col-sm-6">
                   <button type="button" (click)=review() data-dismiss="modal" class="btn btn-primary">Ver</button>
                 </div>
