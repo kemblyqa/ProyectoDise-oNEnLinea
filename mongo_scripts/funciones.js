@@ -285,15 +285,13 @@ db.system.js.save({
 	_id: "checkUsuario",
 	value: function (idUsuario) 
 	{ 
-        return db.Usuarios.find({_id:idUsuario},{nickname:1,detalles:1}).toArray()[0];
-		}
-}); 
-
-db.system.js.save({
-	_id: "gameList",
-	value: function (idUsuario) 
-	{ 
-        return db.Usuarios.find({_id:idUsuario},{partidas:1}).toArray()[0];
+		if (idUsuario=="e")
+			return({"nickname":"Easy Robot","detalles":"Robot facil"})
+		else if (idUsuario=="m")
+			return({"nickname":"Medium Robot","detalles":"Robot medio"})
+		else if (idUsuario=="h")
+			return({"nickname":"Hard Robot","detalles":"Robot dificil"})
+        return db.Usuarios.find({_id:idUsuario},{nickname:1,detalles:1,_id:0}).toArray()[0];
 		}
 }); 
 
@@ -310,7 +308,6 @@ db.system.js.save({
 					retorno.push(x);
 			});
 		}
-
         return retorno;
 		}
 }); 

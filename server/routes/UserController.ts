@@ -58,15 +58,27 @@ class ControladorPersona{
         consulta("checkUsuario('"+idUsuario+"')", res);
     }
 
-    public static gameList(req: Request, res: Response){
-        let idUsuario = req.query.idUsuario;
-        consulta("gameList('"+idUsuario+"')", res);
-    }
-
     public static gameListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
-        consulta("gameListFilter('"+idUsuario+"',"+filtro+")", res);
+        mongoose.connect('mongodb://localhost:27017/connect4')
+        .then(() =>{
+            mongoose.connection.db.eval("gameListFilter('"+idUsuario+"',"+filtro+")")
+            .then(result0 =>{
+                if(result0[0] ==null)
+                    res.json(result0);
+                else
+                    result0.forEach(element => {
+                        mongoose.connection.db.eval("getInfoPartida("+element+")").then(result1 =>{
+                            mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[0][0]+"')").then(user0 =>{
+                                mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[1][0]+"')").then(user1 =>{
+                                    res.json({"id_partida":element,"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea})
+                                })
+                            })
+                        })
+                    })
+            })
+        })
     }
 
     public static rondaActiva(req: Request, res: Response){
@@ -80,7 +92,6 @@ class ControladorPersona{
         this.router.post('/setDetails',ControladorPersona.setDetails);
         this.router.post('/changeNick',ControladorPersona.changeNick);
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
-        this.router.get('/gameList',ControladorPersona.gameList);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);
         this.router.get('/rondaActiva',ControladorPersona.rondaActiva);
     }

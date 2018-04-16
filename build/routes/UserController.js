@@ -49,14 +49,27 @@ var ControladorPersona = /** @class */ (function () {
         var idUsuario = req.query.idUsuario;
         consulta("checkUsuario('" + idUsuario + "')", res);
     };
-    ControladorPersona.gameList = function (req, res) {
-        var idUsuario = req.query.idUsuario;
-        consulta("gameList('" + idUsuario + "')", res);
-    };
     ControladorPersona.gameListFilter = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var filtro = req.query.filtro;
-        consulta("gameListFilter('" + idUsuario + "'," + filtro + ")", res);
+        mongoose.connect('mongodb://localhost:27017/connect4')
+            .then(function () {
+            mongoose.connection.db.eval("gameListFilter('" + idUsuario + "'," + filtro + ")")
+                .then(function (result0) {
+                if (result0[0] == null)
+                    res.json(result0);
+                else
+                    result0.forEach(function (element) {
+                        mongoose.connection.db.eval("getInfoPartida(" + element + ")").then(function (result1) {
+                            mongoose.connection.db.eval("checkUsuario('" + result1.usuarios[0][0] + "')").then(function (user0) {
+                                mongoose.connection.db.eval("checkUsuario('" + result1.usuarios[1][0] + "')").then(function (user1) {
+                                    res.json({ "id_partida": element, "Jugador_1": user0, "colors": [result1.usuarios[0][1], result1.usuarios[1][1]], "Jugador_2": user1, "tamano": result1.tamano, "linea": result1.tamano_linea });
+                                });
+                            });
+                        });
+                    });
+            });
+        });
     };
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;
@@ -69,7 +82,6 @@ var ControladorPersona = /** @class */ (function () {
         this.router.post('/setDetails', ControladorPersona.setDetails);
         this.router.post('/changeNick', ControladorPersona.changeNick);
         this.router.get('/checkUsuario', ControladorPersona.checkUsuario);
-        this.router.get('/gameList', ControladorPersona.gameList);
         this.router.get('/gameListFilter', ControladorPersona.gameListFilter);
         this.router.get('/rondaActiva', ControladorPersona.rondaActiva);
     };

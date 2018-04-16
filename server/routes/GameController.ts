@@ -109,35 +109,30 @@ class GameController{
                 let model = new gameModel(tablero,size);
                 if (turno%2==jugador){
                     let now = Date();
-                    console.log("tiempo:" +(Date.parse(now)-Date.parse(lastMove)));
                     if (lastMove !=null && (Date.parse(now)-Date.parse(lastMove))>300000){
-                        mongoose.connection.db.eval("finalizarPartida("+idPartida+")")
-                            .then(result3 =>{
-                                for(let x:number=0;x<nRondas;x++){
-                                    mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
-                                    .then(result4 =>{
-                                        if (result4.estado.finalizador==""){
-                                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')")
-                                        }
-                                    });
+                        consulta("finalizarPartida("+idPartida+")",null);
+                        for(let x:number=0;x<nRondas;x++){
+                            mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
+                            .then(result =>{
+                                if (result.estado.finalizador==""){
+                                    consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
                                 }
                             });
+                        }
                         res.json("a");
                         return;
                     }
                     let tupla = model.getCellInGrid(columna,jugador);
                     if (tupla !=null){
-                        mongoose.connect('mongodb://localhost:27017/connect4')
-                        .then(() =>{
-                            mongoose.connection.db.eval("rondaActiva("+idPartida+")")
-                            .then(result0 =>{
+                        mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+                            mongoose.connection.db.eval("rondaActiva("+idPartida+")").then(result0 =>{
                                 let ronda = result0;
                                 mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+tupla[0]+","+tupla[1]+","+jugador+")").then(() =>{
                                     let estado = model.isNConnected(tupla[0],tupla[1],jugador);
                                     if (estado !="p"){
-                                        mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
-                                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+idJugador+"','"+estado+"')")
-                                                .then(result1 =>{res.json(estado)})});
+                                        if (ronda == nRondas-1)
+                                            consulta("finalizarPartida("+idPartida+")",null);
+                                        consulta("finalizarRonda("+idPartida+","+ronda+",'"+idJugador+"','"+estado+"')",null)
                                     }
                                     else if (contrincante =="e" ||contrincante =="m" ||contrincante =="h"){
                                         let resul = model.AIMove(contrincante=="e"?1:contrincante=="m"?2:3,Math.abs(jugador-1));
@@ -149,7 +144,10 @@ class GameController{
                                             else
                                                 mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+Math.abs(jugador-1)+")").then(result0 =>{
                                                     mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+contrincante+"','"+resul[1]+"')")
-                                                        .then(result1 =>{res.json(resul[1]=="w"?"l":"t")})});
+                                                        .then(result1 =>{
+                                                            if (ronda == nRondas-1)
+                                                                consulta("finalizarPartida("+idPartida+")",null);
+                                                            res.json(resul[1]=="w"?"l":"t")})});
                                         })
                                     }
                                     return;
