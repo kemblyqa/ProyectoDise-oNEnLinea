@@ -16,15 +16,15 @@ export class UserDetails {
         this.currentGameID = id
     }
 
-    get getCurrentGameID(){
+    getCurrentGameID(){
         return this.currentGameID
     }
 
-    get getUserID(){
+    getUserID(){
         return this.userID
     }
 
-    get getUserNickName(){
+    getUserNickName(){
         return this.nickName
     }
 

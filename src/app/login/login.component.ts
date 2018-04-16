@@ -3,6 +3,8 @@ import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {Router} from "@angular/router";
+declare var jquery: any;
+declare var $ : any;
 
 @Component({
   selector: 'app-login',
@@ -16,36 +18,36 @@ export class LoginComponent {
 
   constructor(private service: Service, private router: Router){}
 
-  //only once, I need only one player
   login(){
     this.service.getData("/user/checkUsuario",{
       params: {idUsuario: this.idUser}
     })
       .subscribe(
         resUser => {
-          if(resUser == null){
-
-          }
+          resUser == null ? this.register() : this.routeTo()
         }
       )
-    let url:string = "/user/crearUsuario"
-    const params = {
-        idUsuario: this.idUser,
-        nick: this.nickname,
-        det: this.details
-    }
-    // this.service.postData(url,params)
-    //   .subscribe(
-    //     res => {
-    //       UserDetails.Instance.setUserID(this.player)
-    //       this.router.navigate(['/menu'])
-    //     }
-    //   )
-    UserDetails.Instance.setUserID(this.idUser)
-    this.router.navigate(['/menu'])
+  }
+
+  registerUser(){
+    this.service.postData("/user/crearUsuario",{
+      idUsuario: this.idUser,
+      nick: this.nickname,
+      det: this.details
+    })
+      .subscribe(
+        resSuccess => {
+          resSuccess ? this.routeTo() : console.log("aqui iria un alert")
+        }
+      )
   }
 
   register(){
-    
+    $('#register').modal('show');
+  }
+
+  routeTo(){
+    UserDetails.Instance.setUserID(this.idUser)
+    this.router.navigate(['/menu'])
   }
 }
