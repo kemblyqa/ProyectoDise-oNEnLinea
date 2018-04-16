@@ -182,7 +182,6 @@ class GameController{
         let size = req.body.size;
         let lineSize = req.body.lineSize;
         let nRondas = req.body.nRondas;
-
         consulta("nuevaSesion('"+idJ1+"','"+color1+"','"+idJ2+"','"+color2+"',"+size+","+lineSize+","+nRondas+")",res);
     }
 
