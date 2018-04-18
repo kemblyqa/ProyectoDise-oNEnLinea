@@ -1,3 +1,4 @@
+<!-- Main menu content -->
 <div class="container justify-content-center">
   <div class="card centerMenu">
     <div class="card-header">
@@ -15,6 +16,9 @@
       </div>
       <div class="centerMenuItem">
         <button type="button" (click)="seeGames()" class="centerMenuBtn">Registro de partidas</button>
+      </div>
+      <div class="centerMenuItem">
+        <button type="button" (click)="seeFriends()" class="centerMenuBtn">Lista de amigos</button>
       </div>
       <div class="centerMenuItem">
         <button type="button" (click)="seeMessages()" class="centerMenuBtn">Chats</button>
@@ -179,21 +183,23 @@
             <div *ngFor="let game of activeGames">
               <div class="form-group row">
                 <div class="col-sm-4">
-                  <div class="row">
-                    <label class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}}</label>
+                  <div class="row centerGameOption">
+                    <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
+                    <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
                   </div>
-                  <div class="row">
-                    <label for="gameInfo" class="col-sm-6 col-form-label">{{game.colors[0]}}</label>
+                  <div class="row centerGameOption">
+                    <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
+                    <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
                   </div>
                 </div>
                 <div class="col-sm-4">
-                    <div class="row">
-                      <label class="col-sm-6 col-form-label">{{game.Jugador_2.nickname}}</label>
-                    </div>
-                    <div class="row">
-                      <label for="gameInfo" class="col-sm-6 col-form-label">{{game.colors[1]}}</label>
-                    </div>
+                  <div class="row centerGameOption">
+                    <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
                   </div>
+                  <div class="row centerGameOption">
+                    <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
+                  </div>
+                </div>
                 <div class="col-sm-4 centerGameOption">
                   <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="playGameOption">Jugar</button>
                 </div>
@@ -203,16 +209,30 @@
           <div *ngIf="!active">
             <div *ngFor="let game of allGames">
               <div class="form-group row">
-                <div class="col-sm-9">
-                  <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}} vs {{game.Jugador_2.nickname}}</label>
+                <div class="col-sm-4">
+                  <div class="row centerGameOption">
+                    <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
+                    <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
+                  </div>
+                  <div class="row centerGameOption">
+                    <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
+                    <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="row centerGameOption">
+                    <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
+                  </div>
+                  <div class="row centerGameOption">
+                    <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
+                  </div>
                 </div>                
-                <div class="col-sm-3">
+                <div class="col-sm-4 centerGameOption">
                   <button type="button" (click)=review() data-dismiss="modal" class="viewGameOption">Ver</button>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
         <div class="modal-footer">
           <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>

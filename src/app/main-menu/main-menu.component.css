@@ -4,6 +4,13 @@
     margin-top: 5%;
 }
 
+.spanColor{
+    width: 20px;
+    height: 20px;
+    display: block;
+    border-radius: 50%;
+}
+
 .playGameOption {
     background-color: rgb(179, 101, 202);
     color: #fff;
