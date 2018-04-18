@@ -114,12 +114,11 @@ var ControladorPersona = /** @class */ (function () {
         var idAnfitrion = req.body.idAnfitrion;
         mongoose.connect('mongodb://localhost:27017/connect4')
             .then(function () {
-            console.log("aceptar('" + idAnfitrion + "','" + idUsuario + "')");
             mongoose.connection.db.eval("aceptar('" + idAnfitrion + "','" + idUsuario + "')")
                 .then(function (result) {
                 consulta("nuevaSesion('" + result.anfitrion + "','" + result.color + "','" + idUsuario + "','" + color + "'," + result.tamano + "," + result.tamano_linea + "," + result.nRondas + ")", res);
-            }).catch(function () { return res.json(false); });
-        }).catch(function () { return res.json(false); });
+            }).catch(function () { return res.json("Error al aceptar invitación"); });
+        }).catch(function () { return res.json("Error de conexión"); });
     };
     ControladorPersona.rechazar = function (req, res) {
         var idUsuario = req.body.idUsuario;

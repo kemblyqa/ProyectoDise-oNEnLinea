@@ -68,7 +68,7 @@ var GameController = /** @class */ (function () {
                         mongoose.connection.db.eval("getInfoRonda(" + idPartida + "," + ronda + ")")
                             .then(function (result1) {
                             if (result1.estado.finalizador != "") {
-                                res.json(false);
+                                res.json("Esta partida está finalizada");
                                 return;
                             }
                             mongoose.connection.db.eval("getInfoPartida(" + idPartida + ")")
@@ -135,10 +135,10 @@ var GameController = /** @class */ (function () {
                         }).catch(function (err) { res.json(err); });
                     }
                     else
-                        res.json(false);
+                        res.json("Jugada no posible");
                 }
                 else
-                    res.json(false);
+                    res.json("No es tu turno");
             }
         ]);
     };
@@ -260,7 +260,7 @@ var GameController = /** @class */ (function () {
             mongoose.connection.db.eval("getInfoPartida(" + idPartida + ")")
                 .then(function (result0) {
                 if ((result0.usuarios[0][0] != idJugador && result0.usuarios[1][0] != idJugador) || result0.estado == false) {
-                    res.json(false);
+                    res.json("La partida está inactiva o no admite a este jugador");
                 }
                 else
                     mongoose.connection.db.eval("rondaActiva(" + idPartida + ")")

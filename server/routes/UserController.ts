@@ -127,12 +127,11 @@ class ControladorPersona{
         let idAnfitrion = req.body.idAnfitrion;
         mongoose.connect('mongodb://localhost:27017/connect4')
         .then(() =>{
-            console.log("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             .then(result =>{
                 consulta("nuevaSesion('"+result.anfitrion+"','"+result.color+"','"+idUsuario+"','"+color+"',"+result.tamano+","+result.tamano_linea+","+result.nRondas+")",res)
-            }).catch(() => res.json(false))
-        }).catch(() => res.json(false))
+            }).catch(() => res.json("Error al aceptar invitación"))
+        }).catch(() => res.json("Error de conexión"))
     }
 
     public static rechazar(req: Request, res: Response){
