@@ -99,6 +99,36 @@ var ControladorPersona = /** @class */ (function () {
         var id2 = req.query.id2;
         consulta("friend('" + id1 + "','" + id2 + "')", res);
     };
+    ControladorPersona.invitar = function (req, res) {
+        consulta("invitar('" + req.body.idAnfitrion + "','" + req.body.color + "','" + req.body.IDinvitado + "',"
+            + req.body.tamano + "," + req.body.tamano_linea + "," + req.body.nRondas + ")", res);
+    };
+    ControladorPersona.aceptar = function (req, res) {
+        var idUsuario = req.body.idUsuario;
+        var color = req.body.color;
+        var idAnfitrion = req.body.idAnfitrion;
+        mongoose.connect('mongodb://localhost:27017/connect4')
+            .then(function () {
+            console.log("aceptar('" + idAnfitrion + "','" + idUsuario + "')");
+            mongoose.connection.db.eval("aceptar('" + idAnfitrion + "','" + idUsuario + "')")
+                .then(function (result) {
+                console.log(result);
+                console.log("nuevaSesion('" + result.anfitrion + "','" + result.color + "','" + idUsuario + "','" + color + "'," + result.tamano + "," + result.tamano_linea + "," + result.nRondas + ")");
+                consulta("nuevaSesion('" + result.anfitrion + "','" + result.color + "','" + idUsuario + "','" + color + "'," + result.tamano + "," + result.tamano_linea + "," + result.nRondas + ")", res);
+            }).catch(function () { return res.json(false); });
+        }).catch(function () { return res.json(false); });
+    };
+    ControladorPersona.rechazar = function (req, res) {
+        var idUsuario = req.body.idUsuario;
+        var idAnfitrion = req.body.idAnfitrion;
+        console.log();
+        consulta("rechazar('" + idAnfitrion + "','" + idUsuario + "')", res);
+    };
+    ControladorPersona.invitaciones = function (req, res) {
+        var idUsuario = req.query.idUsuario;
+        var page = req.query.page;
+        consulta("invitaciones('" + idUsuario + "'," + page + ")", res);
+    };
     ControladorPersona.prototype.routes = function () {
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg', ControladorPersona.chat);
@@ -106,11 +136,15 @@ var ControladorPersona = /** @class */ (function () {
         this.router.post('/setDetails', ControladorPersona.setDetails);
         this.router.post('/changeNick', ControladorPersona.changeNick);
         this.router.post('/friend', ControladorPersona.friend);
+        this.router.post('/invitar', ControladorPersona.invitar);
+        this.router.post('/aceptar', ControladorPersona.aceptar);
+        this.router.post('/rechazar', ControladorPersona.rechazar);
         this.router.get('/checkUsuario', ControladorPersona.checkUsuario);
         this.router.get('/checkNick', ControladorPersona.checkNick);
         this.router.get('/gameListFilter', ControladorPersona.gameListFilter);
         this.router.get('/rondaActiva', ControladorPersona.rondaActiva);
         this.router.get('/friendList', ControladorPersona.friendList);
+        this.router.get('/invitaciones', ControladorPersona.invitaciones);
     };
     return ControladorPersona;
 }());

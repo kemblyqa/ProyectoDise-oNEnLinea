@@ -9,7 +9,8 @@ db.system.js.save({
 			detalles:det,
 			partidas:[],
 			friends:[],
-			chats:{}});
+			chats:{},
+			invitaciones:[]});
 			return true;
 		}
 		catch(e){
@@ -60,20 +61,20 @@ db.system.js.save({
 
 db.system.js.save({
 	_id: "linkUsuarioPartida",
-	value: function (idUsuario,idPartida,color) 
+	value: function (idPartida,idUsuario,color) 
 	{ 
 		try{
 			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] == idUsuario || db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] == idUsuario)
 				return false;
 			ok = false;
-			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] ==0 && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][1]!=color){
-				db.Partidas.update({_id:1},{$set : {'usuarios.0.0' : idUsuario}});
-				db.Partidas.update({_id:1},{$set : {'usuarios.0.1' : color}});
+			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] =="" && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][1]!=color){
+				db.Partidas.update({_id:idPartida},{$set : {'usuarios.0.0' : idUsuario}});
+				db.Partidas.update({_id:idPartida},{$set : {'usuarios.0.1' : color}});
 				ok=true;
 			}
-			else if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][0] == 0  && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][1]!=color){
-				db.Partidas.update({_id:1},{$set : {'usuarios.1.0' : idUsuario}});
-				db.Partidas.update({_id:1},{$set : {'usuarios.1.1' : color}});
+			else if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][0] == ""  && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][1]!=color){
+				db.Partidas.update({_id:idPartida},{$set : {'usuarios.1.0' : idUsuario}});
+				db.Partidas.update({_id:idPartida},{$set : {'usuarios.1.1' : color}});
 				ok=true;
 			}
 			if (ok){
@@ -82,11 +83,10 @@ db.system.js.save({
 			   { $push: { partidas: idPartida } });
 				return true;
 			}
-		else
-			return false;
+			else
+				return false;
 		}
 		catch(e){
-
 			return false;
 		}
 	}
@@ -143,7 +143,10 @@ db.system.js.save({
 	value: function (idJ1,color1,idJ2,color2,size,lineSize,nRondas) 
 	{ 
 		try{
-			if ((db.Usuarios.find({_id:idJ1}).toArray()[0]==null && (idJ1!="e" && idJ1!="m" &&idJ1!="h")) || (db.Usuarios.find({_id:idJ2}).toArray()[0]==null && (idJ2!="e" && idJ2!="m" &&idJ2!="h")) || color1==color2)
+			if ((db.Usuarios.find({_id:idJ1}).toArray()[0]==null && (idJ1!="e" && idJ1!="m" &&idJ1!="h")) || 
+				(db.Usuarios.find({_id:idJ2}).toArray()[0]==null && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!="")) || 
+				color1==color2 || idJ1==idJ2 ||
+				db.Partidas.findOne({"usuarios.0.0":idJ1,"usuarios.1.0":idJ2,estado:true})!=null)
 				return false;
 			fila='[-1';
 			for(x=1;x<size;x++){
@@ -161,14 +164,16 @@ db.system.js.save({
 				rondas=rondas+','+ronda;
 			}
 			rondas=rondas+']';
-                        query='{"_id":'+(db.Partidas.find().count()+1)+', "estado":true, "tamano":'+size+',"tamano_linea":'+lineSize+',"usuarios":[["'+idJ1+'","'+color1+'"],["'+idJ2+'","'+color2+'"]],"rondas":'+rondas+',"nRondas":'+nRondas+'}';
-                        db.Partidas.insertOne(JSON.parse([query]));
-                        db.Usuarios.update(
-   			{_id: idJ1},
-   			{ $push: { partidas: db.Partidas.find().count() } });
-                        db.Usuarios.update(
-   			{_id: idJ2},
-   			{ $push: { partidas: db.Partidas.find().count() } });
+            query='{"_id":'+(db.Partidas.find().count()+1)+', "estado":true, "tamano":'+size+',"tamano_linea":'+lineSize+',"usuarios":[["'+idJ1+'","'+color1+'"],["'+idJ2+'","'+color2+'"]],"rondas":'+rondas+',"nRondas":'+nRondas+'}';
+            db.Partidas.insertOne(JSON.parse([query]));
+            if(idJ1!="e" && idJ1!="m" && idJ1!="h" && idJ1!="")
+	            db.Usuarios.update(
+	   			{_id: idJ1},
+	   			{ $push: { partidas: db.Partidas.find().count() } });
+            if(idJ2!="e" && idJ2!="m" && idJ2!="h" && idJ2!="")
+	            db.Usuarios.update(
+	   			{_id: idJ2},
+	   			{ $push: { partidas: db.Partidas.find().count() } });
             return db.Partidas.find().count();
 		}
 		catch(err){
@@ -370,3 +375,70 @@ db.system.js.save({
 			richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:0}))
 		return richList;
 }})
+
+db.system.js.save({
+	_id: "disponibles",
+	value: function (page) 
+	{ 
+		let result = db.Partidas.find({'usuarios.1.0':"",estado:true}).toArray().slice((page-1)*10,page*10);
+		let retorno = [];
+                let index = 0;
+                while(result[index]!=null){
+                    let creador = db.Usuarios.findOne({_id:result[index].usuarios[0][0]});
+                    retorno.push({"creador":creador.nickname,"#Partida":result[index]._id,"color":result[index].usuarios[0][1],"tamaño":result[index].tamano,"victoria":result[index].tamano_linea,"rondas":result[index].nRondas})
+                    index++
+                }
+                return retorno;
+        }
+});
+
+db.system.js.save({
+	_id: "invitar",
+	value: function (idAnfitrion,color,IDinvitado,tamano,tamano_linea,nRondas) 
+	{ 
+		if(db.Usuarios.findOne({"invitaciones.anfitrion":idAnfitrion,_id:IDinvitado})!=null || 
+			db.Partidas.findOne({"usuarios.0.0":idAnfitrion,"usuarios.1.0":IDinvitado,estado:true})!=null ||
+			db.Partidas.findOne({"usuarios.1.0":IDinvitado,"usuarios.0.0":idAnfitrion,estado:true})!=null)
+			return false
+		else{
+			db.Usuarios.update({_id:IDinvitado},{$push:{invitaciones:{anfitrion:idAnfitrion,color:color,tamano:tamano,tamano_linea:tamano_linea,nRondas:nRondas}}})
+            return true;
+            }
+	}
+});
+
+db.system.js.save({
+	_id: "aceptar",
+	value: function (idAnfitrion, idUsuario) 
+	{ 
+		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.anfitrion":idAnfitrion})
+                if (invitacion ==null)
+                    return false
+                invitacion = invitacion.invitaciones[0]
+		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
+		return invitacion;
+	}
+});
+
+db.system.js.save({
+	_id: "rechazar",
+	value: function (idAnfitrion, idUsuario) 
+	{ 
+		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.anfitrion":idAnfitrion})
+        if (invitacion ==null)
+            return false
+		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
+		return true;
+	}
+});
+
+db.system.js.save({
+	_id: "invitaciones",
+	value: function (idUsuario,page) 
+	{ 
+		let user = db.Usuarios.findOne({_id:idUsuario})
+        if (user ==null)
+            return false;
+		return user.invitaciones.slice((page-1)*10,page*10);
+	}
+});
