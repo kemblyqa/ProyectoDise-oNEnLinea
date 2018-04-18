@@ -19,9 +19,11 @@ export class TableroComponent {
   nSize:number
   movePosition:Array<any>
   playerTurn:any
+  nickNamePlayer:any
 
   //board model
   tab:BuildBoard
+  timer:any
   
   //needed in dialogs and notificatios
   dialogTitleEndGame:string
@@ -93,29 +95,13 @@ export class TableroComponent {
         status => {
           console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
           -->estado: ${status}`)
-          // this.service.getData("/game/update",{
-          //   params: {
-          //     idPartida: UserDetails.Instance.getCurrentGameID(),
-          //     ronda: this.tab.getActiveRound(),
-          //     idJugador: UserDetails.Instance.getUserID()
-          //   }
-          // })
-          //   .subscribe(
-          //     resMove =>{
-          //       console.log(JSON.stringify(resMove))
-          //       this.tab.setGrid(resMove["tablero"])
-          //       //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
-          //     },
-          //     err => {
-          //       console.log(JSON.stringify(err))
-          //     }
-          //   )
+          this.tab.verifyIfGameIsEnded(status) ? this.gameIsEnded() : null
         }
       ) 
   }
 
   updateGameEvent(){
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.service.getData("/game/update",{
         params: {
           idPartida: UserDetails.Instance.getCurrentGameID(),
@@ -127,20 +113,21 @@ export class TableroComponent {
           resMove =>{
             console.log(JSON.stringify(resMove))
             this.tab.setGrid(resMove["tablero"])
-            //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
+            this.playerTurn = this.tab.verifyGameStatus(resMove["turno"])
           },
           err => {
             console.log(JSON.stringify(err))
           }
         )
-    }, 500)
+    }, 3000)
   }
 
   openModalEndGame(){
     $("#end").modal('show')
   }
 
-  verifyIfIsEnded(){
+  gameIsEnded(){
+    clearInterval(this.timer)
     switch(this.tab.getReasonStatus()){
       case "w":
         this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
@@ -157,7 +144,10 @@ export class TableroComponent {
         this.dialogTitleEndGame = "EMPATE...."
         this.openModalEndGame()
         break
-      case "p":
+      case "a":
+        this.dialogEndGame = "Oops!! La partida ha sido abandonada "
+        this.dialogTitleEndGame = "ABANDONO...."
+        this.openModalEndGame()
         break;
     }
   }

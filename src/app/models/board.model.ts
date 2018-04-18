@@ -139,7 +139,24 @@ export class BuildBoard{
                 }
             }
         }
-        //change the player [testing]
-        //this.switchPlayer()
+    }
+
+    //show in the board the status of turn
+    verifyGameStatus(turn:any):any{
+        //turno: [0] No es mi turno, [1] Si es mi turno, [-1] Juego terminado
+        if(turn == 0){
+            return "Turno del jugador"
+        } else if (turn == 1){
+            return "Es mi turno"
+        } else {
+            return "Juego terminado"
+        }
+    }
+
+    //finalizador: winner or last move before end game
+    //show if win, lose, tie, or leave
+    verifyIfGameIsEnded(status:any){
+        this.gameStatus = status
+        return status != "p" ? true : false
     }
 }
