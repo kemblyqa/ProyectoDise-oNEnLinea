@@ -14,7 +14,7 @@ function consulta(query, res) {
         })
             .catch(function (err) {
             if (res != null)
-                res.json(err);
+                res.json("Error al realizar la consulta a Mongo");
         });
     })
         .catch(function () { res.json("Error de conexion"); });
@@ -88,19 +88,10 @@ var GameController = /** @class */ (function () {
                                     jugador = -1;
                                 }
                                 callback(null, result1.tablero, result2.tamano_linea, jugadas.length, jugador, contrincante, result2.lastMove, result2.nRondas);
-                            })
-                                .catch(function (err) {
-                                res.json(err);
-                            });
-                        })
-                            .catch(function (err) {
-                            res.json(err);
-                        });
+                            }).catch(function (err) { res.json(err); });
+                        }).catch(function (err) { res.json(err); });
                     });
-                })
-                    .catch(function (err) {
-                    res.json(err);
-                });
+                }).catch(function (err) { res.json(err); });
             },
             function (tablero, size, turno, jugador, contrincante, lastMove, nRondas, callback) {
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: " + turno + "\njugador: " + jugador);
@@ -115,7 +106,7 @@ var GameController = /** @class */ (function () {
                                 if (result.estado.finalizador == "") {
                                     consulta("finalizarRonda(" + idPartida + "," + x + ",'" + idJugador + "','a')", null);
                                 }
-                            });
+                            }).catch(function (err) { res.json(err); });
                         };
                         for (var x = 0; x < nRondas; x++) {
                             _loop_1(x);
@@ -139,9 +130,9 @@ var GameController = /** @class */ (function () {
                                     else
                                         res.json("p");
                                     return;
-                                });
-                            });
-                        });
+                                }).catch(function (err) { res.json(err); });
+                            }).catch(function (err) { res.json(err); });
+                        }).catch(function (err) { res.json(err); });
                     }
                     else
                         res.json(false);
@@ -211,14 +202,14 @@ var GameController = /** @class */ (function () {
                                         if (result4.estado.finalizador == "") {
                                             mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + x + "," + finalizador + ",'a')");
                                         }
-                                    });
+                                    }).catch(function (err) { res.json(err); });
                                 };
                                 for (var x = 0; x < result1.nRondas; x++) {
                                     _loop_2(x);
                                 }
                                 res.json({ "tablero": result.tablero, "estado": { "finalizador": finalizador, "causa": "a" }, "turno": -1 });
                                 return;
-                            });
+                            }).catch(function (err) { res.json(err); });
                         }
                         else if ((result1.usuarios[turno_1][0] == "e" || result1.usuarios[turno_1][0] == "m" || result1.usuarios[turno_1][0] == "h")) {
                             var level = result1.usuarios[turno_1][0] == "e" ? 1 : result1.usuarios[turno_1][0] == "m" ? 2 : 3;
@@ -230,8 +221,8 @@ var GameController = /** @class */ (function () {
                                     res.json({ "tablero": botGame_1.charGrid, "estado": { "finalizador": resul_1[1] == "p" ? "" : result1.usuarios[turno_1][0], "causa": resul_1[1] == "p" ? "" : resul_1[1] }, "turno": -1 });
                                     if (resul_1[1] != "p")
                                         mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + ",'" + result1.usuarios[turno_1][0] + "','" + resul_1[1] + "')");
-                                });
-                            });
+                                }).catch(function (err) { res.json(err); });
+                            }).catch(function (err) { res.json(err); });
                         }
                         else
                             res.json({ "tablero": result.tablero, "estado": ["", ""], "turno": tuTurno_1 });
@@ -239,9 +230,9 @@ var GameController = /** @class */ (function () {
                     result.tablero.forEach(function (element) {
                         console.log(element);
                     });
-                });
-            });
-        });
+                }).catch(function (err) { res.json(err); });
+            }).catch(function (err) { res.json(err); });
+        }).catch(function (err) { res.json(err); });
     };
     GameController.start = function (req, res) {
         var idPartida = req.query.idPartida;
@@ -256,10 +247,10 @@ var GameController = /** @class */ (function () {
                         .then(function (result2) {
                         var ronda = result1;
                         res.json({ "tamano": result0.tamano, "tamano_linea": result0.tamano_linea, "usuarios": result0.usuarios, "tablero": result2.tablero, "estado": result2.estado, "ronda": ronda });
-                    });
-                });
-            });
-        });
+                    }).catch(function (err) { res.json(err); });
+                }).catch(function (err) { res.json(err); });
+            }).catch(function (err) { res.json(err); });
+        }).catch(function (err) { res.json(err); });
     };
     GameController.abandono = function (req, res) {
         var idPartida = req.body.idPartida;
@@ -279,16 +270,17 @@ var GameController = /** @class */ (function () {
                             consulta("finalizarRonda(" + idPartida + "," + x + ",'" + idJugador + "','a')", null);
                         }
                         consulta("finalizarPartida(" + idPartida + ")", null);
-                    });
+                    }).catch(function (err) { res.json(err); });
                 res.json(true);
-            });
-        });
+            }).catch(function (err) { res.json(err); });
+        }).catch(function (err) { res.json(err); });
     };
     GameController.disponibles = function (req, res) {
         var page = req.query.page;
         consulta("disponibles(" + page + ")", res);
     };
     GameController.prototype.routes = function () {
+        //GET
         this.router.get('/update', GameController.update);
         this.router.get('/getGamelog', GameController.getRegistro);
         this.router.get('/getInfoPartida', GameController.getInfoPartida);
@@ -296,6 +288,7 @@ var GameController = /** @class */ (function () {
         this.router.get('/getTablero', GameController.getTablero);
         this.router.get('/start', GameController.start);
         this.router.get('/disponibles', GameController.disponibles);
+        //POST
         this.router.post('/finPartida', GameController.finPartida);
         this.router.post('/setTablero', GameController.setTablero);
         this.router.post('/jugada', GameController.jugada);

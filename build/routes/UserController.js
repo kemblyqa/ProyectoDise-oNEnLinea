@@ -5,13 +5,18 @@ var express_1 = require("express");
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/connect4');
 function consulta(query, res) {
-    mongoose.connection.db.eval(query)
-        .then(function (result) {
-        res.json(result);
+    mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
+        mongoose.connection.db.eval(query)
+            .then(function (result) {
+            if (res != null)
+                res.json(result);
+        })
+            .catch(function (err) {
+            if (res != null)
+                res.json("Error al realizar la consulta a Mongo");
+        });
     })
-        .catch(function (err) {
-        res.json(err);
-    });
+        .catch(function () { res.json("Error de conexion"); });
 }
 var ControladorPersona = /** @class */ (function () {
     function ControladorPersona() {
@@ -70,20 +75,20 @@ var ControladorPersona = /** @class */ (function () {
                         mongoose.connection.db.eval("getInfoPartida(" + lista[x] + ")").then(function (result1) {
                             mongoose.connection.db.eval("checkUsuario('" + result1.usuarios[0][0] + "')").then(function (user0) {
                                 mongoose.connection.db.eval("checkUsuario('" + result1.usuarios[1][0] + "')").then(function (user1) {
-                                    data_1[x] = { "id_partida": lista[x], "Jugador_1": user0, "colors": [result1.usuarios[0][1], result1.usuarios[1][1]], "Jugador_2": user1, "tamano": result1.tamano, "linea": result1.tamano_linea };
+                                    data_1[x] = { "id_partida": lista[x], "Jugador_1": user0, "colors": [result1.usuarios[0][1], result1.usuarios[1][1]], "Jugador_2": user1, "tamano": result1.tamano, "linea": result1.tamano_linea, "ronda": result1.nRondas };
                                     contador_1 = contador_1 - 1;
                                     if (contador_1 == 0)
                                         res.json(data_1);
-                                });
-                            });
-                        });
+                                }).catch(function (err) { res.json(err); });
+                            }).catch(function (err) { res.json(err); });
+                        }).catch(function (err) { res.json(err); });
                     };
                     for (var x = 0; x < lista.length; x++) {
                         _loop_1(x);
                     }
                 }
-            });
-        });
+            }).catch(function (err) { res.json(err); });
+        }).catch(function (err) { res.json(err); });
     };
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;
@@ -112,8 +117,6 @@ var ControladorPersona = /** @class */ (function () {
             console.log("aceptar('" + idAnfitrion + "','" + idUsuario + "')");
             mongoose.connection.db.eval("aceptar('" + idAnfitrion + "','" + idUsuario + "')")
                 .then(function (result) {
-                console.log(result);
-                console.log("nuevaSesion('" + result.anfitrion + "','" + result.color + "','" + idUsuario + "','" + color + "'," + result.tamano + "," + result.tamano_linea + "," + result.nRondas + ")");
                 consulta("nuevaSesion('" + result.anfitrion + "','" + result.color + "','" + idUsuario + "','" + color + "'," + result.tamano + "," + result.tamano_linea + "," + result.nRondas + ")", res);
             }).catch(function () { return res.json(false); });
         }).catch(function () { return res.json(false); });
@@ -121,7 +124,6 @@ var ControladorPersona = /** @class */ (function () {
     ControladorPersona.rechazar = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var idAnfitrion = req.body.idAnfitrion;
-        console.log();
         consulta("rechazar('" + idAnfitrion + "','" + idUsuario + "')", res);
     };
     ControladorPersona.invitaciones = function (req, res) {
@@ -130,15 +132,17 @@ var ControladorPersona = /** @class */ (function () {
         consulta("invitaciones('" + idUsuario + "'," + page + ")", res);
     };
     ControladorPersona.prototype.routes = function () {
+        //POST
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg', ControladorPersona.chat);
-        this.router.get('/getChatlog', ControladorPersona.getChat);
         this.router.post('/setDetails', ControladorPersona.setDetails);
         this.router.post('/changeNick', ControladorPersona.changeNick);
         this.router.post('/friend', ControladorPersona.friend);
         this.router.post('/invitar', ControladorPersona.invitar);
         this.router.post('/aceptar', ControladorPersona.aceptar);
         this.router.post('/rechazar', ControladorPersona.rechazar);
+        //GET
+        this.router.get('/getChatlog', ControladorPersona.getChat);
         this.router.get('/checkUsuario', ControladorPersona.checkUsuario);
         this.router.get('/checkNick', ControladorPersona.checkNick);
         this.router.get('/gameListFilter', ControladorPersona.gameListFilter);

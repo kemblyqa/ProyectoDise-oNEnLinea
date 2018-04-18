@@ -4,14 +4,21 @@ import {Router, Request, Response} from "express";
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/connect4');
 
+
 function consulta(query: string, res: Response) {
-    mongoose.connection.db.eval(query)
-        .then(result =>{
-            res.json(result);
+    mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+        mongoose.connection.db.eval(query)
+            .then(result =>{
+                if (res!=null)
+                    res.json(result);
+        })
+            .catch(err =>{
+                if (res!=null)
+                    res.json("Error al realizar la consulta a Mongo");
+        });
+
     })
-        .catch(err =>{
-            res.json(err);
-    });
+    .catch(() => {res.json("Error de conexion")});
 }
 
 class ControladorPersona{
@@ -84,12 +91,12 @@ class ControladorPersona{
                                     contador=contador-1;
                                     if (contador ==0)
                                         res.json(data)
-                                })
-                            })
-                        })
+                                }).catch(err =>{res.json(err);})
+                            }).catch(err =>{res.json(err);})
+                        }).catch(err =>{res.json(err);})
                 }
-            })
-        })
+            }).catch(err =>{res.json(err);})
+        }).catch(err =>{res.json(err);})
     }
 
     public static rondaActiva(req: Request, res: Response){
@@ -123,8 +130,6 @@ class ControladorPersona{
             console.log("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             .then(result =>{
-                console.log(result)
-                console.log("nuevaSesion('"+result.anfitrion+"','"+result.color+"','"+idUsuario+"','"+color+"',"+result.tamano+","+result.tamano_linea+","+result.nRondas+")")
                 consulta("nuevaSesion('"+result.anfitrion+"','"+result.color+"','"+idUsuario+"','"+color+"',"+result.tamano+","+result.tamano_linea+","+result.nRondas+")",res)
             }).catch(() => res.json(false))
         }).catch(() => res.json(false))
@@ -133,7 +138,6 @@ class ControladorPersona{
     public static rechazar(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let idAnfitrion = req.body.idAnfitrion;
-        console.log()
         consulta("rechazar('"+idAnfitrion+"','"+idUsuario+"')", res);
     }
 
