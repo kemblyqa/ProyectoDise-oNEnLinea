@@ -372,7 +372,7 @@ db.system.js.save({
 			return false;
 		let richList = [];
 		for(let x = (page-1)*10; friendList[x]!=null && x < page*10;x++)
-			richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:0}))
+			richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
 		return richList;
 }})
 
@@ -442,3 +442,4 @@ db.system.js.save({
 		return user.invitaciones.slice((page-1)*10,page*10);
 	}
 });
+

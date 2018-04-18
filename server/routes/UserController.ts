@@ -80,7 +80,7 @@ class ControladorPersona{
                         mongoose.connection.db.eval("getInfoPartida("+lista[x]+")").then(result1 =>{
                             mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[0][0]+"')").then(user0 =>{
                                 mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[1][0]+"')").then(user1 =>{
-                                    data[x]={"id_partida":lista[x],"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea}
+                                    data[x]={"id_partida":lista[x],"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea,"ronda":result1.nRondas}
                                     contador=contador-1;
                                     if (contador ==0)
                                         res.json(data)
@@ -143,15 +143,17 @@ class ControladorPersona{
         consulta("invitaciones('"+idUsuario+"',"+page+")", res);
     }
     public routes(): void{
+        //POST
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
-        this.router.get('/getChatlog',ControladorPersona.getChat);
         this.router.post('/setDetails',ControladorPersona.setDetails);
         this.router.post('/changeNick',ControladorPersona.changeNick);
         this.router.post('/friend',ControladorPersona.friend);
         this.router.post('/invitar',ControladorPersona.invitar);
         this.router.post('/aceptar',ControladorPersona.aceptar);
         this.router.post('/rechazar',ControladorPersona.rechazar);
+        //GET
+        this.router.get('/getChatlog',ControladorPersona.getChat);
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
         this.router.get('/checkNick',ControladorPersona.checkNick);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);

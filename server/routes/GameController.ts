@@ -290,6 +290,7 @@ class GameController{
     }
 
     public routes(): void{
+        //GET
         this.router.get('/update',GameController.update);
         this.router.get('/getGamelog',GameController.getRegistro);
         this.router.get('/getInfoPartida',GameController.getInfoPartida);
@@ -297,6 +298,7 @@ class GameController{
         this.router.get('/getTablero',GameController.getTablero);
         this.router.get('/start',GameController.start);
         this.router.get('/disponibles',GameController.disponibles);
+        //POST
         this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);
         this.router.post('/jugada',GameController.jugada);
