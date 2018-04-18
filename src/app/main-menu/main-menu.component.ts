@@ -22,7 +22,9 @@ export class MainMenuComponent {
 
   //get player data
   idP1:any
+  nickName:any
   idP2:any
+  statusGame:any
 
   //board parameters
   nSize: number
@@ -32,9 +34,12 @@ export class MainMenuComponent {
   active: boolean
   
   constructor(private service: Service, private router: Router) {
-    this.menuModel = new MenuModel();
-    this.colors = this.menuModel.getColorList();
+    this.menuModel = new MenuModel()
+    this.colors = this.menuModel.getColorList()
     this.idP1 = UserDetails.Instance.getUserID()
+    this.nickName = UserDetails.Instance.getNickName()
+    //juegos activos por defecto
+    this.active = true
     //get the games of user
     this.fillAllGames()
     this.fillActiveGames()
@@ -45,7 +50,7 @@ export class MainMenuComponent {
       .subscribe( 
         data => { 
             this.allGames = data
-            console.log(JSON.stringify(data))
+            console.log(this.allGames)
         }, 
         err => { 
             console.log("Error") 
@@ -70,8 +75,8 @@ export class MainMenuComponent {
     $('#parameters').modal('show');
   }
 
-  optionsAIBegin() {
-    $('#').modal('show');
+  optionsAIBegin(){
+    $("#paramsAI").modal("show")
   }
 
   newGame(){
@@ -88,7 +93,7 @@ export class MainMenuComponent {
         data => { 
           //conexion with user before render
           console.log(data)
-          data === false ? this.alertGame() : this.openGame(data)
+          data === false ? this.alertGame() : this.fillActiveGames(), this.fillAllGames()
         }, 
         err => { 
             console.log(err) 
@@ -102,6 +107,14 @@ export class MainMenuComponent {
 
   seeGames(){
     $('#gamesRegistered').modal('show');
+  }
+
+  activeGamesBegin(){
+    $('#activeGames').modal('show');
+  }
+
+  seeMessages(){
+    
   }
 
   openGame(id:any){

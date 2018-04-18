@@ -69,6 +69,7 @@ export class BuildBoard{
             text:"Cerrar",
             href:"/menu"
         }]
+        this.fill()
     }
 
     fill() {
@@ -104,10 +105,10 @@ export class BuildBoard{
 
     setGrid(grid: any){
         this.gridBoard = grid
+        this.updateBoardGrid()
     }
 
     getIdButtonCells(){
-        this.fill()
         return this.buttonIDs
     }
 
@@ -119,22 +120,9 @@ export class BuildBoard{
         return this.gameStatus;
     }
 
-    switchPlayer(){
-        this.playerTurn = !this.playerTurn
-    }
-
-    getPlayerTurn(){
-        return this.playerTurn ? this.users[0][0] : this.users[1][0]
-    }
-
-    getColorUser(){
-        return this.playerTurn ? this.users[0][1] : this.users[1][1]
-    }
-
     getRowColButtonID(id){
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
-                //if id is found, then we need the column
                 if(this.buttonIDs[rowI][colI] == id){
                     return [rowI, colI]
                 }
@@ -142,12 +130,12 @@ export class BuildBoard{
         }
     }
 
-    updateBoardGrid(status:any, board: Array<any>, turn:any){
+    updateBoardGrid(){
         //fill the buttons with players
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
-                if(board[rowI][colI] != -1){
-                    board[rowI][colI] != 0 ? document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[0][1] : document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[1][1]                    
+                if(this.gridBoard[rowI][colI] != -1){
+                    this.gridBoard[rowI][colI] != 0 ? document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[0][1] : document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[1][1]                    
                 }
             }
         }

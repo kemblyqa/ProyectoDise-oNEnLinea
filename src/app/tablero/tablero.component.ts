@@ -46,6 +46,8 @@ export class TableroComponent {
           this.nSize = this.tab.nSize
           //then init the board
           this.initBoard()
+          //this get the ids and render the buttons in the template
+          this.buttonIDs = this.tab.getIdButtonCells()
         },
         err => {
           console.log(err)
@@ -63,8 +65,6 @@ export class TableroComponent {
             .subscribe(
               resBoard => {
                 this.tab.setGrid(resBoard)
-                //this get the ids and render the buttons in the template
-                this.buttonIDs = this.tab.getIdButtonCells()
               }
             )
         },
@@ -86,22 +86,24 @@ export class TableroComponent {
       ronda: this.tab.getActiveRound(),
       fila: this.movePosition[0],
       columna: this.movePosition[1],
-      idJugador: this.tab.getPlayerTurn()
+      idJugador: UserDetails.Instance.getUserID()
       })
       .subscribe(
         status => {
-          console.log(status)
+          console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
+          -->estado: ${status}`)
           this.service.getData("/game/update",{
             params: {
               idPartida: UserDetails.Instance.getCurrentGameID(),
               ronda: this.tab.getActiveRound(),
-              idJugador: this.tab.getPlayerTurn()
+              idJugador: UserDetails.Instance.getUserID()
             }
           })
             .subscribe(
               resMove =>{
                 console.log(JSON.stringify(resMove))
-                this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
+                this.tab.setGrid(resMove["tablero"])
+                //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
               },
               err => {
                 console.log(JSON.stringify(err))
@@ -109,6 +111,10 @@ export class TableroComponent {
             )
         }
       ) 
+  }
+
+  updateGameEvent(){
+    //setTimeout
   }
 
   openModalEndGame(){

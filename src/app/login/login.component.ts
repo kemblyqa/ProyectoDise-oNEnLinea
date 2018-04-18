@@ -24,9 +24,19 @@ export class LoginComponent {
     })
       .subscribe(
         resUser => {
-          resUser == null ? this.register() : this.routeTo()
+          if(resUser == null){
+            this.register()
+          }else{
+            this.nickname = resUser["nickname"]
+            this.details = resUser["detalles"]
+            this.routeTo()
+          }
         }
       )
+  }
+
+  register(){
+    $('#register').modal('show')
   }
 
   registerUser(){
@@ -37,21 +47,18 @@ export class LoginComponent {
     })
       .subscribe(
         resSuccess => {
-          resSuccess ? this.routeTo() : console.log("aqui iria un alert")
+          resSuccess ? this.routeTo() : this.alertUser()
         }
       )
   }
 
-  register(){
-    $('#register').modal('show')
-  }
-
-  optionsAIBegin(){
-    $("#paramsAI").modal("show")
+  alertUser(){
+    $("#failed").modal("show")
   }
 
   routeTo(){
     UserDetails.Instance.setUserID(this.idUser)
+    UserDetails.Instance.setNickNameDetails(this.nickname, this.details)
     this.router.navigate(['/menu'])
   }
 }

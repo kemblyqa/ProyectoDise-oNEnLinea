@@ -8,6 +8,11 @@ export class UserDetails {
     private currentGameID:any
     private static instance:UserDetails
 
+    setNickNameDetails(nickname: any, details:any){
+        this.nickName = nickname
+        this.details = details
+    }
+
     setUserID(userID:number){
         this.userID = userID
     }
@@ -24,7 +29,11 @@ export class UserDetails {
         return this.userID
     }
 
-    getUserNickName(){
+    getDetails(){
+        return this.details
+    }
+
+    getNickName(){
         return this.nickName
     }
 

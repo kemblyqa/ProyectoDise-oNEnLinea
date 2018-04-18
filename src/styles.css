@@ -2,7 +2,7 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap.css";
 
 body {
-    background-color: lightblue
+    background: url("assets/icons/back.jpg");
 }
 
 .centerDiv{
@@ -19,6 +19,21 @@ body {
     text-align: center;
 }
 
+.acceptButton {
+    background-color: rgb(252, 54, 80);
+    color: #fff;
+    font-weight: bold;
+    font-size: large;
+    border: none;
+}
+
+.cancelButton {
+    background-color: rgb(177, 177, 177);
+    color: #fff;
+    font-weight: bold;
+    font-size: large;
+    border: none;
+}
 
 body, html {
     height: 100%;

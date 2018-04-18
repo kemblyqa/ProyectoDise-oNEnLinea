@@ -1,20 +1,26 @@
 <div class="container justify-content-center">
   <div class="card centerMenu">
     <div class="card-header">
-      <h4 class="centerTitle">OPCIONES PARA {{idP1}}</h4>
+      <h4 class="centerTitle">Opciones disponibles para {{nickName}}</h4>
     </div>
     <div class="card-body">
-      <div class="centerMenuBtn">
-        <button type="button" (click)="parametersBegin()" class="btn btn-primary centerMenuBtn">Jugar contra jugador</button>
+      <div class="centerMenuItem">
+        <button type="button" (click)="parametersBegin()" class="centerMenuBtn">Crear partida</button>
       </div>
-      <div class="centerMenuBtn">
-        <button type="button" (click)="optionsAIBegin()" class="btn btn-primary centerMenuBtn">Jugar contra computadora</button>
+      <div class="centerMenuItem">
+        <button type="button" (click)="optionsAIBegin()" class="centerMenuBtn">Jugar con la computadora</button>
       </div>
-      <div class="centerMenuBtn">
-        <button type="button" (click)="seeGames()" class="btn btn-primary centerMenuBtn">Registro de partidas</button>
+      <div class="centerMenuItem">
+        <button type="button" (click)="activeGamesBegin()" class="centerMenuBtn">Invitaciones</button>
       </div>
-      <div class="centerMenuBtn">
-        <button type="button" [routerLink]="['/login']" class="btn btn-primary centerMenuBtn">Salir</button>
+      <div class="centerMenuItem">
+        <button type="button" (click)="seeGames()" class="centerMenuBtn">Registro de partidas</button>
+      </div>
+      <div class="centerMenuItem">
+        <button type="button" (click)="seeMessages()" class="centerMenuBtn">Chats</button>
+      </div>
+      <div class="centerMenuItem">
+        <button type="button" [routerLink]="['/login']" class="centerMenuBtn">Salir</button>
       </div>
     </div>
   </div>
@@ -66,7 +72,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" class="acceptButton" data-dismiss="modal" (click)=newGame()>Guardar</button>
+        <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>
@@ -133,7 +140,8 @@
             </div>
         </div>
         <div class="modal-footer">
-          <button type="button" (click)=newGame() data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+          <button type="button" class="acceptButton" data-dismiss="modal" (click)="newGame()">Aceptar</button>
+          <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
@@ -150,20 +158,44 @@
           </button>
         </div>
         <div class="modal-body">
+          <!-- Show inactive games or active games -->
           <div class="form-check">
-              <input class="form-check-input" type="checkbox" [(ngModel)]="active" id="idChk">
-              <label class="form-check-label" for="idChk">
-                Ver solo activos
-              </label>
-            </div>  
-
-          <!-- Show all games or active games -->
+              <div class="row">
+                <div class="col-sm-6">
+                  <input class="form-check-input" type="radio" name="radioGameStatus" id="activeGameStatus" [value]="true" [(ngModel)]="active">
+                  <label class="form-check-label" for="activeGameStatus">
+                    Activos ahora
+                  </label>
+                </div>
+                <div class="col-sm-6">
+                  <input class="form-check-input" type="radio" name="radioGameStatus" id="inactiveGameStatus" [value]="false" [(ngModel)]="active">
+                  <label class="form-check-label" for="inactiveGameStatus">
+                    Inactivos
+                  </label>
+                </div>
+              </div>
+            </div>
           <div *ngIf="active">
             <div *ngFor="let game of activeGames">
               <div class="form-group row">
-                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
-                <div class="col-sm-6">
-                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="btn btn-primary">Jugar</button>
+                <div class="col-sm-4">
+                  <div class="row">
+                    <label class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}}</label>
+                  </div>
+                  <div class="row">
+                    <label for="gameInfo" class="col-sm-6 col-form-label">{{game.colors[0]}}</label>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="row">
+                      <label class="col-sm-6 col-form-label">{{game.Jugador_2.nickname}}</label>
+                    </div>
+                    <div class="row">
+                      <label for="gameInfo" class="col-sm-6 col-form-label">{{game.colors[1]}}</label>
+                    </div>
+                  </div>
+                <div class="col-sm-4 centerGameOption">
+                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="playGameOption">Jugar</button>
                 </div>
               </div>
             </div>
@@ -171,9 +203,11 @@
           <div *ngIf="!active">
             <div *ngFor="let game of allGames">
               <div class="form-group row">
-                <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1}} vs {{game.Jugador_2}}</label>
-                <div class="col-sm-6">
-                  <button type="button" (click)=review() data-dismiss="modal" class="btn btn-primary">Ver</button>
+                <div class="col-sm-9">
+                  <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}} vs {{game.Jugador_2.nickname}}</label>
+                </div>                
+                <div class="col-sm-3">
+                  <button type="button" (click)=review() data-dismiss="modal" class="viewGameOption">Ver</button>
                 </div>
               </div>
             </div>
@@ -181,7 +215,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" data-dismiss="modal" class="btn btn-primary">Atrás</button>
+          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
         </div>
       </div>
     </div>
@@ -201,8 +235,40 @@
         <label for="rSize" class="col-sm-6 col-form-label">Probablemete el usuario no existe o no está conectado.</label> 
       </div>
       <div class="modal-footer">
-        <button type="button" data-dismiss="modal" class="btn btn-primary">Aceptar</button>
+        <button type="button" data-dismiss="modal" class="acceptButton">Aceptar</button>
       </div>
     </div>
   </div>
 </div>
+
+<!-- notifications modal -->
+<div class="modal fade" id="activeGames" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Notifiaciones de {{nickName}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Show all games or active games -->
+          <!-- <div *ngIf="active">
+            <div *ngFor="let game of activeGames">
+              <div class="form-group row">
+                <div class="col-sm-9">
+                  <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}} vs {{game.Jugador_2.nickname}}</label>
+                </div>
+                <div class="col-sm-3">
+                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="btn btn-primary">Jugar</button>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="acceptButton">Atrás</button>
+        </div>
+      </div>
+    </div>
+  </div>
