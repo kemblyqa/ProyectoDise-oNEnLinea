@@ -135,22 +135,6 @@ class GameController{
                                         consulta("finalizarRonda("+idPartida+","+ronda+",'"+idJugador+"','"+estado+"')",null)
                                         res.json(estado)
                                     }
-                                    // else if (contrincante =="e" ||contrincante =="m" ||contrincante =="h"){
-                                    //     let resul = model.AIMove(contrincante=="e"?1:contrincante=="m"?2:3,Math.abs(jugador-1));
-                                    //     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
-                                    //         console.log(resul);
-                                    //         if(resul[1]=="p")
-                                    //             mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+Math.abs(jugador-1)+")").then(result0 =>{
-                                    //                 res.json("p")});
-                                    //         else
-                                    //             mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+Math.abs(jugador-1)+")").then(result0 =>{
-                                    //                 mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+contrincante+"','"+resul[1]+"')")
-                                    //                     .then(result1 =>{
-                                    //                         if (ronda == nRondas-1)
-                                    //                             consulta("finalizarPartida("+idPartida+")",null);
-                                    //                         res.json(resul[1]=="w"?"l":"t")})});
-                                    //     })
-                                    // }
                                     else
                                         res.json("p");
                                     return;
@@ -299,6 +283,12 @@ class GameController{
             });
         });
     }
+
+    public static disponibles(req: Request, res: Response){
+        let page = req.query.page;
+        consulta("disponibles("+page+")", res);
+    }
+
     public routes(): void{
         this.router.get('/update',GameController.update);
         this.router.get('/getGamelog',GameController.getRegistro);
@@ -306,6 +296,7 @@ class GameController{
         this.router.get('/getInfoRonda',GameController.getInfoRonda);
         this.router.get('/getTablero',GameController.getTablero);
         this.router.get('/start',GameController.start);
+        this.router.get('/disponibles',GameController.disponibles);
         this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);
         this.router.post('/jugada',GameController.jugada);
