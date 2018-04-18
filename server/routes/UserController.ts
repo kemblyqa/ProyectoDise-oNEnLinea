@@ -4,14 +4,21 @@ import {Router, Request, Response} from "express";
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/connect4');
 
+
 function consulta(query: string, res: Response) {
-    mongoose.connection.db.eval(query)
-        .then(result =>{
-            res.json(result);
+    mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+        mongoose.connection.db.eval(query)
+            .then(result =>{
+                if (res!=null)
+                    res.json(result);
+        })
+            .catch(err =>{
+                if (res!=null)
+                    res.json("Error al realizar la consulta a Mongo");
+        });
+
     })
-        .catch(err =>{
-            res.json(err);
-    });
+    .catch(() => {res.json("Error de conexion")});
 }
 
 class ControladorPersona{
@@ -80,16 +87,16 @@ class ControladorPersona{
                         mongoose.connection.db.eval("getInfoPartida("+lista[x]+")").then(result1 =>{
                             mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[0][0]+"')").then(user0 =>{
                                 mongoose.connection.db.eval("checkUsuario('"+result1.usuarios[1][0]+"')").then(user1 =>{
-                                    data[x]={"id_partida":lista[x],"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea}
+                                    data[x]={"id_partida":lista[x],"Jugador_1":user0,"colors":[result1.usuarios[0][1],result1.usuarios[1][1]],"Jugador_2":user1,"tamano":result1.tamano,"linea":result1.tamano_linea,"ronda":result1.nRondas}
                                     contador=contador-1;
                                     if (contador ==0)
                                         res.json(data)
-                                })
-                            })
-                        })
+                                }).catch(err =>{res.json(err);})
+                            }).catch(err =>{res.json(err);})
+                        }).catch(err =>{res.json(err);})
                 }
-            })
-        })
+            }).catch(err =>{res.json(err);})
+        }).catch(err =>{res.json(err);})
     }
 
     public static rondaActiva(req: Request, res: Response){
@@ -123,8 +130,6 @@ class ControladorPersona{
             console.log("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
             .then(result =>{
-                console.log(result)
-                console.log("nuevaSesion('"+result.anfitrion+"','"+result.color+"','"+idUsuario+"','"+color+"',"+result.tamano+","+result.tamano_linea+","+result.nRondas+")")
                 consulta("nuevaSesion('"+result.anfitrion+"','"+result.color+"','"+idUsuario+"','"+color+"',"+result.tamano+","+result.tamano_linea+","+result.nRondas+")",res)
             }).catch(() => res.json(false))
         }).catch(() => res.json(false))
@@ -133,7 +138,6 @@ class ControladorPersona{
     public static rechazar(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let idAnfitrion = req.body.idAnfitrion;
-        console.log()
         consulta("rechazar('"+idAnfitrion+"','"+idUsuario+"')", res);
     }
 
@@ -143,15 +147,17 @@ class ControladorPersona{
         consulta("invitaciones('"+idUsuario+"',"+page+")", res);
     }
     public routes(): void{
+        //POST
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
         this.router.post('/enviarMsg',ControladorPersona.chat);
-        this.router.get('/getChatlog',ControladorPersona.getChat);
         this.router.post('/setDetails',ControladorPersona.setDetails);
         this.router.post('/changeNick',ControladorPersona.changeNick);
         this.router.post('/friend',ControladorPersona.friend);
         this.router.post('/invitar',ControladorPersona.invitar);
         this.router.post('/aceptar',ControladorPersona.aceptar);
         this.router.post('/rechazar',ControladorPersona.rechazar);
+        //GET
+        this.router.get('/getChatlog',ControladorPersona.getChat);
         this.router.get('/checkUsuario',ControladorPersona.checkUsuario);
         this.router.get('/checkNick',ControladorPersona.checkNick);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);

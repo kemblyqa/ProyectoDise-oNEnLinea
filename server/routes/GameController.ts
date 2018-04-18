@@ -13,7 +13,7 @@ function consulta(query: string, res: Response) {
         })
             .catch(err =>{
                 if (res!=null)
-                    res.json(err);
+                    res.json("Error al realizar la consulta a Mongo");
         });
 
     })
@@ -93,16 +93,9 @@ class GameController{
                                         jugador=1;}
                                     else{
                                         jugador=-1;}
-                                    callback(null,result1.tablero,result2.tamano_linea,jugadas.length,jugador, contrincante,result2.lastMove,result2.nRondas)})
-                                .catch(err =>{
-                                    res.json(err);});
-                            })
-                            .catch(err =>{
-                                res.json(err);})
-                                })
-                    })
-                    .catch(err =>{
-                        res.json(err);});
+                                    callback(null,result1.tablero,result2.tamano_linea,jugadas.length,jugador, contrincante,result2.lastMove,result2.nRondas)}).catch(err =>{res.json(err);});
+                            }).catch(err =>{res.json(err);})})
+                    }).catch(err =>{res.json(err);});
             },
             function(tablero,size,turno : number,jugador,contrincante,lastMove,nRondas,callback){
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: "+ turno + "\njugador: " +jugador);
@@ -117,7 +110,7 @@ class GameController{
                                 if (result.estado.finalizador==""){
                                     consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
                                 }
-                            });
+                            }).catch(err =>{res.json(err);});
                         }
                         res.json("a");
                         return;
@@ -138,9 +131,9 @@ class GameController{
                                     else
                                         res.json("p");
                                     return;
-                                })
-                            })
-                        })
+                                }).catch(err =>{res.json(err);})
+                            }).catch(err =>{res.json(err);})
+                        }).catch(err =>{res.json(err);})
                     }
                     else
                         res.json(false)
@@ -212,11 +205,11 @@ class GameController{
                                             if (result4.estado.finalizador==""){
                                                 mongoose.connection.db.eval("finalizarRonda("+idPartida+","+x+","+finalizador+",'a')")
                                             }
-                                        });
+                                        }).catch(err =>{res.json(err);});
                                     }
                                     res.json({"tablero":result.tablero,"estado":{"finalizador":finalizador,"causa":"a"},"turno":-1});
                                     return;
-                                });
+                                }).catch(err =>{res.json(err);});
                         }
                         else if((result1.usuarios[turno][0]=="e" || result1.usuarios[turno][0]=="m" || result1.usuarios[turno][0]=="h")){
                             let level = result1.usuarios[turno][0]=="e"?1:result1.usuarios[turno][0]=="m"?2:3;
@@ -228,9 +221,9 @@ class GameController{
                                         res.json({"tablero":botGame.charGrid,"estado":{"finalizador": resul[1]=="p"?"":result1.usuarios[turno][0],"causa":resul[1]=="p"?"":resul[1]},"turno":-1})
                                         if (resul[1]!="p")
                                             mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result1.usuarios[turno][0]+"','"+resul[1]+"')")
-                                    });
+                                    }).catch(err =>{res.json(err);});
                                     
-                                });
+                                }).catch(err =>{res.json(err);});
                             }
                         else
                             res.json({"tablero":result.tablero,"estado":["",""],"turno":tuTurno});
@@ -238,9 +231,9 @@ class GameController{
                         result.tablero.forEach(element => {
                             console.log(element);
                     });
-                })
-            })
-        })
+                }).catch(err =>{res.json(err);})
+            }).catch(err =>{res.json(err);})
+        }).catch(err =>{res.json(err);})
     }
     public static start(req: Request, res: Response){
         let idPartida = req.query.idPartida;
@@ -255,10 +248,10 @@ class GameController{
                     .then(result2 =>{
                         let ronda = result1;
                         res.json({"tamano":result0.tamano,"tamano_linea":result0.tamano_linea,"usuarios":result0.usuarios,"tablero":result2.tablero,"estado":result2.estado,"ronda":ronda});
-                    });
-                });
-            });
-        });
+                    }).catch(err =>{res.json(err);});
+                }).catch(err =>{res.json(err);});
+            }).catch(err =>{res.json(err);});
+        }).catch(err =>{res.json(err);});
     }
     public static abandono(req: Request, res: Response){
         let idPartida = req.body.idPartida;
@@ -278,10 +271,10 @@ class GameController{
                             consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
                         }
                         consulta("finalizarPartida("+idPartida+")",null);
-                    });
+                    }).catch(err =>{res.json(err);});
                     res.json(true);
-            });
-        });
+            }).catch(err =>{res.json(err);});
+        }).catch(err =>{res.json(err);});
     }
 
     public static disponibles(req: Request, res: Response){
@@ -290,6 +283,7 @@ class GameController{
     }
 
     public routes(): void{
+        //GET
         this.router.get('/update',GameController.update);
         this.router.get('/getGamelog',GameController.getRegistro);
         this.router.get('/getInfoPartida',GameController.getInfoPartida);
@@ -297,6 +291,7 @@ class GameController{
         this.router.get('/getTablero',GameController.getTablero);
         this.router.get('/start',GameController.start);
         this.router.get('/disponibles',GameController.disponibles);
+        //POST
         this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);
         this.router.post('/jugada',GameController.jugada);
