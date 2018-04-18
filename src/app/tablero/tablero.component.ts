@@ -65,6 +65,7 @@ export class TableroComponent {
             .subscribe(
               resBoard => {
                 this.tab.setGrid(resBoard)
+                this.updateGameEvent()
               }
             )
         },
@@ -92,29 +93,47 @@ export class TableroComponent {
         status => {
           console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
           -->estado: ${status}`)
-          this.service.getData("/game/update",{
-            params: {
-              idPartida: UserDetails.Instance.getCurrentGameID(),
-              ronda: this.tab.getActiveRound(),
-              idJugador: UserDetails.Instance.getUserID()
-            }
-          })
-            .subscribe(
-              resMove =>{
-                console.log(JSON.stringify(resMove))
-                this.tab.setGrid(resMove["tablero"])
-                //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
-              },
-              err => {
-                console.log(JSON.stringify(err))
-              }
-            )
+          // this.service.getData("/game/update",{
+          //   params: {
+          //     idPartida: UserDetails.Instance.getCurrentGameID(),
+          //     ronda: this.tab.getActiveRound(),
+          //     idJugador: UserDetails.Instance.getUserID()
+          //   }
+          // })
+          //   .subscribe(
+          //     resMove =>{
+          //       console.log(JSON.stringify(resMove))
+          //       this.tab.setGrid(resMove["tablero"])
+          //       //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
+          //     },
+          //     err => {
+          //       console.log(JSON.stringify(err))
+          //     }
+          //   )
         }
       ) 
   }
 
   updateGameEvent(){
-    //setTimeout
+    setInterval(() => {
+      this.service.getData("/game/update",{
+        params: {
+          idPartida: UserDetails.Instance.getCurrentGameID(),
+          ronda: this.tab.getActiveRound(),
+          idJugador: UserDetails.Instance.getUserID()
+        }
+      })
+        .subscribe(
+          resMove =>{
+            console.log(JSON.stringify(resMove))
+            this.tab.setGrid(resMove["tablero"])
+            //this.tab.updateBoardGrid(resMove["estado"],resMove["tablero"], resMove["turno"])
+          },
+          err => {
+            console.log(JSON.stringify(err))
+          }
+        )
+    }, 500)
   }
 
   openModalEndGame(){

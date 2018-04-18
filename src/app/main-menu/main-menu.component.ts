@@ -91,7 +91,7 @@ export class MainMenuComponent {
     })
       .subscribe( 
         data => { 
-          //conexion with user before render
+          //connection with user before render
           console.log(data)
           data === false ? this.alertGame() : this.fillActiveGames(), this.fillAllGames()
         }, 
@@ -114,6 +114,10 @@ export class MainMenuComponent {
   }
 
   seeMessages(){
+    
+  }
+
+  seeFriends(){
     
   }
 
