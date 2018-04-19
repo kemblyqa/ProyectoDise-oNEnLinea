@@ -36,9 +36,6 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Parámetros del juego</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
         <div class="form-group row">
@@ -48,9 +45,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
+          <label for="nLine" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
           <div class="col-sm-6">
-            <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
+            <input type="text" [(ngModel)]="nSize" class="form-control" id="nLine" placeholder="Tamaño en digitos..">
           </div>
         </div>
         <div class="form-group row"> 
@@ -66,7 +63,7 @@
           </div> 
         </div> 
         <div class="form-group row">
-          <label for="nColor" class="col-sm-6 col-form-label">Color de ficha</label>
+          <label class="col-sm-6 col-form-label">Color de ficha</label>
           <div class="col-sm-6">
             <select id="selectedColor" [(ngModel)]="nColor" class="form-control">
               <option class="{{col.styleName}}" *ngFor="let col of colors"
@@ -76,7 +73,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="acceptButton" data-dismiss="modal" (click)=newGame()>Guardar</button>
+        <button type="button" class="acceptButton" data-dismiss="modal" (click)="newGame()">Guardar</button>
         <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
@@ -89,15 +86,15 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Parámetros del juego</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         <div class="modal-body">
           <div class="form-group row">
-            <label for="boardSize" class="col-sm-6 col-form-label">Tipo de juego</label>
+            <label class="col-sm-6 col-form-label">Tipo de juego</label>
             <div class="col-sm-6">
-                <input type="text" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+              <select id="gameType" [(ngModel)]="optGame" class="form-control">
+                <option *ngFor="let option of gameAIOptions"
+                  [value]="option.opt">{{option.text}}</option> 
+              </select>
             </div>
           </div>
           <div class="form-group row">
@@ -107,7 +104,7 @@
               </div>
             </div>
           <div class="form-group row">
-            <label for="nSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
+            <label for="nbSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
             <div class="col-sm-6">
               <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
             </div>
@@ -118,27 +115,30 @@
               <input type="text" [(ngModel)]="nRounds" class="form-control" id="rSize" placeholder="Tamaño en digitos.."> 
             </div> 
           </div> 
-          <div class="form-group row"> 
-            <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
-            <div class="col-sm-6"> 
-              <input type="text" [(ngModel)]="idP2" class="form-control" id="player" placeholder="Nombre.."> 
-            </div> 
-          </div> 
           <div class="form-group row">
-              <label for="nColor1" class="col-sm-6 col-form-label">Color 1</label>
+              <label class="col-sm-6 col-form-label">Color 1</label>
               <div class="col-sm-6">
-                <select id="selectedColor1" [(ngModel)]="nColor1" class="form-control">
+                <select id="selectedColor1" [(ngModel)]="nAIColor1" class="form-control">
                   <option class="{{col.styleName}}" *ngFor="let col of colors"
                     [value]="col.color">{{col.name}}</option> 
                 </select>
               </div>
             </div>
           <div class="form-group row">
-              <label for="nColor2" class="col-sm-6 col-form-label">Color 2</label>
+              <label class="col-sm-6 col-form-label">Color 2</label>
               <div class="col-sm-6">
-                <select id="selectedColor2" [(ngModel)]="nColor2" class="form-control">
+                <select id="selectedColor2" [(ngModel)]="nAIColor2" class="form-control">
                   <option class="{{col.styleName}}" *ngFor="let col of colors"
                     [value]="col.color">{{col.name}}</option> 
+                </select>
+              </div>
+            </div>
+          <div class="form-group row">
+              <label class="col-sm-6 col-form-label">Dificultad</label>
+              <div class="col-sm-6">
+                <select id="gameType" [(ngModel)]="optLev" class="form-control">
+                  <option *ngFor="let lev of level"
+                    [value]="lev.n">{{lev.level}}</option> 
                 </select>
               </div>
             </div>
@@ -157,9 +157,6 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Registro de partidas</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         <div class="modal-body">
           <!-- Show inactive games or active games -->
@@ -247,12 +244,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Algo salió mal....</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
       </div>
       <div class="modal-body">
-        <label for="rSize" class="col-sm-6 col-form-label">Probablemete el usuario no existe o no está conectado.</label> 
+        <label for="rSize" class="col-sm-6 col-form-label">{{errorMsg}}</label> 
       </div>
       <div class="modal-footer">
         <button type="button" data-dismiss="modal" class="acceptButton">Aceptar</button>
@@ -267,9 +261,6 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">Notifiaciones de {{nickName}}</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
         </div>
         <div class="modal-body">
           <!-- Show all games or active games -->

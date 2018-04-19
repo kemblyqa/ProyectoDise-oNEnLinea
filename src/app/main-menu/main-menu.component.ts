@@ -16,9 +16,12 @@ import { Router } from '@angular/router';
 export class MainMenuComponent {
   //model
   menuModel: MenuModel;
-  colors: Array<any>;
-  allGames:any
-  activeGames:any
+  colors: Array<any>
+  allGames:Array<any>
+  activeGames:Array<any>
+  errorMsg:any
+  gameAIOptions:any
+  level:any
 
   //get player data
   idP1:any
@@ -32,10 +35,18 @@ export class MainMenuComponent {
   nRounds: number
   nColor: string
   active: boolean
+
+  //AI params
+  optGame:any
+  nAIColor1:any
+  nAIColor2:any
+  optLev:any
   
   constructor(private service: Service, private router: Router) {
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
+    this.gameAIOptions = this.menuModel.getAIOptions()
+    this.level = this.menuModel.getLevels()
     this.idP1 = UserDetails.Instance.getUserID()
     this.nickName = UserDetails.Instance.getNickName()
     //juegos activos por defecto
@@ -49,8 +60,7 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
-            this.allGames = data
-            console.log(this.allGames)
+          this.allGames = data["data"]
         }, 
         err => { 
             console.log("Error") 
@@ -62,8 +72,7 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
       .subscribe( 
         data => { 
-            this.activeGames = data
-            console.log(this.activeGames)
+          this.activeGames = data["data"]
         }, 
         err => { 
             console.log("Error") 
@@ -79,6 +88,27 @@ export class MainMenuComponent {
     $("#paramsAI").modal("show")
   }
 
+  newAIGame(){
+    this.service.postData("/game/nuevaSesion", {
+      idJ1: this.idP1,
+      color1: this.nAIColor1,
+      idJ2: this.idP2,
+      color2: this.nAIColor2,  
+      size: this.bSize,
+      lineSize: this.nSize,
+      nRondas : this.nRounds 
+    })
+      .subscribe( 
+        response => { 
+          //connection with user before render
+          response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
+        }, 
+        err => { 
+            console.log(err) 
+        } 
+      ) 
+  }
+
   newGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
@@ -90,10 +120,9 @@ export class MainMenuComponent {
       nRondas : this.nRounds 
     })
       .subscribe( 
-        data => { 
+        response => { 
           //connection with user before render
-          console.log(data)
-          data === false ? this.alertGame() : this.fillActiveGames(), this.fillAllGames()
+          response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
         }, 
         err => { 
             console.log(err) 
@@ -101,7 +130,8 @@ export class MainMenuComponent {
       ) 
   }
 
-  alertGame(){
+  alertGame(msg: any){
+    this.errorMsg = msg
     $('#failed').modal('show')
   }
 
@@ -123,7 +153,6 @@ export class MainMenuComponent {
 
   openGame(id:any){
     UserDetails.Instance.setCurrentGameID(id)
-    console.log(UserDetails.Instance.getCurrentGameID())
     this.router.navigate(['/tablero'])
   }
 }

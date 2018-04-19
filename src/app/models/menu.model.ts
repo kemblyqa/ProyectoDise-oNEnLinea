@@ -8,6 +8,8 @@ export class MenuModel{
     //data
     //colors
     private colors:Array<any>
+    private gameAIOptions: Array<any>
+    private level: Array<any>
 
     constructor(){
         this.colors = [{
@@ -61,6 +63,31 @@ export class MenuModel{
             styleName: "teal",
             name: "celeste"	
         }]
+        this.gameAIOptions = [{
+            opt: 1,
+            text: "Jugador contra máquina"
+        },{
+            opt: 2,
+            text: "Máquina contra máquina"
+        }]
+        this.level = [{
+            n: 1,
+            level: "Fácil"
+        },{
+            n: 2,
+            level: "Medio"
+        },{
+            n: 3,
+            level: "Dificil"
+        }]
+    }
+
+    getLevels(){
+        return this.level
+    }
+
+    getAIOptions(){
+        return this.gameAIOptions
     }
 
     setIdAllGames(games:any){
