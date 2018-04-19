@@ -6,6 +6,7 @@ export class UserDetails {
     private nickName:string
     private details?:string
     private currentGameID:any
+    private botGame:boolean
     private static instance:UserDetails
 
     setNickNameDetails(nickname: any, details:any){
@@ -35,6 +36,14 @@ export class UserDetails {
 
     getNickName(){
         return this.nickName
+    }
+
+    setBotGame(isBot: boolean){
+        this.botGame = isBot
+    }
+
+    isBotGame(){
+        return this.botGame
     }
 
     static get Instance() {

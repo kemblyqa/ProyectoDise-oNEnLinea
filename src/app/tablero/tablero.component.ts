@@ -24,6 +24,7 @@ export class TableroComponent {
   playerRound:any
   playerIdGame:any
   playerID:any
+  botGameStatus:boolean
 
   //board model
   tab:BuildBoard
@@ -33,9 +34,6 @@ export class TableroComponent {
   dialogTitleEndGame:string
   dialogEndGame:string
   errorMsg:string
-
-  //partida actual prueba
-  partida:number = 6
 
   constructor(private service:Service) {
     //init variables to be used in the controller
@@ -58,6 +56,8 @@ export class TableroComponent {
             )
             //get the nSize to show in modal after finish
             this.nSize = resData["data"]["tamano_linea"]
+            //get if is a botgame to render the correct modal
+            //this.botGameStatus = resData["data"]["usuarios"]
             //this get the ids and render the buttons in the template
             this.buttonIDs = this.tab.getIdButtonCells()
             //then init the board
@@ -97,11 +97,6 @@ export class TableroComponent {
         }
       )
   }
-
-  executeGame(){
-    
-  }
-  
   //button event
   touchButton(e){
     //get the row and column
@@ -118,9 +113,7 @@ export class TableroComponent {
           console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
           -->estado: ${status["data"]}`)
         }
-      )
-        
-       
+      ) 
   }
 
   updateGameEvent(){
@@ -134,7 +127,6 @@ export class TableroComponent {
       })
         .subscribe(
           resMove =>{
-            console.log(JSON.stringify(resMove))
             if(resMove["status"]){
               //update board
               this.tab.setGrid(resMove["data"]["tablero"])
@@ -181,6 +173,7 @@ export class TableroComponent {
         this.dialogTitleEndGame = "ABANDONO...."
         this.openModalEndGame()
         break;
+      
     }
   }
 

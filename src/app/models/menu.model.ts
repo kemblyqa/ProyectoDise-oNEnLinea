@@ -71,13 +71,13 @@ export class MenuModel{
             user: "bot"
         }]
         this.level = [{
-            n: 1,
+            n: "e",
             level: "Fácil"
         },{
-            n: 2,
+            n: "m",
             level: "Medio"
         },{
-            n: 3,
+            n: "h",
             level: "Dificil"
         }]
     }

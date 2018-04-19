@@ -115,7 +115,7 @@
           </div> 
 
           <div class="form-group row">
-            <div class="col-sm-6">
+            <div class="col-sm-4 offset-md-1">
                 <div class="row">
                     <label class="col-form-label">Color {{optGame}} 1</label>
                   </div>
@@ -126,7 +126,7 @@
                     </select>
                   </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-4 offset-md-2">
               <div class="row">
                 <label class="col-form-label">Dificultad</label>
               </div>
@@ -139,18 +139,18 @@
             </div>
           </div>
           <div class="form-group row">
-              <div class="col-sm-6">
+              <div class="col-sm-4 offset-md-1">
                   <div class="row">
                       <label class="col-form-label">Color bot 2</label>
                     </div>
-                    <div class="row">
-                      <select id="selectedColor2" [(ngModel)]="nAIColorP2" class="form-control">
-                        <option class="{{col.styleName}}" *ngFor="let col of colors"
-                          [value]="col.color">{{col.name}}</option> 
-                      </select>
-                    </div>
+                  <div class="row">
+                    <select id="selectedColor2" [(ngModel)]="nAIColorP2" class="form-control">
+                      <option class="{{col.styleName}}" *ngFor="let col of colors"
+                        [value]="col.color">{{col.name}}</option> 
+                    </select>
+                  </div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-sm-4 offset-md-2">
                 <div class="row">
                   <label class="col-form-label">Dificultad</label>
                 </div>

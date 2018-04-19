@@ -92,9 +92,9 @@ export class MainMenuComponent {
 
   newAIGame(){
     this.service.postData("/game/nuevaSesion", {
-      idJ1: this.idP1,
+      idJ1: this.optGame == "bot" ? this.optLevP1 : this.idP1, //player or bot
       color1: this.nAIColorP1,
-      idJ2: this.idP2,
+      idJ2: this.optLevP2,  //bot
       color2: this.nAIColorP2,  
       size: this.bSize,
       lineSize: this.nSize,
@@ -102,8 +102,7 @@ export class MainMenuComponent {
     })
       .subscribe( 
         response => { 
-          //connection with user before render
-          response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
+          response["status"] ? this.openGame(response["data"]) : this.alertGame(response["data"])
         }, 
         err => { 
             console.log(err) 
@@ -123,7 +122,6 @@ export class MainMenuComponent {
     })
       .subscribe( 
         response => { 
-          //connection with user before render
           response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
         }, 
         err => { 
