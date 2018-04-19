@@ -29,7 +29,6 @@
     </div>
   </div>
 </div>
-
 <!-- Parameters Modal -->
 <div class="modal fade" id="parameters" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -79,7 +78,6 @@
     </div>
   </div>
 </div>
-
 <!-- AI modal -->
 <div class="modal fade" id="paramsAI" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -93,7 +91,7 @@
             <div class="col-sm-6">
               <select id="gameType" [(ngModel)]="optGame" class="form-control">
                 <option *ngFor="let option of gameAIOptions"
-                  [value]="option.opt">{{option.text}}</option> 
+                  [value]="option.user">{{option.text}}</option> 
               </select>
             </div>
           </div>
@@ -115,42 +113,63 @@
               <input type="text" [(ngModel)]="nRounds" class="form-control" id="rSize" placeholder="Tamaño en digitos.."> 
             </div> 
           </div> 
+
           <div class="form-group row">
-              <label class="col-sm-6 col-form-label">Color 1</label>
-              <div class="col-sm-6">
-                <select id="selectedColor1" [(ngModel)]="nAIColor1" class="form-control">
-                  <option class="{{col.styleName}}" *ngFor="let col of colors"
-                    [value]="col.color">{{col.name}}</option> 
-                </select>
-              </div>
+            <div class="col-sm-6">
+                <div class="row">
+                    <label class="col-form-label">Color {{optGame}} 1</label>
+                  </div>
+                  <div class="row">
+                    <select id="selectedColor1" [(ngModel)]="nAIColorP1" class="form-control">
+                      <option class="{{col.styleName}}" *ngFor="let col of colors"
+                        [value]="col.color">{{col.name}}</option> 
+                    </select>
+                  </div>
             </div>
+            <div class="col-sm-6">
+              <div class="row">
+                <label class="col-form-label">Dificultad</label>
+              </div>
+              <div class="row">
+                  <select id="gameType" [(ngModel)]="optLevP1" class="form-control">
+                    <option *ngFor="let lev of level"
+                      [value]="lev.n">{{lev.level}}</option> 
+                  </select>
+                </div>
+            </div>
+          </div>
           <div class="form-group row">
-              <label class="col-sm-6 col-form-label">Color 2</label>
               <div class="col-sm-6">
-                <select id="selectedColor2" [(ngModel)]="nAIColor2" class="form-control">
-                  <option class="{{col.styleName}}" *ngFor="let col of colors"
-                    [value]="col.color">{{col.name}}</option> 
-                </select>
+                  <div class="row">
+                      <label class="col-form-label">Color bot 2</label>
+                    </div>
+                    <div class="row">
+                      <select id="selectedColor2" [(ngModel)]="nAIColorP2" class="form-control">
+                        <option class="{{col.styleName}}" *ngFor="let col of colors"
+                          [value]="col.color">{{col.name}}</option> 
+                      </select>
+                    </div>
               </div>
-            </div>
-          <div class="form-group row">
-              <label class="col-sm-6 col-form-label">Dificultad</label>
               <div class="col-sm-6">
-                <select id="gameType" [(ngModel)]="optLev" class="form-control">
-                  <option *ngFor="let lev of level"
-                    [value]="lev.n">{{lev.level}}</option> 
-                </select>
+                <div class="row">
+                  <label class="col-form-label">Dificultad</label>
+                </div>
+                <div class="row">
+                    <select id="gameType" [(ngModel)]="optLevP2" class="form-control">
+                      <option *ngFor="let lev of level"
+                        [value]="lev.n">{{lev.level}}</option> 
+                    </select>
+                  </div>
               </div>
-            </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="acceptButton" data-dismiss="modal" (click)="newGame()">Aceptar</button>
+          <button type="button" class="acceptButton" data-dismiss="modal" (click)="newAIGame()">Aceptar</button>
           <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
         </div>
       </div>
     </div>
   </div>
-
+</div>
 <!-- Games modal -->
 <div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -237,7 +256,6 @@
       </div>
     </div>
   </div>
-
 <!-- something wrong modal -->
 <div class="modal fade" id="failed" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -254,7 +272,6 @@
     </div>
   </div>
 </div>
-
 <!-- notifications modal -->
 <div class="modal fade" id="activeGames" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

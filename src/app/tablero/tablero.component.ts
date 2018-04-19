@@ -113,12 +113,14 @@ export class TableroComponent {
       fila: this.movePosition[0],
       columna: this.movePosition[1],
       idJugador: this.playerID
-      })
+      }).subscribe(
         status => {
           console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
           -->estado: ${status["data"]}`)
         }
-      ) 
+      )
+        
+       
   }
 
   updateGameEvent(){
@@ -137,9 +139,9 @@ export class TableroComponent {
               //update board
               this.tab.setGrid(resMove["data"]["tablero"])
               //change turn preview in the board
-              // this.playerTurn = this.tab.verifyGameStatus(resMove["data"]["turno"])
-              // //verify if the game is ended
-              // this.tab.verifyIfGameIsEnded(resMove["data"]["estado"]) ? this.gameIsEnded() : null 
+              this.playerTurn = this.tab.verifyGameTurn(resMove["data"]["turno"])
+              //verify if the game is ended
+              this.tab.verifyIfGameIsEnded(resMove["data"]["estado"]) ? this.gameIsEnded() : null 
             } else {
               this.errorMsg = resMove["data"]
             }
@@ -158,7 +160,7 @@ export class TableroComponent {
 
   gameIsEnded(){
     clearInterval(this.timer)
-    switch(this.tab.getReasonStatus()){
+    switch(this.tab.verifyReasonEndGame(this.playerID)){
       case "w":
         this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
         this.dialogTitleEndGame = "VICTORIA...."

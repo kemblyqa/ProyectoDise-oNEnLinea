@@ -38,9 +38,10 @@ export class MainMenuComponent {
 
   //AI params
   optGame:any
-  nAIColor1:any
-  nAIColor2:any
-  optLev:any
+  nAIColorP1:any
+  nAIColorP2:any
+  optLevP1:any
+  optLevP2:any
   
   constructor(private service: Service, private router: Router) {
     this.menuModel = new MenuModel()
@@ -92,9 +93,9 @@ export class MainMenuComponent {
   newAIGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
-      color1: this.nAIColor1,
+      color1: this.nAIColorP1,
       idJ2: this.idP2,
-      color2: this.nAIColor2,  
+      color2: this.nAIColorP2,  
       size: this.bSize,
       lineSize: this.nSize,
       nRondas : this.nRounds 

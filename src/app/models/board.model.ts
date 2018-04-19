@@ -124,10 +124,6 @@ export class BuildBoard{
         return this.gameStatus;
     }
 
-    getReasonStatus(){
-        return this.gameStatus["causa"]
-    }
-
     getRowColButtonID(id){
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
@@ -150,7 +146,7 @@ export class BuildBoard{
     }
 
     //show in the board the status of turn
-    verifyGameStatus(turn:any):any{
+    verifyGameTurn(turn:any):any{
         //turno: [0] No es mi turno, [1] Si es mi turno, [-1] Juego terminado
         if(turn == 0){
             return "Es del jugador"
@@ -168,7 +164,15 @@ export class BuildBoard{
         return this.gameStatus["causa"] !== "" ? true : false
     }
 
-    // verifyIfRoundIsEnded(){
-    //     if(this.lastRound == this.nRounds && this.verifyIfGameIsEnded())
-    // }
+    verifyReasonEndGame(playerID: any){
+        if(this.gameStatus["finalizador"] == playerID){
+            return this.gameStatus["causa"]
+        } else {
+            if(this.gameStatus["causa"] == "w"){
+                return "l"
+            } else{
+                return this.gameStatus["causa"]
+            }
+        }
+    }
 }

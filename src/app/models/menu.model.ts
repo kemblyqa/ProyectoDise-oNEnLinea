@@ -64,11 +64,11 @@ export class MenuModel{
             name: "celeste"	
         }]
         this.gameAIOptions = [{
-            opt: 1,
-            text: "Jugador contra máquina"
+            text: "Jugador contra máquina",
+            user: "jugador"
         },{
-            opt: 2,
-            text: "Máquina contra máquina"
+            text: "Máquina contra máquina",
+            user: "bot"
         }]
         this.level = [{
             n: 1,
