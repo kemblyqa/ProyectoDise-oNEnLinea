@@ -57,7 +57,7 @@ export class TableroComponent {
             //get the nSize to show in modal after finish
             this.nSize = resData["data"]["tamano_linea"]
             //get if is a botgame to render the correct modal
-            //this.botGameStatus = resData["data"]["usuarios"]
+            this.botGameStatus = resData["data"]["usuarios"][0][0] == "e"  || resData["data"]["usuarios"][0][0] == "m" || resData["data"]["usuarios"][0][0] == "h" ? true : false
             //this get the ids and render the buttons in the template
             this.buttonIDs = this.tab.getIdButtonCells()
             //then init the board
@@ -152,7 +152,7 @@ export class TableroComponent {
 
   gameIsEnded(){
     clearInterval(this.timer)
-    switch(this.tab.verifyReasonEndGame(this.playerID)){
+    switch(this.tab.verifyReasonEndGame(this.playerID, this.botGameStatus)){
       case "w":
         this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
         this.dialogTitleEndGame = "VICTORIA...."
@@ -173,7 +173,10 @@ export class TableroComponent {
         this.dialogTitleEndGame = "ABANDONO...."
         this.openModalEndGame()
         break;
-      
+      case "r":
+        this.dialogEndGame = "Juego de bots terminado, gracias por ver!"
+        this.dialogTitleEndGame = "TERMINADO...."
+        this.openModalEndGame()
     }
   }
 

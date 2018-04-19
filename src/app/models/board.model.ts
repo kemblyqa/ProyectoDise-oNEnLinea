@@ -164,7 +164,10 @@ export class BuildBoard{
         return this.gameStatus["causa"] !== "" ? true : false
     }
 
-    verifyReasonEndGame(playerID: any){
+    verifyReasonEndGame(playerID: any, botStatus: boolean){
+        if(botStatus){
+            return "r"
+        }
         if(this.gameStatus["finalizador"] == playerID){
             return this.gameStatus["causa"]
         } else {
