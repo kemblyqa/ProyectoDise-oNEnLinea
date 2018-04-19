@@ -227,7 +227,7 @@ class GameController{
                                             }
                                         }).catch(err =>{res.json({status:false,data:err});});
                                     }
-                                    res.json({status:true,data:{"tablero":result.data.tablero,"estado":{"finalizador":finalizador,"causa":"a"},"turno":-1}});
+                                    res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
                                     return;
                                 }).catch(err =>{res.json({status:false,data:err});});
                         }
@@ -238,7 +238,7 @@ class GameController{
                             mongoose.connect('mongodb://localhost:27017/connect4')
                                 .then(() =>{
                                     mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+turno+")").then(() =>{
-                                        res.json({status:true,data:{"tablero":botGame.charGrid,"estado":{"finalizador": resul[1]=="p"?"":result1.data.usuarios[turno][0],"causa":resul[1]=="p"?"":resul[1]},"turno":-1}})
+                                        res.json({status:true,data:{tablero:botGame.charGrid,estado:{finalizador: resul[1]=="p"?"":result1.data.usuarios[turno][0],causa:resul[1]=="p"?"":resul[1]},turno:-1}})
                                         if (resul[1]!="p")
                                             mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result1.data.usuarios[turno][0]+"','"+resul[1]+"')")
                                     }).catch(err =>{res.json({status:false,data:err});});
@@ -246,7 +246,7 @@ class GameController{
                                 }).catch(err =>{res.json({status:false,data:err});});
                             }
                         else
-                            res.json({status:true,data:{"tablero":result.data.tablero,"estado":["",""],"turno":tuTurno}});
+                            res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
                     }
                         result.data.tablero.forEach(element => {
                             console.log(element);
