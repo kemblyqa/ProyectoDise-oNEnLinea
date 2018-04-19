@@ -23,6 +23,7 @@ export class TableroComponent {
   playerNickname:any
   playerRound:any
   playerIdGame:any
+  playerID:any
 
   //board model
   tab:BuildBoard
@@ -39,7 +40,8 @@ export class TableroComponent {
   constructor(private service:Service) {
     //init variables to be used in the controller
     this.playerNickname = UserDetails.Instance.getNickName()
-    this.playerIdGame = UserDetails.Instance.getCurrentGameID()
+    this.playerIdGame = UserDetails.Instance.getCurrentGameID() 
+    this.playerID = UserDetails.Instance.getUserID()
     
     //get data of current game
     this.service.getData("/game/getInfoPartida",{params: {idPartida: this.playerIdGame}})
@@ -110,13 +112,13 @@ export class TableroComponent {
       ronda: this.playerRound,
       fila: this.movePosition[0],
       columna: this.movePosition[1],
-      idJugador: this.playerNickname
+      idJugador: this.playerID
       })
-      //   status => {
-      //     console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
-      //     -->estado: ${status}`)
-      //   }
-      // ) 
+        status => {
+          console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
+          -->estado: ${status["data"]}`)
+        }
+      ) 
   }
 
   updateGameEvent(){
@@ -125,7 +127,7 @@ export class TableroComponent {
         params: {
           idPartida: this.playerIdGame,
           ronda: this.playerRound,
-          idJugador: this.playerNickname
+          idJugador: this.playerID
         }
       })
         .subscribe(
@@ -135,9 +137,9 @@ export class TableroComponent {
               //update board
               this.tab.setGrid(resMove["data"]["tablero"])
               //change turn preview in the board
-              this.playerTurn = this.tab.verifyGameStatus(resMove["data"]["turno"])
-              //verify if the game is ended
-              this.tab.verifyIfGameIsEnded(resMove["data"]["estado"]) ? this.gameIsEnded() : null 
+              // this.playerTurn = this.tab.verifyGameStatus(resMove["data"]["turno"])
+              // //verify if the game is ended
+              // this.tab.verifyIfGameIsEnded(resMove["data"]["estado"]) ? this.gameIsEnded() : null 
             } else {
               this.errorMsg = resMove["data"]
             }

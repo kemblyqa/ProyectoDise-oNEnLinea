@@ -72,6 +72,7 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
       .subscribe( 
         data => { 
+          console.log(data["data"])
           this.activeGames = data["data"]
         }, 
         err => { 
