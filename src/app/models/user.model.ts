@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class UserDetails {
-    private userID:string
+    private userID:any
     private nickName:string
     private details?:string
     private currentGameID:any
@@ -14,7 +14,7 @@ export class UserDetails {
         this.details = details
     }
 
-    setUserID(userID:string){
+    setUserID(userID:any){
         this.userID = userID
     }
 

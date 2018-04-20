@@ -326,29 +326,34 @@ db.system.js.save({
 db.system.js.save({
 
 	_id: "checkUsuario",
-   
+	 
 	value: function (idUsuario) 
-   
+	 
 	{ 
-   
+	 
 	 try{
-   
+	 
 	 if (idUsuario=="e")
-   
+	 
 	  return({status:true,data:{"nickname":"Easy Robot","detalles":"Robot facil"}})
-   
+	 
 	 else if (idUsuario=="m")
-   
+	 
 	  return({status:true,data:{"nickname":"Medium Robot","detalles":"Robot medio"}})
 	 else if (idUsuario=="h")
 	  return({status:true,data:{"nickname":"Hard Robot","detalles":"Robot dificil"}})
-		   return ({status:true,data:db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0]});
-		}
-		catch(e){
-		 return {status:false,data:"Error checkUsuario: quiza el usuario no existe"}
-		}
+	let result = db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
+	if (result==null)
+	   return {status:false,data:"Error checkUsuario: el usuario no existe"}
+	  else
+  
+		 return ({status:true,data:result});
+	  }
+	  catch(e){
+	   return {status:false,data:"Error checkUsuario: quiza el usuario no existe"}
+	  }
 	}
-   });
+	 });
 db.system.js.save({
 	_id: "checkNick",
 	value: function (nick) 
