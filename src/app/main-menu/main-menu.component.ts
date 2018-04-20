@@ -50,6 +50,10 @@ export class MainMenuComponent {
     this.level = this.menuModel.getLevels()
     this.idP1 = UserDetails.Instance.getUserID()
     this.nickName = UserDetails.Instance.getNickName()
+    if (this.nickName==null){
+        this.router.navigateByUrl('/login');
+        window.location.reload();
+      }
     //juegos activos por defecto
     this.active = true
     //get the games of user
@@ -148,6 +152,11 @@ export class MainMenuComponent {
 
   seeFriends(){
     
+  }
+
+  salir(){
+    this.router.navigateByUrl('/login');
+    window.location.reload();
   }
 
   openGame(id:any){

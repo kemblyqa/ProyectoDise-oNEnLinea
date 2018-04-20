@@ -16,10 +16,10 @@
         //console.log('Image URL: ' + profile.getImageUrl());
         //console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
         document["imgPerfil"].src = profile.getImageUrl();
-        document.getElementById("txtEmail").textContent = profile.getEmail();
+        document.getElementById("txtEmail").textContent = profile.getEmail().split("@")[0];
         document.getElementById("txtPerfil").hidden=true;
         document.getElementById("loginButton").hidden=false;
-        document.getElementById("loginButton").textContent="Iniciar como " + profile.getName();
+        document.getElementById("loginButton").textContent="Jugar como \r\n" + profile.getName();
         document.getElementById("GoogleButton").hidden=true;
         document.getElementById("closeLink").hidden=false;
       }

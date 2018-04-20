@@ -194,6 +194,8 @@ db.system.js.save({
 	{ 
         try{
             path="rondas."+[ronda]+".jugadas";
+            if(db.Partidas.findOne({_id:idPartida}).estado==false)
+				return {status:false,data:"la partida está inactiva"}
 			db.Partidas.update(
 			   { _id: idPartida },
 			   { $push: {[path] : [fila,columna] } });
@@ -344,7 +346,7 @@ db.system.js.save({
 	  return({status:true,data:{"nickname":"Hard Robot","detalles":"Robot dificil"}})
 	let result = db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
 	if (result==null)
-	   return {status:false,data:"Error checkUsuario: el usuario no existe"}
+	   return {status:false,data:"Error checkUsuario: el usuario '"+idUsuario+"'no existe"}
 	  else
   
 		 return ({status:true,data:result});
@@ -529,3 +531,23 @@ db.system.js.save({
 	}
 });
 
+db.system.js.save({
+	_id: "update",
+	value: function (idPartida,nRonda,idJugador) 
+	{ 
+		let ronda = db.Partidas.findOne({_id:idPartida},
+                {usuarios:1,_id:1,rondas:1,lastMove:1,nRondas:1,usuarios:1})
+                if (ronda==null)
+                    return {status:false,data:"No existe la ronda " + nRonda + " en la partida " + idPartida}
+                else{
+                    return {status:true,
+                        data:{
+                            tablero:ronda.rondas[nRonda].tablero,
+                            estado:ronda.rondas[nRonda].estado,
+                            jugadas:ronda.rondas[nRonda].jugadas,
+                            lastMove:ronda.lastMove,
+                            nRondas:ronda.nRondas,
+                            usuarios:ronda.usuarios}}
+                }
+	}
+});

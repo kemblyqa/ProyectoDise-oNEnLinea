@@ -18,5 +18,8 @@ export const ROUTES: Routes = [
     },
     {
         path: 'menu', component: MainMenuComponent
+    },
+    {
+        path: '**', redirectTo: 'menu', pathMatch: 'full'
     }
 ]

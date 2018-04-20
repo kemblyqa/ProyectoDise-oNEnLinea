@@ -4,15 +4,16 @@
   </head>
   <body>
 <div class="container justify-content-center">
-  <div class="card cardlogin">
+  <div class="card cardlogin col-sm-6">
       <div class="centerDiv">
           <img src="../../assets/icons/download.png" name="imgPerfil" alt="Card image cap" style="margin-top: 10% ; width: 50%">
-          <h6 class="card-title centerDiv" id = "txtEmail"> </h6>
+            
+            <h6 class="card-title" id = "txtEmail" style="float:none"> </h6>
       </div>
       <div class="card-body">
         <h6 class="card-title centerDiv" id = "txtPerfil">Inicia sesión en Google: </h6>
         <div class="centerDiv" style="margin-top:5%;margin-bottom: 5%">
-          <button (click)="login()" id = "loginButton" class="btn-primary" hidden>Iniciar sesion como</button>
+          <button (click)="login()" id = "loginButton" class="btn-primary" hidden style="white-space: pre;">Iniciar sesion como</button>
           <div class="g-signin2" data-onsuccess="onSignIn" id = "GoogleButton"></div>
         </div>
         <div class="centerDiv">

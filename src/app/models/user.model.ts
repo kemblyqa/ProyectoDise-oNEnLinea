@@ -8,6 +8,7 @@ export class UserDetails {
     private currentGameID:any
     private botGame:boolean
     private static instance:UserDetails
+    private router :Router;
 
     setNickNameDetails(nickname: any, details:any){
         this.nickName = nickname

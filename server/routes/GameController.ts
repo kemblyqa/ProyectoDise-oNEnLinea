@@ -192,68 +192,62 @@ class GameController{
         if (idPartida ==null || ronda==null ||idJugador==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         mongoose.connect('mongodb://localhost:27017/connect4')
         .then(() =>{
-            mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
+            mongoose.connection.db.eval("update("+idPartida+","+ronda+",'"+idJugador+"')")
             .then(result =>{
                 if (!result.status){res.json(result);return;}
-                mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
-                .then(result1 =>{
-                    if (!result1.status){res.json(result1);return;}
-                    console.log("hi")
-                    if (result.data.estado.causa!=""){
-                        res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
-                    }
-                    else
-                    {
-                        let jugadas : Array<Array<any>> = result.data.jugadas;
-                        let jugador : number;
-                        let turno = jugadas.length%2;
-                        if (result1.data.usuarios[0][0] == idJugador){
-                            jugador=0;}
-                        else if (result1.data.usuarios[1][0] == idJugador){
-                            jugador=1;}
-                        else{
-                            jugador=-1;}
-                        let tuTurno = jugadas.length%2==jugador?1:jugador==-1?-1:0;
-                        let now = Date();
-                        if (result1.data.lastMove !=null && result.data.estado.finalizador=="" && (Date.parse(now)-Date.parse(result1.data.lastMove))>300000){
-                            mongoose.connection.db.eval("finalizarPartida("+idPartida+")")
-                                .then(result3 =>{
-                                    if (!result3.status){res.json(result3);return;}
-                                    let finalizador = result.data.data[tuTurno==1?jugador:Math.abs(jugador-1)][0];
-                                    for(let x:number=0;x<result1.data.nRondas;x++){
-                                        mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
-                                        .then(result4 =>{
-                                            if (!result4.status){res.json(result4);return;}
-                                            if (result4.data.estado.finalizador==""){
-                                                mongoose.connection.db.eval("finalizarRonda("+idPartida+","+x+","+finalizador+",'a')")
-                                            }
-                                        }).catch(err =>{res.json({status:false,data:err});});
-                                    }
-                                    res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
-                                    return;
-                                }).catch(err =>{res.json({status:false,data:err});});
+                if (result.data.estado.causa!=""){
+                    res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
+                }
+                else
+                {
+                    let jugadas : Array<Array<any>> = result.data.jugadas;
+                    let jugador : number;
+                    let turno = jugadas.length%2;
+                    if (result.data.usuarios[0][0] == idJugador){
+                        jugador=0;}
+                    else if (result.data.usuarios[1][0] == idJugador){
+                        jugador=1;}
+                    else{
+                        jugador=-1;}
+                    let tuTurno = jugadas.length%2==jugador?1:jugador==-1?-1:0;
+                    let now = Date();
+                    if (result.data.lastMove !=null && result.data.estado.finalizador=="" && (Date.parse(now)-Date.parse(result.data.lastMove))>300000){
+                        consulta("finalizarPartida("+idPartida+")",null);
+                        let finalizador = result.data.usuarios[tuTurno==1?jugador:Math.abs(jugador-1)][0];
+                        for(let x:number=0;x<result.data.nRondas;x++){
+                            mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
+                            .then(rounData =>{
+                                if (!rounData.status){res.json(rounData);return;}
+                                if (rounData.data.estado.finalizador==""){
+                                    consulta("finalizarRonda("+idPartida+","+x+","+finalizador+",'a')",null)
+                                }
+                            }).catch(err =>{res.json({status:false,data:err});});
                         }
-                        else if((result1.data.usuarios[turno][0]=="e" || result1.data.usuarios[turno][0]=="m" || result1.data.usuarios[turno][0]=="h")){
-                            let level = result1.data.usuarios[turno][0]=="e"?1:result1.data.usuarios[turno][0]=="m"?2:3;
-                            let botGame : gameModel =  new gameModel(result.data.tablero, result1.data.tamano_linea);
-                            let resul = botGame.AIMove(level,turno);
-                            mongoose.connect('mongodb://localhost:27017/connect4')
-                                .then(() =>{
-                                    mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+turno+")").then(() =>{
-                                        res.json({status:true,data:{tablero:botGame.charGrid,estado:{finalizador: resul[1]=="p"?"":result1.data.usuarios[turno][0],causa:resul[1]=="p"?"":resul[1]},turno:-1}})
-                                        if (resul[1]!="p")
-                                            mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result1.data.usuarios[turno][0]+"','"+resul[1]+"')")
-                                    }).catch(err =>{res.json({status:false,data:err});});
-                                    
-                                }).catch(err =>{res.json({status:false,data:err});});
-                            }
-                        else
-                            res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
+                        res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
+                        return;
                     }
-                        result.data.tablero.forEach(element => {
-                            console.log(element);
-                    });
-                }).catch(err =>{res.json({status:false,data:err});})
+                    else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h")){
+                        let level = result.data.usuarios[turno][0]=="e"?1:result.data.usuarios[turno][0]=="m"?2:3;
+                        let botGame : gameModel =  new gameModel(result.data.tablero, result.data.tamano_linea);
+                        let resul = botGame.AIMove(level,turno);
+                        mongoose.connect('mongodb://localhost:27017/connect4')
+                            .then(() =>{
+                                mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+turno+")").then(moveOk =>{
+                                    if (!moveOk.status){res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
+                                    return;}
+                                    res.json({status:true,data:{tablero:botGame.charGrid,estado:{finalizador: resul[1]=="p"?"":result.data.usuarios[turno][0],causa:resul[1]=="p"?"":resul[1]},turno:-1}})
+                                    if (resul[1]!="p")
+                                        mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result.data.usuarios[turno][0]+"','"+resul[1]+"')")
+                                }).catch(err =>{res.json({status:false,data:err});});
+                                
+                            }).catch(err =>{res.json({status:false,data:err});});
+                        }
+                    else
+                        res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
+                }
+                    result.data.tablero.forEach(element => {
+                        console.log(element);
+                });
             }).catch(err =>{res.json({status:false,data:err});})
         }).catch(err =>{res.json({status:false,data:err});})
     }
