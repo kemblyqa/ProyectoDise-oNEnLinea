@@ -29,8 +29,8 @@ export class LoginComponent{
         resUser => {
           console.log(JSON.stringify(resUser))
           if(resUser["status"]){
-            this.nickname = resUser["data"]["nickname"]
-            this.details = resUser["data"]["detalles"]
+            this.nickname = resUser["data"]["nickname"];
+            this.details = resUser["data"]["detalles"];
             this.routeTo()
           } else {
             this.register()

@@ -342,7 +342,12 @@ db.system.js.save({
 	  return({status:true,data:{"nickname":"Medium Robot","detalles":"Robot medio"}})
 	 else if (idUsuario=="h")
 	  return({status:true,data:{"nickname":"Hard Robot","detalles":"Robot dificil"}})
-		   return ({status:true,data:db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0]});
+	let result = db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
+	if (result==null)
+		 return {status:false,data:"Error checkUsuario: el usuario no existe"}
+		else
+
+		   return ({status:true,data:result});
 		}
 		catch(e){
 		 return {status:false,data:"Error checkUsuario: quiza el usuario no existe"}
