@@ -151,7 +151,11 @@ export class MainMenuComponent {
   }
 
   seeFriends(){
-    
+    this.service.getData("/user/friendList",{
+      params:{
+        
+      }
+    })
   }
 
   salir(){
