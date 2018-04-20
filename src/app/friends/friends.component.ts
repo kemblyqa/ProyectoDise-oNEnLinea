@@ -1,3 +1,4 @@
+import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FriendsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private service:Service) {
+    this.getFriends()
+  }
 
   ngOnInit() {
+  }
+
+  getFriends(){
+  //   this.service.getData("/user/friendList",{
+  //     params:{
+  //       idUsuario:,
+  //       page:
+  //     }
+    
+  //   })
+  // }
   }
 
 }

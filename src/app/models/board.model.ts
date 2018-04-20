@@ -42,31 +42,11 @@ export class BuildBoard{
         //sidebar elems
         this.sideBarItems = [{
             id:1,
-            text:"Nueva partida",
+            text:"Abandonar partida",
             href:"/menu"
         },{
             id:2,
-            text:"En curso",
-            href:"/menu"
-        },{
-            id:3,
-            text:"Buscar partida",
-            href:"/menu"
-        },{
-            id:4,
-            text:"Jugadores",
-            href:"/menu"
-        },{
-            id:5,
-            text:"Amigos",
-            href:"/menu"
-        },{
-            id:6,
-            text:"Perfil",
-            href:"/menu"
-        },{
-            id:7,
-            text:"Cerrar",
+            text:"Volver al menú",
             href:"/menu"
         }]
         this.fill()
