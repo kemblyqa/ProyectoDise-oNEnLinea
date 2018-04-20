@@ -16,6 +16,7 @@ declare var $ : any;
 export class LoginComponent{
   nickname:string
   details:string
+  errorMsg:any
 
   constructor(private service: Service, private router: Router){}
 
@@ -26,12 +27,13 @@ export class LoginComponent{
     })
       .subscribe(
         resUser => {
-          if(resUser == null){
-            this.register()
-          }else{
-            this.nickname = resUser["nickname"]
-            this.details = resUser["detalles"]
+          console.log(JSON.stringify(resUser))
+          if(resUser["status"]){
+            this.nickname = resUser["data"]["nickname"]
+            this.details = resUser["data"]["detalles"]
             this.routeTo()
+          } else {
+            this.register()
           }
         }
       )
@@ -49,12 +51,13 @@ export class LoginComponent{
     })
       .subscribe(
         resSuccess => {
-          resSuccess ? this.routeTo() : this.alertUser()
+          resSuccess["status"] ? this.routeTo() : this.alertUser(resSuccess["data"])
         }
       )
   }
 
-  alertUser(){
+  alertUser(data: any){
+    this.errorMsg = data
     $("#failed").modal("show")
   }
 

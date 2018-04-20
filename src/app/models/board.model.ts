@@ -116,7 +116,11 @@ export class BuildBoard{
         return this.gridBoard
     }
 
-    getReasonStatus(){
+    setGameStatus(status: any){
+        this.gameStatus = status
+    }
+
+    getGameStatus(){
         return this.gameStatus;
     }
 
@@ -142,12 +146,12 @@ export class BuildBoard{
     }
 
     //show in the board the status of turn
-    verifyGameStatus(turn:any):any{
+    verifyGameTurn(turn:any):any{
         //turno: [0] No es mi turno, [1] Si es mi turno, [-1] Juego terminado
         if(turn == 0){
-            return "Turno del jugador"
+            return "Es del jugador"
         } else if (turn == 1){
-            return "Es mi turno"
+            return "Es mio ahora"
         } else {
             return "Juego terminado"
         }
@@ -155,8 +159,23 @@ export class BuildBoard{
 
     //finalizador: winner or last move before end game
     //show if win, lose, tie, or leave
-    verifyIfGameIsEnded(status:any){
+    verifyIfGameIsEnded(status: any){
         this.gameStatus = status
-        return status != "p" ? true : false
+        return this.gameStatus["causa"] !== "" ? true : false
+    }
+
+    verifyReasonEndGame(playerID: any, botStatus: boolean){
+        if(botStatus){
+            return "r"
+        }
+        if(this.gameStatus["finalizador"] == playerID){
+            return this.gameStatus["causa"]
+        } else {
+            if(this.gameStatus["causa"] == "w"){
+                return "l"
+            } else{
+                return this.gameStatus["causa"]
+            }
+        }
     }
 }

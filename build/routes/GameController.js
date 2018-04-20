@@ -218,6 +218,7 @@ var GameController = (function () {
         var size = req.body.size;
         var lineSize = req.body.lineSize;
         var nRondas = req.body.nRondas;
+        console.log("nuevaSesion('" + idJ1 + "','" + color1 + "','" + idJ2 + "','" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
         if (idJ1 == null || color1 == null || idJ2 == null || color2 == null || size == null || lineSize == null || nRondas == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
