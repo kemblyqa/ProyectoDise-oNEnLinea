@@ -117,7 +117,7 @@ class GameController{
                         for(let x:number=0;x<nRondas;x++){
                             mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
                             .then(result =>{
-                                if (!result.data.status){res.json(result);return;}
+                                if (!result.status){res.json(result);return;}
                                 if (result.data.estado.finalizador==""){
                                     consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
                                 }
@@ -193,10 +193,11 @@ class GameController{
         .then(() =>{
             mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
             .then(result =>{
-                if (!result.data.status){res.json(result);return;}
+                if (!result.status){res.json(result);return;}
                 mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
                 .then(result1 =>{
                     if (!result1.status){res.json(result1);return;}
+                    console.log("hi")
                     if (result.data.estado.causa!=""){
                         res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
                     }

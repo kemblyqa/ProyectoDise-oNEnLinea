@@ -6,7 +6,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var path = require('path');
 var http = require('http');
-var Server = /** @class */ (function () {
+var Server = (function () {
     function Server() {
         this.app = express();
         this.config();

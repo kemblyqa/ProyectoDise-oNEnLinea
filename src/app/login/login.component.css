@@ -1,14 +1,28 @@
 .cardlogin{
     margin: auto;
-    width: 50%;
-    margin-top: 5%;
+    width: 30%;
+    margin-top: 10%;
 }
 
 .centerBtn{
     text-align: center;
 }
 
+.centerDiv{
+    text-align: center;
+}
+
 .icons {
     height: 50;
     width: 50;
+}
+
+.g-signin2{
+    width: 100%;
+    margin-top: 20%;
+    margin-bottom: 5%;
+}
+
+.g-signin2 > div{
+    margin: 0 auto;
 }

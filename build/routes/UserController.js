@@ -18,7 +18,7 @@ function consulta(query, res) {
     })
         .catch(function () { res.json({ status: false, data: "Error de conexion" }); });
 }
-var ControladorPersona = /** @class */ (function () {
+var ControladorPersona = (function () {
     function ControladorPersona() {
         this.router = express_1.Router();
         this.routes();

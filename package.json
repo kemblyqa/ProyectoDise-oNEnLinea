@@ -28,22 +28,26 @@
     "body-parser": "^1.18.2",
     "bootstrap": "^4.0.0",
     "core-js": "^2.4.1",
+    "ejs": "^2.5.9",
     "express": "^4.16.3",
+    "googleapis": "^29.0.0",
+    "jquery": "^1.9.1",
     "mongoose": "^5.0.12",
-    "ngx-bootstrap": "^2.0.3",
+    "ngx-bootstrap": "^2.0.4",
     "nodemon": "^1.17.3",
     "npm-run-all": "^4.1.2",
+    "popper.js": "^1.12.9",
     "rxjs": "^5.0.1",
     "ts-helpers": "^1.1.1",
     "tsc": "^1.20150623.0",
-    "zone.js": "^0.7.2"
+    "zone.js": "^0.8.4"
   },
   "devDependencies": {
     "@angular/cli": "^1.7.3",
     "@angular/compiler-cli": "^5.2.9",
     "@types/jasmine": "2.5.38",
     "@types/node": "^9.4.7",
-    "codelyzer": "~2.0.0-beta.1",
+    "codelyzer": "^4.2.1",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
@@ -53,7 +57,7 @@
     "karma-remap-istanbul": "^0.2.1",
     "protractor": "~4.0.13",
     "ts-node": "1.2.1",
-    "tslint": "^4.3.0",
-    "typescript": "^2.7.2"
+    "tslint": "^5.0.0",
+    "typescript": "^2.4.2"
   }
 }

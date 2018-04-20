@@ -14,15 +14,15 @@ declare var $ : any;
 })
 
 export class LoginComponent{
-  idUser:number
   nickname:string
   details:string
 
   constructor(private service: Service, private router: Router){}
 
   login(){
+    console.log(document.getElementById("txtEmail").textContent)
     this.service.getData("/user/checkUsuario",{
-      params: {idUsuario: this.idUser}
+      params: {idUsuario: document.getElementById("txtEmail").textContent}
     })
       .subscribe(
         resUser => {
@@ -43,7 +43,7 @@ export class LoginComponent{
 
   registerUser(){
     this.service.postData("/user/crearUsuario",{
-      idUsuario: this.idUser,
+      idUsuario: document.getElementById("txtEmail").textContent,
       nick: this.nickname,
       det: this.details
     })
@@ -59,15 +59,8 @@ export class LoginComponent{
   }
 
   routeTo(){
-    UserDetails.Instance.setUserID(this.idUser)
+    UserDetails.Instance.setUserID(document.getElementById("txtEmail").textContent)
     UserDetails.Instance.setNickNameDetails(this.nickname, this.details)
     this.router.navigate(['/menu'])
-  }
-  onSignIn(googleUser) {
-    var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
   }
 }

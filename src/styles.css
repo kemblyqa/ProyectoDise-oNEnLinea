@@ -39,3 +39,13 @@ body, html {
     height: 100%;
     width: 100%;
 }
+
+.g-signin2{
+    width: 100%;
+    margin-top: 20%;
+    margin-bottom: 5%;
+}
+
+.g-signin2 > div{
+    margin: 0 auto;
+}

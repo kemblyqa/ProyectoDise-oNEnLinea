@@ -6,6 +6,39 @@
   <base href="/">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  
+  <script>
+      function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        //console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+        //console.log('Name: ' + profile.getName());
+        //console.log('Image URL: ' + profile.getImageUrl());
+        //console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        document["imgPerfil"].src = profile.getImageUrl();
+        document.getElementById("txtEmail").textContent = profile.getEmail();
+        document.getElementById("txtPerfil").hidden=true;
+        document.getElementById("loginButton").hidden=false;
+        document.getElementById("loginButton").textContent="Iniciar como " + profile.getName();
+        document.getElementById("GoogleButton").hidden=true;
+        document.getElementById("closeLink").hidden=false;
+      }
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          document["perfil"].src = "../../assets/icons/download.png"; 
+          console.log('User signed out.');
+        });
+        document.getElementById("txtEmail").textContent = "";
+        document.getElementById("txtPerfil").hidden=false;
+        document.getElementById("loginButton").hidden=true;
+        document.getElementById("GoogleButton").hidden=false;
+        document.getElementById("closeLink").hidden=true;
+        auth2.disconnect();
+      }
+    </script>
+  <meta name="google-signin-client_id" content='388542471766-c2khce35frfu5tn9frnt5pkj6elopqa2.apps.googleusercontent.com'>
+    
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>

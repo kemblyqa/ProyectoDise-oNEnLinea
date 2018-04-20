@@ -19,7 +19,7 @@ function consulta(query, res) {
     })
         .catch(function () { res.json({ status: false, data: "Error de conexion" }); });
 }
-var GameController = /** @class */ (function () {
+var GameController = (function () {
     function GameController() {
         this.router = express_1.Router();
         this.routes();
@@ -143,7 +143,7 @@ var GameController = /** @class */ (function () {
                         var _loop_1 = function (x) {
                             mongoose.connection.db.eval("getInfoRonda(" + idPartida + "," + x + ")")
                                 .then(function (result) {
-                                if (!result.data.status) {
+                                if (!result.status) {
                                     res.json(result);
                                     return;
                                 }
@@ -236,7 +236,7 @@ var GameController = /** @class */ (function () {
             .then(function () {
             mongoose.connection.db.eval("getInfoRonda(" + idPartida + "," + ronda + ")")
                 .then(function (result) {
-                if (!result.data.status) {
+                if (!result.status) {
                     res.json(result);
                     return;
                 }
@@ -246,6 +246,7 @@ var GameController = /** @class */ (function () {
                         res.json(result1);
                         return;
                     }
+                    console.log("hi");
                     if (result.data.estado.causa != "") {
                         res.json({ status: true, data: { "tablero": result.data.tablero, "estado": result.data.estado, "turno": -1 } });
                     }
@@ -287,7 +288,7 @@ var GameController = /** @class */ (function () {
                                 for (var x = 0; x < result1.data.nRondas; x++) {
                                     _loop_2(x);
                                 }
-                                res.json({ status: true, data: { "tablero": result.data.tablero, "estado": { "finalizador": finalizador, "causa": "a" }, "turno": -1 } });
+                                res.json({ status: true, data: { tablero: result.data.tablero, estado: { finalizador: finalizador, causa: "a" }, turno: -1 } });
                                 return;
                             }).catch(function (err) { res.json({ status: false, data: err }); });
                         }
@@ -298,14 +299,14 @@ var GameController = /** @class */ (function () {
                             mongoose.connect('mongodb://localhost:27017/connect4')
                                 .then(function () {
                                 mongoose.connection.db.eval("jugada(" + idPartida + "," + ronda + "," + resul_1[0][0] + "," + resul_1[0][1] + "," + turno_1 + ")").then(function () {
-                                    res.json({ status: true, data: { "tablero": botGame_1.charGrid, "estado": { "finalizador": resul_1[1] == "p" ? "" : result1.data.usuarios[turno_1][0], "causa": resul_1[1] == "p" ? "" : resul_1[1] }, "turno": -1 } });
+                                    res.json({ status: true, data: { tablero: botGame_1.charGrid, estado: { finalizador: resul_1[1] == "p" ? "" : result1.data.usuarios[turno_1][0], causa: resul_1[1] == "p" ? "" : resul_1[1] }, turno: -1 } });
                                     if (resul_1[1] != "p")
                                         mongoose.connection.db.eval("finalizarRonda(" + idPartida + "," + ronda + ",'" + result1.data.usuarios[turno_1][0] + "','" + resul_1[1] + "')");
                                 }).catch(function (err) { res.json({ status: false, data: err }); });
                             }).catch(function (err) { res.json({ status: false, data: err }); });
                         }
                         else
-                            res.json({ status: true, data: { "tablero": result.data.tablero, "estado": ["", ""], "turno": tuTurno_1 } });
+                            res.json({ status: true, data: { tablero: result.data.tablero, estado: { finalizador: "", causa: "" }, turno: tuTurno_1 } });
                     }
                     result.data.tablero.forEach(function (element) {
                         console.log(element);

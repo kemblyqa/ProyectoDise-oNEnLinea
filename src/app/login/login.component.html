@@ -1,75 +1,77 @@
-    <meta name="google-signin-client_id" content='388542471766-c2khce35frfu5tn9frnt5pkj6elopqa2.apps.googleusercontent.com'>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <div class="container justify-content-center">
-        <div class="card cardlogin">
-            <div class="centerDiv">
-              <img src="../../assets/icons/download.png" alt="Card image cap">
-            </div>
-            <div class="card-body">
-              <h6 class="card-title centerDiv">Inicia sesión en: </h6>
-              <div class="centerDiv">
-                <input type="text" [(ngModel)]="idUser" class="form-control" id="idU" placeholder="....">
-                <div class="g-signin2" data-onsuccess="onSignIn"></div>
-                <!-- <img src="../../assets/icons/google.png" width="65" height="65"  alt="Card image cap"> -->
-              </div>
-            </div>
-          </div>
+<html>
+  <head>
+    <title>Iniciar sesión</title>
+  </head>
+  <body>
+<div class="container justify-content-center">
+  <div class="card cardlogin">
+      <div class="centerDiv">
+          <img src="../../assets/icons/download.png" name="imgPerfil" alt="Card image cap" style="margin-top: 10% ; width: 50%">
+          <h6 class="card-title centerDiv" id = "txtEmail"> </h6>
       </div>
-      
-      <!-- Register Modal -->
-      <div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUGADOR</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <div class="form-group row">
-                <label for="boardSize" class="col-sm-6 col-form-label">ID usuario</label>
-                <div class="col-sm-6">
-                    <input type="text" [(ngModel)]="idUser" class="form-control" id="idCurrentUser" placeholder="....">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="nSize" class="col-sm-6 col-form-label">Nickname</label>
-                <div class="col-sm-6">
-                  <input type="text" [(ngModel)]="nickname" class="form-control" id="idNickName" placeholder="....">
-                </div>
-              </div>
-              <div class="form-group row"> 
-                <label for="rSize" class="col-sm-6 col-form-label">Detalles</label> 
-                <div class="col-sm-6"> 
-                  <input type="text" [(ngModel)]="details" class="form-control" id="idDetails" placeholder="...."> 
-                </div> 
-              </div> 
-            </div>
-            <div class="modal-footer">
-              <button type="button" (click)="registerUser()" data-dismiss="modal" class="acceptButton">Aceptar</button>
-              <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
-            </div>
-          </div>
+      <div class="card-body">
+        <h6 class="card-title centerDiv" id = "txtPerfil">Inicia sesión en Google: </h6>
+        <div class="centerDiv" style="margin-top:5%;margin-bottom: 5%">
+          <button (click)="login()" id = "loginButton" class="btn-primary" hidden>Iniciar sesion como</button>
+          <div class="g-signin2" data-onsuccess="onSignIn" id = "GoogleButton"></div>
+        </div>
+        <div class="centerDiv">
+          <a href="#" onclick="signOut();" id="closeLink" hidden>Cerrar Sesión</a>
         </div>
       </div>
-      
-      <!-- something wrong modal -->
-      <div class="modal fade" id="failed" tabindex="-1" role="dialog" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Algo salió mal....</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <label for="rSize" class="col-sm-6 col-form-label">Hubo un problema con el servidor.</label> 
-              </div>
-              <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="acceptButton">Aceptar</button>
-              </div>
-            </div>
+    </div>
+</div>
+
+<!-- Register Modal -->
+<div class="modal fade" id="register" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUGADOR</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label for="nSize" class="col-sm-6 col-form-label">Nickname</label>
+          <div class="col-sm-6">
+            <input type="text" [(ngModel)]="nickname" class="form-control" id="idNickName" placeholder="....">
           </div>
         </div>
+        <div class="form-group row"> 
+          <label for="rSize" class="col-sm-6 col-form-label">Detalles</label> 
+          <div class="col-sm-6"> 
+            <input type="text" [(ngModel)]="details" class="form-control" id="idDetails" placeholder="...."> 
+          </div> 
+        </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" (click)="registerUser()" data-dismiss="modal" class="acceptButton">Aceptar</button>
+        <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- something wrong modal -->
+<div class="modal fade" id="failed" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Algo salió mal....</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <label for="rSize" class="col-sm-6 col-form-label">Hubo un problema con el servidor.</label> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="acceptButton">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </body>
+  </html>

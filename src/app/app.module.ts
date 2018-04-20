@@ -10,7 +10,6 @@ import { RouterModule } from '@angular/router';
 import { ROUTES } from './app.routing';
 import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
-
 import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
