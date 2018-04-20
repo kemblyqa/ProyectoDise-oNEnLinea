@@ -174,7 +174,7 @@ export class TableroComponent {
         this.openModalEndGame()
         break;
       case "r":
-        this.dialogEndGame = "Juego de bots terminado, gracias por ver!"
+        this.dialogEndGame = "Juego de bots terminado "
         this.dialogTitleEndGame = "TERMINADO...."
         this.openModalEndGame()
     }
