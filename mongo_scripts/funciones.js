@@ -389,10 +389,40 @@ db.system.js.save({
 		let retorno = [];
 		if (result!=null){
 			let listaPartidas = result.partidas;
-			listaPartidas.forEach(function(x){
-				if(db.Partidas.find({_id:x,estado:activo}).toArray()[0]!=null)
-					retorno.push(x);
-			});
+			let c=0
+			while(listaPartidas[c]!=null){
+				if(db.Partidas.find({_id:listaPartidas[c],estado:activo}).toArray()[0]!=null){
+					partida = db.Partidas.findOne({_id:listaPartidas[c]});
+					let jugadores = [];
+					for (let y=0;y<2;y++){
+						let usuario = partida.usuarios[y][0]
+						if (usuario=="e")
+							jugadores[y]={"nickname":"Easy Robot","detalles":"Robot facil"}
+						else if (usuario=="m")
+							jugadores[y]={"nickname":"Medium Robot","detalles":"Robot medio"}
+						else if (usuario=="h")
+							jugadores[y]={"nickname":"Hard Robot","detalles":"Robot dificil"}
+						else if (usuario=="")
+							jugadores[y]={"nickname":"Nadie aún","detalles":"Este es un campo disponible"}
+						else{
+                                                    let result = db.Usuarios.find({_id:usuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
+                                                    if (result==null)
+                                                            jugadores[y]={"nickname":"No encontrado","detalles":"Indefinido"}
+                                                    else
+                                                            jugadores[y]=result;
+                                                }
+					}
+					retorno.push({id_partida:partida._id,
+						Jugador_1:jugadores[0],
+						Jugador_2:jugadores[1],
+						colors:[partida.usuarios[0][1],
+						partida.usuarios[1][1]],
+						tamano:partida.tamano,
+						linea:partida.tamano_linea,
+						ronda:partida.nRondas});
+				}
+                                c++;
+			}
 		}
         return {status:true,data:retorno};
 		}

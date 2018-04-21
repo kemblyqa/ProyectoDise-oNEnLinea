@@ -81,34 +81,7 @@ class ControladorPersona{
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
         if (idUsuario==null || filtro==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        mongoose.connect('mongodb://localhost:27017/connect4')
-        .then(() =>{
-            mongoose.connection.db.eval("gameListFilter('"+idUsuario+"',"+filtro+")")
-            .then(result0 =>{
-                if (!result0.status){res.json(result0);return;}
-                let lista:Array<any> = result0.data
-                if(result0.data[0] ==null)
-                    res.json(result0);
-                else{
-                    let contador=lista.length;
-                    let data = [];
-                    for(let x = 0;x<lista.length;x++)
-                        mongoose.connection.db.eval("getInfoPartida("+lista[x]+")").then(result1 =>{
-                            if (!result1.status){res.json(result1);return;}
-                            mongoose.connection.db.eval("checkUsuario('"+result1.data.usuarios[0][0]+"')").then(user0 =>{
-                                if (!user0.status){res.json(user0);return;}
-                                mongoose.connection.db.eval("checkUsuario('"+result1.data.usuarios[1][0]+"')").then(user1 =>{
-                                    if (!user1.status){res.json(user1);return;}
-                                    data[x]={"id_partida":lista[x],"Jugador_1":user0.data,"colors":[result1.data.usuarios[0][1],result1.data.usuarios[1][1]],"Jugador_2":user1.data,"tamano":result1.data.tamano,"linea":result1.data.tamano_linea,"ronda":result1.data.nRondas}
-                                    contador=contador-1;
-                                    if (contador ==0)
-                                        res.json({status:true,data:data})
-                                }).catch(err =>{res.json({status:false,data:err});})
-                            }).catch(err =>{res.json({status:false,data:err});})
-                        }).catch(err =>{res.json({status:false,data:err});})
-                }
-            }).catch(err =>{res.json({status:false,data:err});})
-        }).catch(err =>{res.json({status:false,data:err});})
+        consulta("gameListFilter('"+idUsuario+"',"+filtro+")",res)
     }
 
     public static rondaActiva(req: Request, res: Response){

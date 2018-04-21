@@ -93,50 +93,7 @@ var ControladorPersona = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
-        mongoose.connect('mongodb://localhost:27017/connect4')
-            .then(function () {
-            mongoose.connection.db.eval("gameListFilter('" + idUsuario + "'," + filtro + ")")
-                .then(function (result0) {
-                if (!result0.status) {
-                    res.json(result0);
-                    return;
-                }
-                var lista = result0.data;
-                if (result0.data[0] == null)
-                    res.json(result0);
-                else {
-                    var contador_1 = lista.length;
-                    var data_1 = [];
-                    var _loop_1 = function (x) {
-                        mongoose.connection.db.eval("getInfoPartida(" + lista[x] + ")").then(function (result1) {
-                            if (!result1.status) {
-                                res.json(result1);
-                                return;
-                            }
-                            mongoose.connection.db.eval("checkUsuario('" + result1.data.usuarios[0][0] + "')").then(function (user0) {
-                                if (!user0.status) {
-                                    res.json(user0);
-                                    return;
-                                }
-                                mongoose.connection.db.eval("checkUsuario('" + result1.data.usuarios[1][0] + "')").then(function (user1) {
-                                    if (!user1.status) {
-                                        res.json(user1);
-                                        return;
-                                    }
-                                    data_1[x] = { "id_partida": lista[x], "Jugador_1": user0.data, "colors": [result1.data.usuarios[0][1], result1.data.usuarios[1][1]], "Jugador_2": user1.data, "tamano": result1.data.tamano, "linea": result1.data.tamano_linea, "ronda": result1.data.nRondas };
-                                    contador_1 = contador_1 - 1;
-                                    if (contador_1 == 0)
-                                        res.json({ status: true, data: data_1 });
-                                }).catch(function (err) { res.json({ status: false, data: err }); });
-                            }).catch(function (err) { res.json({ status: false, data: err }); });
-                        }).catch(function (err) { res.json({ status: false, data: err }); });
-                    };
-                    for (var x = 0; x < lista.length; x++) {
-                        _loop_1(x);
-                    }
-                }
-            }).catch(function (err) { res.json({ status: false, data: err }); });
-        }).catch(function (err) { res.json({ status: false, data: err }); });
+        consulta("gameListFilter('" + idUsuario + "'," + filtro + ")", res);
     };
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;
