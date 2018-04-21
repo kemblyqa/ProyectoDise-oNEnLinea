@@ -17,7 +17,7 @@ export class MainMenuComponent {
   //model
   menuModel: MenuModel;
   colors: Array<any>
-  allGames:Array<any>
+  inactiveGames:Array<any>
   activeGames:Array<any>
   errorMsg:any
   gameAIOptions:any
@@ -35,7 +35,7 @@ export class MainMenuComponent {
   nRounds: number
   nColor: string
   isActiveGames: boolean
-  isFree:boolean
+  againstPlayer:boolean
 
   //AI params
   optGame:any = "jugador";
@@ -47,11 +47,14 @@ export class MainMenuComponent {
   //friends
   friendsPages:any
   friendsList:any
+
+  //open games
+  openGames:Array<any>
   
   constructor(private service: Service, private router: Router) {
     //juegos activos por defecto
     this.isActiveGames = true
-    this.isFree = true
+    this.againstPlayer = false
 
     //render info to set in menu
     this.menuModel = new MenuModel()
@@ -67,16 +70,24 @@ export class MainMenuComponent {
     //get the games of user
     this.fillAllGames()
     this.fillActiveGames()
+    this.fillOpenGames()
   }
 
+  //LOGOUT
+  exit(){
+    this.router.navigateByUrl('/login');
+    window.location.reload();
+  }
+
+  //ALL GAMES, FRIENDS, INVITATIONS
   fillAllGames(){
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
           if(data["status"]){
-            this.allGames = data["data"]
+            this.inactiveGames = data["data"]
           } else {
-            this.alertGame(data["data"])
+            this.alertGameModal(data["data"])
           }
         }, 
         err => { 
@@ -90,9 +101,9 @@ export class MainMenuComponent {
       .subscribe( 
         data => { 
           if(data["status"]){
-            this.allGames = data["data"]
+            this.activeGames = data["data"]
           } else {
-            this.alertGame(data["data"])
+            this.alertGameModal(data["data"])
           }
         }, 
         err => { 
@@ -101,14 +112,73 @@ export class MainMenuComponent {
       )
   }
 
-  parametersBegin() {
+  fillOpenGames(){
+    this.service.getData("/game/disponibles",{
+      params: {
+        page: 1
+      }
+    })
+    .subscribe(
+      openGamesResponse => {
+        if(openGamesResponse["status"]){
+          console.log(JSON.stringify(openGamesResponse))
+          this.openGames = openGamesResponse["data"]
+        }else{
+          this.alertGameModal(openGamesResponse["data"])
+        }
+      }, 
+      err =>{
+
+      }
+    )
+  }
+
+  //GAME
+  openGame(id:any){
+    UserDetails.Instance.setCurrentGameID(id)
+    this.router.navigate(['/tablero'])
+  }
+  gameModeChange(value){
+    console.log("switching visibility")
+    if (value == "bot")
+      document.getElementById("botlvl1").hidden=false
+    else
+      document.getElementById("botlvl1").hidden=true
+  }
+
+  //MODALS MAIN MENU
+  parametersModal() {
     $('#parameters').modal('show');
   }
 
-  optionsAIBegin(){
+  optionsAIModal(){
     $("#paramsAI").modal("show")
   }
 
+  friendsModal(){
+    $('#friends').modal('show');
+  }
+
+  allGamesModal(){
+    $('#gamesRegistered').modal('show');
+  }
+
+  invitationsModal(){
+    $('#invitations').modal('show')
+  }
+
+  freeGamesModal(){
+    $('#openGames').modal('show');
+  }
+
+  messagesModal(){}
+
+  alertGameModal(msg: any){
+    this.errorMsg = msg
+    $('#failed').modal('show')
+  }
+
+  //INIT GAMES
   newAIGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.optGame == "bot" ? this.optLevP1 : this.idP1, //player or bot
@@ -121,27 +191,18 @@ export class MainMenuComponent {
     })
       .subscribe( 
         response => { 
-          response["status"] ? this.openGame(response["data"]) : this.alertGame(response["data"])
+          response["status"] ? this.openGame(response["data"]) : this.alertGameModal(response["data"])
         }, 
         err => { 
             console.log(err) 
         } 
       ) 
   }
-
-  seeNewFriends(){
-    $("#addFriendModal").modal("show")
-  }
-
-  addFriend(){
-
-  }
-
   newGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
       color1: this.nColor,
-      idJ2: this.isFree ? "" : this.idP2,
+      idJ2: this.againstPlayer ? this.idP2 : "",
       color2: "",  
       size: this.bSize,
       lineSize: this.nSize,
@@ -149,35 +210,14 @@ export class MainMenuComponent {
     })
       .subscribe( 
         response => { 
-          response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
+          console.log(JSON.stringify(response["data"]))
+          response["status"] ? this.fillActiveGames() : this.alertGameModal(response["data"])
         }, 
         err => { 
           console.log(err) 
         } 
       ) 
   }
-
-  alertGame(msg: any){
-    this.errorMsg = msg
-    $('#failed').modal('show')
-  }
-
-  seeGames(){
-    $('#gamesRegistered').modal('show');
-  }
-
-  friendsListBegin(){
-    $('#friends').modal('show');
-  }
-
-  activeGamesBegin(){
-    $('#activeGames').modal('show');
-  }
-
-  seeMessages(){
-    
-  }
-
   replayGame(){
     this.service.getData("/game/jugadas",{
       params: {
@@ -189,7 +229,7 @@ export class MainMenuComponent {
         if(dataRes["status"]){
           dataRes["data"]
         } else {
-          this.alertGame(dataRes["data"])
+          this.alertGameModal(dataRes["data"])
         }
       }, 
       err => {
@@ -198,6 +238,14 @@ export class MainMenuComponent {
     )
   }
 
+  //FRIENDS
+  seeNewFriends(){
+    $("#addFriendModal").modal("show")
+  }
+
+  addFriend(){}
+
+  
   seeFriends(){
     this.service.getData("/user/friendList",{
       params: {
@@ -211,7 +259,7 @@ export class MainMenuComponent {
           this.friendsPages = this.menuModel.checkPaginationFriendList(responseFriends["data"])
           this.friendsList = this.menuModel.getFriendsList()
         } else {
-          this.alertGame(responseFriends["data"])
+          this.alertGameModal(responseFriends["data"])
         }
       },
       errorFriends => {
@@ -220,20 +268,28 @@ export class MainMenuComponent {
     )
   }
 
-  salir(){
-    this.router.navigateByUrl('/login');
-    window.location.reload();
+  getOtherFriends(){
+    this.service.getData("",{
+      params: {
+
+      }
+    })
+    .subscribe(
+      otherFriendsRes =>{
+        if(otherFriendsRes["status"]){
+
+        } else {
+          this.alertGameModal(otherFriendsRes["data"])
+        }
+      },
+      err => {
+        console.log(JSON.stringify(err))
+      }
+    )
   }
 
-  openGame(id:any){
-    UserDetails.Instance.setCurrentGameID(id)
-    this.router.navigate(['/tablero'])
-  }
-  gameModeChange(value){
-    console.log("switching visibility")
-    if (value == "bot")
-      document.getElementById("botlvl1").hidden=false
-    else
-      document.getElementById("botlvl1").hidden=true
+  //OPEN GAMES
+  openFreeGame(id:any){
+    console.log("part: "+id)
   }
 }

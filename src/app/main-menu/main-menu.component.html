@@ -6,25 +6,28 @@
     </div>
     <div class="card-body">
       <div class="centerMenuItem">
-        <button type="button" (click)="parametersBegin()" class="centerMenuBtn">Crear partida</button>
+        <button type="button" (click)="parametersModal()" class="centerMenuBtn">Crear partida</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click)="optionsAIBegin()" class="centerMenuBtn">Jugar con la computadora</button>
+        <button type="button" (click)="optionsAIModal()" class="centerMenuBtn">Jugar con la computadora</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click)="activeGamesBegin()" class="centerMenuBtn">Invitaciones</button>
+        <button type="button" (click)="freeGamesModal()" class="centerMenuBtn">Partidas abiertas</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click)="seeGames()" class="centerMenuBtn">Registro de partidas</button>
+        <button type="button" (click)="invitationsModal()" class="centerMenuBtn">Invitaciones</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click)="seeFriends()" class="centerMenuBtn">Lista de amigos</button>
+        <button type="button" (click)="allGamesModal()" class="centerMenuBtn">Registro de partidas</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click)="seeMessages()" class="centerMenuBtn">Chats</button>
+        <button type="button" (click)="friendsModal()" class="centerMenuBtn">Lista de amigos</button>
       </div>
       <div class="centerMenuItem">
-        <button type="button" (click) ="salir()" class="centerMenuBtn">Salir</button>
+        <button type="button" (click)="messagesModal()" class="centerMenuBtn">Chats</button>
+      </div>
+      <div class="centerMenuItem">
+        <button type="button" (click) ="exit()" class="centerMenuBtn">Salir</button>
       </div>
     </div>
   </div>
@@ -56,21 +59,22 @@
           </div> 
         </div> 
         <div class="form-group row"> 
-          <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
           <div class="col-sm-6">
-            <div class="row">
-              <input class="form-check-input" type="checkbox" [value]="true" [(ngModel)]="isFree" id="lblPlayer">
-                <label class="form-check-label" for="lblPlayer">
-                  Contra jugador
-                </label>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" [value]="false" [(ngModel)]="againstPlayer" id="lblPlayer">
+              <label class="form-check-label" for="lblPlayer">
+                Contra jugador
+              </label>
             </div>
-            <div *ngIf="!isFree" class="row">
+          </div> 
+          <div class="col-sm-6">
+            <div *ngIf="againstPlayer">
               <select id="selectedFriend" [(ngModel)]="idP2" class="form-control">
                 <option *ngFor="let friend of friendsList"
                   [value]="idP2">{{friend.nickname}}</option> 
               </select>
-            </div>
-            <label *ngIf="isFree">Partida abierta</label> 
+            </div> 
+            <label *ngIf="!againstPlayer">Partida abierta</label>
           </div> 
         </div> 
         <div class="form-group row">
@@ -201,7 +205,7 @@
                 </div>
               </div>
             </div>
-          <div [hidden]="isActiveGames">
+          <div [hidden]="!isActiveGames">
             <div *ngFor="let game of activeGames">
               <div class="form-group row">
                 <div class="col-sm-4">
@@ -219,7 +223,7 @@
                     <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
                   </div>
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
+                    <label class="col-sm-8 col-form-label">Victoria: {{game.linea}}</label>
                   </div>
                 </div>
                 <div class="col-sm-4 centerGameOption">
@@ -228,7 +232,7 @@
               </div>
             </div>
           </div>
-          <div [hidden]="!isActiveGames">
+          <div [hidden]="isActiveGames">
             <div *ngFor="let game of allGames">
               <div class="form-group row">
                 <div class="col-sm-4">
@@ -246,7 +250,7 @@
                     <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
                   </div>
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
+                    <label class="col-sm-8 col-form-label">Victoria: {{game.linea}}</label>
                   </div>
                 </div>                
                 <div class="col-sm-4 centerGameOption">
@@ -278,8 +282,8 @@
     </div>
   </div>
 </div>
-<!-- notifications modal -->
-<div class="modal fade" id="activeGames" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- invitations modal -->
+<div class="modal fade" id="invitations" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -362,4 +366,43 @@
           <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
         </div>
       </div>
+</div>
+<!-- free ganes modal -->
+<div class="modal fade" id="openGames" tabindex="-1" role="dialog" aria-labelledby="labelOpenGames" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="labelOpenGames">Partidas disponibles</h5>
+        </div>
+        <div class="modal-body">
+          <div *ngFor="let open of openGames">
+            <div class="form-group row">
+              <div class="col-sm-4">
+                <div class="row centerGameOption">
+                  <div class="spanColor" style.background-color="{{open.color}}"></div>
+                  <label class="col-sm-8 col-form-label">  {{open.creador}}</label>
+                </div>
+                <div class="row centerGameOption">
+                  <label class="col-sm-8 col-form-label">  {{open.rondas}}</label>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="row centerGameOption">
+                  <label class="col-sm-8 col-form-label">Tablero: {{open.tamano}}</label>
+                </div>
+                <div class="row centerGameOption">
+                  <label class="col-sm-8 col-form-label">Victoria: {{open.victoria}}</label>
+                </div>
+              </div>
+              <div class="col-sm-4 centerGameOption">
+                <button type="button" (click)="openGame(open.idPartida)" data-dismiss="modal" class="playGameOption">Jugar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+        </div>
+      </div>
+    </div>
 </div>
