@@ -148,11 +148,11 @@ var ControladorPersona = (function () {
     };
     ControladorPersona.friendList = function (req, res) {
         var idUsuario = req.query.idUsuario;
-        if (idUsuario == null || page == null) {
+        if (idUsuario == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
-        consulta("friendList('" + idUsuario + "'," + page + ")", res);
+        consulta("friendList('" + idUsuario + "')", res);
     };
     ControladorPersona.friend = function (req, res) {
         var id1 = req.query.id1;

@@ -12,7 +12,6 @@ import { LoginComponent } from './login/login.component';
 import { MainMenuComponent } from './main-menu/main-menu.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ChatComponent } from './chat/chat.component';
-import { FriendsComponent } from './friends/friends.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +20,6 @@ import { FriendsComponent } from './friends/friends.component';
     LoginComponent,
     MainMenuComponent,
     ChatComponent,
-    FriendsComponent
   ],
   imports: [
     BrowserModule,

@@ -57,8 +57,20 @@
         </div> 
         <div class="form-group row"> 
           <label for="player" class="col-sm-6 col-form-label">Segundo jugador</label> 
-          <div class="col-sm-6"> 
-            <input type="text" [(ngModel)]="idP2" class="form-control" id="player" placeholder="Nombre.."> 
+          <div class="col-sm-6">
+            <div class="row">
+              <input class="form-check-input" type="checkbox" [value]="true" [(ngModel)]="isFree" id="lblPlayer">
+                <label class="form-check-label" for="lblPlayer">
+                  Contra jugador
+                </label>
+            </div>
+            <div *ngIf="!isFree" class="row">
+              <select id="selectedFriend" [(ngModel)]="idP2" class="form-control">
+                <option *ngFor="let friend of friendsList"
+                  [value]="idP2">{{friend.nickname}}</option> 
+              </select>
+            </div>
+            <label *ngIf="isFree">Partida abierta</label> 
           </div> 
         </div> 
         <div class="form-group row">
@@ -244,7 +256,7 @@
                   </div>
                 </div>                
                 <div class="col-sm-4 centerGameOption">
-                  <button type="button" (click)=review() data-dismiss="modal" class="viewGameOption">Ver</button>
+                  <button type="button" (click)=replayGame() data-dismiss="modal" class="viewGameOption">Ver</button>
                 </div>
               </div>
             </div>
@@ -301,88 +313,60 @@
     </div>
 </div>
 <!-- friend list modal -->
-<div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Registro de partidas</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Lista de amigos</h5>
       </div>
       <div class="modal-body">
-        <!-- Show inactive games or active games -->
-        <div class="form-check">
-            <div class="row">
-              <div class="col-sm-6">
-                <input class="form-check-input" type="radio" name="radioGameStatus" id="activeGameStatus" [value]="true" [(ngModel)]="active">
-                <label class="form-check-label" for="activeGameStatus">
-                  Activos ahora
-                </label>
-              </div>
-              <div class="col-sm-6">
-                <input class="form-check-input" type="radio" name="radioGameStatus" id="inactiveGameStatus" [value]="false" [(ngModel)]="active">
-                <label class="form-check-label" for="inactiveGameStatus">
-                  Inactivos
-                </label>
-              </div>
+        <div *ngFor="let friend of friendsList">
+          <div class="form-group row centerGameOption">
+            <div class="col-sm-4">
+              <label class="col-sm-8 col-form-label"> {{friend.nickname}}</label>
             </div>
-          </div>
-        <div *ngIf="active">
-          <div *ngFor="let game of activeGames">
-            <div class="form-group row">
-              <div class="col-sm-4">
-                <div class="row centerGameOption">
-                  <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
-                  <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
-                </div>
-                <div class="row centerGameOption">
-                  <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
-                  <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
-                </div>
-                <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
-                </div>
-              </div>
-              <div class="col-sm-4 centerGameOption">
-                <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="playGameOption">Jugar</button>
-              </div>
             </div>
-          </div>
-        </div>
-        <div *ngIf="!active">
-          <div *ngFor="let game of allGames">
-            <div class="form-group row">
-              <div class="col-sm-4">
-                <div class="row centerGameOption">
-                  <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
-                  <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
-                </div>
-                <div class="row centerGameOption">
-                  <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
-                  <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
-                </div>
-              </div>
-              <div class="col-sm-4">
-                <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
-                </div>
-                <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Línea: {{game.linea}}</label>
-                </div>
-              </div>                
-              <div class="col-sm-4 centerGameOption">
-                <button type="button" (click)=review() data-dismiss="modal" class="viewGameOption">Ver</button>
-              </div>
+            <div class="col-sm-4 centerGameOption">
+              <label class="col-sm-8 col-form-label"> {{friend.detalles}}</label>
+            </div>
+            <div class="col-sm-4 centerGameOption">
+              <button type="button" (click)="seeMessages(friend.id_partida)" data-dismiss="modal" class="playGameOption">Chat</button>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
+        <button type="button" (click)="seeNewFriends()" class="acceptButton">Agregar amigos</button>      
         <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
       </div>
     </div>
   </div>
+</div>
+<!-- add friend modal -->
+<div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Agregar amigos</h5>
+        </div>
+        <div class="modal-body">
+          <div *ngFor="let friend of friendsList">
+            <div class="form-group row centerGameOption">
+              <div class="col-sm-4">
+                <label class="col-sm-8 col-form-label"> {{friend.nickname}}</label>
+              </div>
+            </div>
+              <div class="col-sm-4 centerGameOption">
+                <label class="col-sm-8 col-form-label"> {{friend.detalles}}</label>
+              </div>
+              <div class="col-sm-4 centerGameOption">
+                <button type="button" (click)="addFriend(friend.nickname)" data-dismiss="modal" class="playGameOption">Agregar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+        </div>
+      </div>
 </div>

@@ -35,6 +35,7 @@ export class MainMenuComponent {
   nRounds: number
   nColor: string
   isActiveGames: boolean
+  isFree:boolean
 
   //AI params
   optGame:any = "jugador";
@@ -42,10 +43,17 @@ export class MainMenuComponent {
   nAIColorP2:any
   optLevP1:any
   optLevP2:any
+
+  //friends
+  friendsPages:any
+  friendsList:any
   
   constructor(private service: Service, private router: Router) {
     //juegos activos por defecto
     this.isActiveGames = true
+    this.isFree = true
+
+    //render info to set in menu
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
     this.gameAIOptions = this.menuModel.getAIOptions()
@@ -68,7 +76,7 @@ export class MainMenuComponent {
           if(data["status"]){
             this.allGames = data["data"]
           } else {
-            this.errorMsg = data["data"]
+            this.alertGame(data["data"])
           }
         }, 
         err => { 
@@ -84,7 +92,7 @@ export class MainMenuComponent {
           if(data["status"]){
             this.allGames = data["data"]
           } else {
-            this.errorMsg = data["data"]
+            this.alertGame(data["data"])
           }
         }, 
         err => { 
@@ -121,12 +129,20 @@ export class MainMenuComponent {
       ) 
   }
 
+  seeNewFriends(){
+    $("#addFriendModal").modal("show")
+  }
+
+  addFriend(){
+
+  }
+
   newGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
       color1: this.nColor,
-      idJ2: this.idP2,
-      color2: "#00FA9A",  
+      idJ2: this.isFree ? "" : this.idP2,
+      color2: "",  
       size: this.bSize,
       lineSize: this.nSize,
       nRondas : this.nRounds 
@@ -136,7 +152,7 @@ export class MainMenuComponent {
           response["status"] ? this.fillActiveGames() : this.alertGame(response["data"])
         }, 
         err => { 
-            console.log(err) 
+          console.log(err) 
         } 
       ) 
   }
@@ -150,6 +166,10 @@ export class MainMenuComponent {
     $('#gamesRegistered').modal('show');
   }
 
+  friendsListBegin(){
+    $('#friends').modal('show');
+  }
+
   activeGamesBegin(){
     $('#activeGames').modal('show');
   }
@@ -158,8 +178,46 @@ export class MainMenuComponent {
     
   }
 
+  replayGame(){
+    this.service.getData("/game/jugadas",{
+      params: {
+        idPartida: ""
+      }
+    })
+    .subscribe(
+      dataRes => {
+        if(dataRes["status"]){
+          dataRes["data"]
+        } else {
+          this.alertGame(dataRes["data"])
+        }
+      }, 
+      err => {
+        console.log(JSON.stringify(err))
+      }
+    )
+  }
+
   seeFriends(){
-  
+    this.service.getData("/user/friendList",{
+      params: {
+        idUsuario: this.idP1
+      }
+    })
+    .subscribe(
+      responseFriends =>{
+        if(responseFriends["status"]){
+          console.log(JSON.stringify(responseFriends))
+          this.friendsPages = this.menuModel.checkPaginationFriendList(responseFriends["data"])
+          this.friendsList = this.menuModel.getFriendsList()
+        } else {
+          this.alertGame(responseFriends["data"])
+        }
+      },
+      errorFriends => {
+        console.log(errorFriends)
+      }
+    )
   }
 
   salir(){
