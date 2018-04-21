@@ -62,8 +62,7 @@ export class LoginComponent{
   }
 
   routeTo(){
-    UserDetails.Instance.setUserID(document.getElementById("txtEmail").textContent)
-    UserDetails.Instance.setNickNameDetails(this.nickname, this.details)
+    UserDetails.Instance.setActive(document.getElementById("txtEmail").textContent,this.nickname,this.details)
     this.router.navigate(['/menu'])
   }
 }

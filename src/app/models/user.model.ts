@@ -7,8 +7,8 @@ export class UserDetails {
     private details?:string
     private currentGameID:any
     private botGame:boolean
+    private active:boolean = false;
     private static instance:UserDetails
-    private router :Router;
 
     setNickNameDetails(nickname: any, details:any){
         this.nickName = nickname
@@ -45,6 +45,15 @@ export class UserDetails {
 
     isBotGame(){
         return this.botGame
+    }
+    setActive(id,nick,det){
+        this.nickName=nick;
+        this.userID=id;
+        this.details=det;
+        this.active = true;
+    }
+    getActive(){
+        return this.active;
     }
 
     static get Instance() {

@@ -89,7 +89,7 @@
           <div class="form-group row">
             <label class="col-sm-6 col-form-label">Tipo de juego</label>
             <div class="col-sm-6">
-              <select id="gameType" [(ngModel)]="optGame" class="form-control">
+              <select id="gameType" [(ngModel)]="optGame" class="form-control" #t (change)="gameModeChange(t.value)">
                 <option *ngFor="let option of gameAIOptions"
                   [value]="option.user">{{option.text}}</option> 
               </select>

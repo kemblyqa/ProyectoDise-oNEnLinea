@@ -2,6 +2,8 @@ db.system.js.save({
 	_id: "cUsuario",
 	value: function (idUsuario,nick,det) 
 	{ 
+		if (db.Usuarios.findOne({_nickname:nick})==null)
+			return {status:true,data:"Este nombre de usuario está ocupado!"}
 		try{
 			db.Usuarios.insertOne({
 			_id:idUsuario, 
@@ -43,6 +45,8 @@ db.system.js.save({
 	_id: "uNickname",
 	value: function (idUsuario,nick) 
 	{ 
+		if (db.Usuarios.findOne({_nickname:nick})==null)
+			return {status:true,data:"Este nombre de usuario está ocupado!"}
 		try{
 			db.Usuarios.updateOne(
 		   { _id: idUsuario },
@@ -439,7 +443,7 @@ db.system.js.save({
 
 db.system.js.save({
 	_id: "friendList",
-	value: function (id, page) 
+	value: function (id) 
 	{ 
 		try{
 			if (db.Usuarios.findOne({_id:id})==null)
@@ -448,7 +452,7 @@ db.system.js.save({
 			if (friendList==null)
 				return {status:false,data:"algo malo pasó :c"};
 			let richList = [];
-			for(let x = (page-1)*10; friendList[x]!=null && x < page*10;x++)
+			for(let x = 0; friendList[x]!=null;x++)
 				richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
 			return {status:true,dat:richList};
 		}

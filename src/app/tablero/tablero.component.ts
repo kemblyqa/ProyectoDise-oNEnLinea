@@ -2,6 +2,7 @@ import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit, TemplateRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 declare var jquery:any;
 declare var $ :any;
 //models
@@ -35,8 +36,12 @@ export class TableroComponent {
   dialogEndGame:string
   errorMsg:string
 
-  constructor(private service:Service) {
+  constructor(private service:Service,private router:Router) {
     //init variables to be used in the controller
+    if (!UserDetails.Instance.getActive()){
+      this.router.navigateByUrl('/login');
+      window.location.reload();
+    }
     this.playerNickname = UserDetails.Instance.getNickName()
     this.playerIdGame = UserDetails.Instance.getCurrentGameID() 
     this.playerID = UserDetails.Instance.getUserID()

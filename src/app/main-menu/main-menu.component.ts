@@ -37,7 +37,7 @@ export class MainMenuComponent {
   active: boolean
 
   //AI params
-  optGame:any
+  optGame:any = "jugador";
   nAIColorP1:any
   nAIColorP2:any
   optLevP1:any
@@ -50,7 +50,7 @@ export class MainMenuComponent {
     this.level = this.menuModel.getLevels()
     this.idP1 = UserDetails.Instance.getUserID()
     this.nickName = UserDetails.Instance.getNickName()
-    if (this.nickName==null){
+    if (!UserDetails.Instance.getActive()){
         this.router.navigateByUrl('/login');
         window.location.reload();
       }
@@ -65,7 +65,12 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
-          this.allGames = data["data"]
+          if(data["status"]){
+            this.allGames = data["data"]
+            console.log(this.allGames)
+          } else {
+            this.errorMsg = data["data"]
+          }
         }, 
         err => { 
             console.log("Error") 
@@ -77,7 +82,12 @@ export class MainMenuComponent {
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
       .subscribe( 
         data => { 
-          this.activeGames = data["data"]
+          if(data["status"]){
+            this.activeGames = data["data"]
+            console.log(this.allGames)
+          } else {
+            this.errorMsg = data["data"]
+          }
         }, 
         err => { 
             console.log("Error") 
@@ -162,5 +172,12 @@ export class MainMenuComponent {
   openGame(id:any){
     UserDetails.Instance.setCurrentGameID(id)
     this.router.navigate(['/tablero'])
+  }
+  print(x){
+    console.log(x)
+  }
+  gameModeChange(value){
+    this.print(value);
+    //if (document.getElementById("gameType").nodeValue==)
   }
 }

@@ -148,7 +148,6 @@ var ControladorPersona = (function () {
     };
     ControladorPersona.friendList = function (req, res) {
         var idUsuario = req.query.idUsuario;
-        var page = req.query.page;
         if (idUsuario == null || page == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
