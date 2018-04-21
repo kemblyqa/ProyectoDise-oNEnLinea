@@ -33,14 +33,14 @@ export class MainMenuComponent {
   nSize: number
   bSize: number
   nRounds: number
-  nColor: string
+  nColor: string = "#8A2BE2"
   isActiveGames: boolean
   againstPlayer:boolean
 
   //AI params
-  optGame:any = "jugador";
-  nAIColorP1:any
-  nAIColorP2:any
+  optGame:any = "jugador"
+  nAIColorP1:any = "#8A2BE2"
+  nAIColorP2:any = "#7FFF00"
   optLevP1:any
   optLevP2:any
 
@@ -50,6 +50,7 @@ export class MainMenuComponent {
 
   //open games
   openGames:Array<any>
+  colorSelected:any = "#8A2BE2"
   
   constructor(private service: Service, private router: Router) {
     //juegos activos por defecto
@@ -138,6 +139,7 @@ export class MainMenuComponent {
     UserDetails.Instance.setCurrentGameID(id)
     this.router.navigate(['/tablero'])
   }
+
   gameModeChange(value){
     console.log("switching visibility")
     if (value == "bot")
@@ -290,6 +292,23 @@ export class MainMenuComponent {
 
   //OPEN GAMES
   openFreeGame(id:any){
-    console.log("part: "+id)
+    this.service.postData("/game/linkUsuarioPartida",{
+      idUsuario: this.idP1,
+      idPartida: id,
+      color: this.colorSelected
+    })
+    .subscribe(
+      dataResponse => {
+        console.log(JSON.stringify(dataResponse))
+        if(dataResponse["status"]){
+          this.openGame(id)
+        } else {
+          this.alertGameModal(dataResponse["data"])
+        }
+      },
+      err => {
+        console.log(JSON.stringify(err))
+      }
+    )
   }
 }

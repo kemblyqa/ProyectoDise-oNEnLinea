@@ -208,6 +208,7 @@ var GameController = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
+        console.log("linkUsuarioPartida(" + idPartida + ",'" + idUsuario + "','" + color + "')");
         consulta("linkUsuarioPartida(" + idPartida + ",'" + idUsuario + "','" + color + "')", res);
     };
     GameController.newGame = function (req, res) {
