@@ -367,12 +367,21 @@
         </div>
       </div>
 </div>
-<!-- free ganes modal -->
+<!-- free games modal -->
 <div class="modal fade" id="openGames" tabindex="-1" role="dialog" aria-labelledby="labelOpenGames" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="labelOpenGames">Partidas disponibles</h5>
+            <h5 class="modal-title" id="labelOpenGames">Partidas disponibles</h5>
+            <div class="row">
+              <label class="col-form-label col-sm-6">Escoja su color:</label>
+              <div class="col-sm-6">
+                <select [(ngModel)]="colorSelected" class="form-control">
+                  <option class="{{col.styleName}}" *ngFor="let col of colors"
+                    [value]="col.color">{{col.name}}</option> 
+                </select>
+              </div>
+          </div>
         </div>
         <div class="modal-body">
           <div *ngFor="let open of openGames">
@@ -383,7 +392,7 @@
                   <label class="col-sm-8 col-form-label">  {{open.creador}}</label>
                 </div>
                 <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">  {{open.rondas}}</label>
+                  <label class="col-sm-8 col-form-label">Rondas: {{open.rondas}}</label>
                 </div>
               </div>
               <div class="col-sm-4">
@@ -395,7 +404,7 @@
                 </div>
               </div>
               <div class="col-sm-4 centerGameOption">
-                <button type="button" (click)="openGame(open.idPartida)" data-dismiss="modal" class="playGameOption">Jugar</button>
+                <button type="button" (click)="openFreeGame(open.idPartida)" data-dismiss="modal" class="playGameOption">Jugar</button>
               </div>
             </div>
           </div>
