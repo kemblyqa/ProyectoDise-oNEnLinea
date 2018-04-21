@@ -153,11 +153,16 @@ db.system.js.save({
 	value: function (idJ1,color1,idJ2,color2,size,lineSize,nRondas) 
 	{ 
 		try{
-			if ((db.Usuarios.find({_id:idJ1}).toArray()[0]==null && (idJ1!="e" && idJ1!="m" &&idJ1!="h")) || 
-				(db.Usuarios.find({_id:idJ2}).toArray()[0]==null && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!="")) || 
-				color1==color2 || idJ1==idJ2 ||
-				db.Partidas.findOne({"usuarios.0.0":idJ1,"usuarios.1.0":idJ2,estado:true})!=null)
-				return {status:false,data:"Error: Existe una partida activa entre ambos usuarios, los usuarios o colores son los mismos o no se reconocen"};
+			if (db.Usuarios.find({_id:idJ1}).toArray()[0]==null && (idJ1!="e" && idJ1!="m" &&idJ1!="h"))
+				return {status:false,data:"Error: Jugador 1 no existe!"};
+			if	(db.Usuarios.find({_id:idJ2}).toArray()[0]==null && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
+				return {status:false,data:"Error: Jugador 2 no existe!"}; 
+			if (color1==color2)
+				return {status:false,data:"Error: Debes escoger colores distintos!"};
+			if (idJ1==idJ2 && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
+				return {status:false,data:"Error: No puedes jugar contra ti mismo!"};
+			if (db.Partidas.findOne({"usuarios.0.0":idJ1,"usuarios.1.0":idJ2,estado:true})!=null && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
+				return {status:false,data:"Error: Existe una partida activa entre ambos usuarios"};
 			fila='[-1';
 			for(x=1;x<size;x++){
 				fila=fila+',-1';
@@ -348,6 +353,8 @@ db.system.js.save({
 	  return({status:true,data:{"nickname":"Medium Robot","detalles":"Robot medio"}})
 	 else if (idUsuario=="h")
 	  return({status:true,data:{"nickname":"Hard Robot","detalles":"Robot dificil"}})
+	 else if (idUsuario=="")
+	  return({status:true,data:{"nickname":"Nadie aún","detalles":"Este es un campo disponible"}})
 	let result = db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
 	if (result==null)
 	   return {status:false,data:"Error checkUsuario: el usuario '"+idUsuario+"'no existe"}
@@ -540,7 +547,7 @@ db.system.js.save({
 	value: function (idPartida,nRonda,idJugador) 
 	{ 
 		let ronda = db.Partidas.findOne({_id:idPartida},
-                {usuarios:1,_id:1,rondas:1,lastMove:1,nRondas:1,usuarios:1})
+                {usuarios:1,_id:1,rondas:1,lastMove:1,nRondas:1,usuarios:1,tamano_linea:1})
                 if (ronda==null)
                     return {status:false,data:"No existe la ronda " + nRonda + " en la partida " + idPartida}
                 else{
@@ -551,7 +558,8 @@ db.system.js.save({
                             jugadas:ronda.rondas[nRonda].jugadas,
                             lastMove:ronda.lastMove,
                             nRondas:ronda.nRondas,
-                            usuarios:ronda.usuarios}}
+                            usuarios:ronda.usuarios,
+                        	tamano_linea:ronda.tamano_linea}}
                 }
 	}
 });
