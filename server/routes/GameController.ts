@@ -180,7 +180,6 @@ class GameController{
         let size = req.body.size;
         let lineSize = req.body.lineSize;
         let nRondas = req.body.nRondas;
-        console.log("nuevaSesion('"+idJ1+"','"+color1+"','"+idJ2+"','"+color2+"',"+size+","+lineSize+","+nRondas+")")
         if (idJ1 == null || color1 == null || idJ2 == null || color2 == null || size == null || lineSize == null || nRondas==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("nuevaSesion('"+idJ1+"','"+color1+"','"+idJ2+"','"+color2+"',"+size+","+lineSize+","+nRondas+")",res);
     }
@@ -189,7 +188,8 @@ class GameController{
         let idPartida = req.query.idPartida;
         let ronda = req.query.ronda;
         let idJugador = req.query.idJugador;
-        if (idPartida ==null || ronda==null ||idJugador==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+        let moveFlag = req.query.moveFlag;
+        if (idPartida ==null || ronda==null ||idJugador==null || moveFlag==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         mongoose.connect('mongodb://localhost:27017/connect4')
         .then(() =>{
             mongoose.connection.db.eval("update("+idPartida+","+ronda+",'"+idJugador+"')")
@@ -226,7 +226,7 @@ class GameController{
                         res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
                         return;
                     }
-                    else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h")){
+                    else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h") && moveFlag == "false"){
                         let level = result.data.usuarios[turno][0]=="e"?1:result.data.usuarios[turno][0]=="m"?2:3;
                         let botGame : gameModel =  new gameModel(result.data.tablero, result.data.tamano_linea);
                         let resul = botGame.AIMove(level,turno);
@@ -245,9 +245,6 @@ class GameController{
                     else
                         res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
                 }
-                    result.data.tablero.forEach(element => {
-                        console.log(element);
-                });
             }).catch(err =>{res.json({status:false,data:err});})
         }).catch(err =>{res.json({status:false,data:err});})
     }

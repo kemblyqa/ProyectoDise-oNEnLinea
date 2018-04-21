@@ -98,21 +98,15 @@
           <div class="form-group row">
               <label for="boardSize" class="col-sm-6 col-form-label">Tamaño de tablero</label>
               <div class="col-sm-6">
-                  <input type="text" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
+                  <input type="number" [(ngModel)]="bSize" class="form-control" id="boardSize" placeholder="Tamaño en digitos..">
               </div>
             </div>
           <div class="form-group row">
             <label for="nbSize" class="col-sm-6 col-form-label">Tamaño de N en línea</label>
             <div class="col-sm-6">
-              <input type="text" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
+              <input type="number" [(ngModel)]="nSize" class="form-control" id="nbSize" placeholder="Tamaño en digitos..">
             </div>
           </div>
-          <div class="form-group row"> 
-            <label for="rSize" class="col-sm-6 col-form-label">Número de rondas</label> 
-            <div class="col-sm-6"> 
-              <input type="text" [(ngModel)]="nRounds" class="form-control" id="rSize" placeholder="Tamaño en digitos.."> 
-            </div> 
-          </div> 
 
           <div class="form-group row">
             <div class="col-sm-4 offset-md-1">
@@ -126,12 +120,12 @@
                     </select>
                   </div>
             </div>
-            <div class="col-sm-4 offset-md-2">
+            <div class="col-sm-4 offset-md-2" id="botlvl1" hidden>
               <div class="row">
                 <label class="col-form-label">Dificultad</label>
               </div>
               <div class="row">
-                  <select id="gameType" [(ngModel)]="optLevP1" class="form-control">
+                  <select [(ngModel)]="optLevP1" class="form-control">
                     <option *ngFor="let lev of level"
                       [value]="lev.n">{{lev.level}}</option> 
                   </select>

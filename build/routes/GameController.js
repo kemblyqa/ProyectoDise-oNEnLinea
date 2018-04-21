@@ -218,7 +218,6 @@ var GameController = (function () {
         var size = req.body.size;
         var lineSize = req.body.lineSize;
         var nRondas = req.body.nRondas;
-        console.log("nuevaSesion('" + idJ1 + "','" + color1 + "','" + idJ2 + "','" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")");
         if (idJ1 == null || color1 == null || idJ2 == null || color2 == null || size == null || lineSize == null || nRondas == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
@@ -229,7 +228,8 @@ var GameController = (function () {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
         var idJugador = req.query.idJugador;
-        if (idPartida == null || ronda == null || idJugador == null) {
+        var moveFlag = req.query.moveFlag;
+        if (idPartida == null || ronda == null || idJugador == null || moveFlag == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
@@ -280,7 +280,7 @@ var GameController = (function () {
                         res.json({ status: true, data: { tablero: result.data.tablero, estado: { finalizador: finalizador_1, causa: "a" }, turno: -1 } });
                         return;
                     }
-                    else if ((result.data.usuarios[turno_1][0] == "e" || result.data.usuarios[turno_1][0] == "m" || result.data.usuarios[turno_1][0] == "h")) {
+                    else if ((result.data.usuarios[turno_1][0] == "e" || result.data.usuarios[turno_1][0] == "m" || result.data.usuarios[turno_1][0] == "h") && moveFlag == "false") {
                         var level = result.data.usuarios[turno_1][0] == "e" ? 1 : result.data.usuarios[turno_1][0] == "m" ? 2 : 3;
                         var botGame_1 = new game_model_1.default(result.data.tablero, result.data.tamano_linea);
                         var resul_1 = botGame_1.AIMove(level, turno_1);
@@ -300,9 +300,6 @@ var GameController = (function () {
                     else
                         res.json({ status: true, data: { tablero: result.data.tablero, estado: { finalizador: "", causa: "" }, turno: tuTurno } });
                 }
-                result.data.tablero.forEach(function (element) {
-                    console.log(element);
-                });
             }).catch(function (err) { res.json({ status: false, data: err }); });
         }).catch(function (err) { res.json({ status: false, data: err }); });
     };

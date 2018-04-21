@@ -119,8 +119,8 @@ class ControladorPersona{
 
     public static friendList(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
-        if(idUsuario==null ||page==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        consulta("friendList('"+idUsuario+"',"+page+")", res);
+        if(idUsuario==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+        consulta("friendList('"+idUsuario+"')", res);
     }
 
     public static friend(req: Request, res: Response){

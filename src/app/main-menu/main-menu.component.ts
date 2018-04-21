@@ -111,7 +111,7 @@ export class MainMenuComponent {
       color2: this.nAIColorP2,  
       size: this.bSize,
       lineSize: this.nSize,
-      nRondas : this.nRounds 
+      nRondas : 1
     })
       .subscribe( 
         response => { 
@@ -173,11 +173,11 @@ export class MainMenuComponent {
     UserDetails.Instance.setCurrentGameID(id)
     this.router.navigate(['/tablero'])
   }
-  print(x){
-    console.log(x)
-  }
   gameModeChange(value){
-    this.print(value);
-    //if (document.getElementById("gameType").nodeValue==)
+    console.log("switching visibility")
+    if (value == "bot")
+      document.getElementById("botlvl1").hidden=false
+    else
+      document.getElementById("botlvl1").hidden=true
   }
 }

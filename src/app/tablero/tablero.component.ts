@@ -26,6 +26,7 @@ export class TableroComponent {
   playerIdGame:any
   playerID:any
   botGameStatus:boolean
+  moveFlag:boolean = false
 
   //board model
   tab:BuildBoard
@@ -115,6 +116,7 @@ export class TableroComponent {
       idJugador: this.playerID
       }).subscribe(
         status => {
+          this.moveFlag=status["status"]
           console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
           -->estado: ${status["data"]}`)
         }
@@ -127,7 +129,8 @@ export class TableroComponent {
         params: {
           idPartida: this.playerIdGame,
           ronda: this.playerRound,
-          idJugador: this.playerID
+          idJugador: this.playerID,
+          moveFlag: this.moveFlag
         }
       })
         .subscribe(
@@ -148,6 +151,7 @@ export class TableroComponent {
             console.log(JSON.stringify(err))
           }
         )
+        this.moveFlag=false;
     }, 3000)
   }
 
