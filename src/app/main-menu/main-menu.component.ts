@@ -34,7 +34,7 @@ export class MainMenuComponent {
   bSize: number
   nRounds: number
   nColor: string
-  active: boolean
+  isActiveGames: boolean
 
   //AI params
   optGame:any = "jugador";
@@ -44,6 +44,8 @@ export class MainMenuComponent {
   optLevP2:any
   
   constructor(private service: Service, private router: Router) {
+    //juegos activos por defecto
+    this.isActiveGames = true
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
     this.gameAIOptions = this.menuModel.getAIOptions()
@@ -54,8 +56,6 @@ export class MainMenuComponent {
         this.router.navigateByUrl('/login');
         window.location.reload();
       }
-    //juegos activos por defecto
-    this.active = true
     //get the games of user
     this.fillAllGames()
     this.fillActiveGames()
@@ -67,7 +67,6 @@ export class MainMenuComponent {
         data => { 
           if(data["status"]){
             this.allGames = data["data"]
-            console.log(this.allGames)
           } else {
             this.errorMsg = data["data"]
           }
@@ -83,8 +82,7 @@ export class MainMenuComponent {
       .subscribe( 
         data => { 
           if(data["status"]){
-            this.activeGames = data["data"]
-            console.log(this.allGames)
+            this.allGames = data["data"]
           } else {
             this.errorMsg = data["data"]
           }

@@ -21,13 +21,11 @@ export class LoginComponent{
   constructor(private service: Service, private router: Router){}
 
   login(){
-    console.log(document.getElementById("txtEmail").textContent)
     this.service.getData("/user/checkUsuario",{
       params: {idUsuario: document.getElementById("txtEmail").textContent}
     })
       .subscribe(
         resUser => {
-          console.log(JSON.stringify(resUser))
           if(resUser["status"]){
             this.nickname = resUser["data"]["nickname"];
             this.details = resUser["data"]["detalles"];
