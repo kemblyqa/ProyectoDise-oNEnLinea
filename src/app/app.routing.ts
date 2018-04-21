@@ -5,7 +5,6 @@ import { LoginComponent } from "./login/login.component";
 
 //importacion modulos
 import { Routes } from "@angular/router";
-import { FriendsComponent } from './friends/friends.component';
 
 export const ROUTES: Routes = [
     {
@@ -19,9 +18,6 @@ export const ROUTES: Routes = [
     },
     {
         path: 'menu', component: MainMenuComponent
-    },
-    {
-        path: 'friends', component: FriendsComponent
     },
     {
         path: '**', redirectTo: 'menu', pathMatch: 'full'

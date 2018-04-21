@@ -5,7 +5,7 @@ export class MenuModel{
     //partidas IDs
     private idAllGames:any
     private idActiveGames:any
-    //data
+    private friendsList:Array<any>
     //colors
     private colors:Array<any>
     private gameAIOptions: Array<any>
@@ -108,5 +108,20 @@ export class MenuModel{
 
     getColorList(){
         return this.colors;
+    }
+
+    checkPaginationFriendList(friendList: Array<any>){
+        this.friendsList = friendList
+        let pages:number = 0
+        for(let x=0; x < friendList.length; x++){
+            if(x % 10 == 0){
+                pages++
+            }
+        }
+        return pages
+    }
+
+    getFriendsList(){
+        return this.friendsList
     }
 }
