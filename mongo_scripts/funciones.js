@@ -478,7 +478,7 @@ db.system.js.save({
         let index = 0;
         while(result[index]!=null){
             let creador = db.Usuarios.findOne({_id:result[index].usuarios[0][0]});
-            retorno.push({"creador":creador.nickname,"#Partida":result[index]._id,"color":result[index].usuarios[0][1],"tamaño":result[index].tamano,"victoria":result[index].tamano_linea,"rondas":result[index].nRondas})
+            retorno.push({creador:creador.nickname,idPartida:result[index]._id,color:result[index].usuarios[0][1],tamano:result[index].tamano,victoria:result[index].tamano_linea,rondas:result[index].nRondas})
             index++
         }
         return {status:true,data:retorno};
