@@ -479,8 +479,8 @@ db.system.js.save({
 
 
 db.system.js.save({
-	_id: "friendList",
-	value: function (id) 
+	_id: "friendListFilter",
+	value: function (id,filtro) 
 	{ 
 		try{
 			if (db.Usuarios.findOne({_id:id})==null)
@@ -489,9 +489,27 @@ db.system.js.save({
 			if (friendList==null)
 				return {status:false,data:"algo malo pasó :c"};
 			let richList = [];
-			for(let x = 0; friendList[x]!=null;x++)
-				richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
-			return {status:true,data:richList};
+			if(!filtro){
+				let allList = db.Usuarios.find({},{_id:1,nickname:1,detalles:1}).toArray()[0]
+				for(let x=0;allList[x]!=null;x++){
+					if (allList[x]._id == id)
+						continue
+					let amigo = false
+					for (let y=0;friendList[y]!=null;y++){
+						if (friendList[y]=allList[x]._id){
+							amigo=true
+							break
+						}
+					}
+					if (!amigo)
+						richList.push(allList[x])
+				}
+			}
+			else{
+				for(let x = 0; friendList[x]!=null;x++)
+					richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
+				return {status:true,data:richList};
+			}
 		}
 		catch(e){
 			return {status:false,data:"Error friendList"}

@@ -90,15 +90,16 @@ class ControladorPersona{
         consulta("rondaActiva("+idPartida+")", res);
     }
 
-    public static friendList(req: Request, res: Response){
+    public static friendListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
+        let filtro = req.query.filtro;
         if(idUsuario==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        consulta("friendList('"+idUsuario+"')", res);
+        consulta("friendListFilter('"+idUsuario+"',"+filtro+")", res);
     }
 
     public static friend(req: Request, res: Response){
-        let id1 = req.query.id1;
-        let id2 = req.query.id2;
+        let id1 = req.body.id1;
+        let id2 = req.body.id2;
         if(id1==null||id2==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("friend('"+id1+"','"+id2+"')", res);
     }
@@ -140,6 +141,8 @@ class ControladorPersona{
         if(idUsuario==null || page==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("invitaciones('"+idUsuario+"',"+page+")", res);
     }
+
+
     public routes(): void{
         //POST
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);
@@ -156,7 +159,7 @@ class ControladorPersona{
         this.router.get('/checkNick',ControladorPersona.checkNick);
         this.router.get('/gameListFilter',ControladorPersona.gameListFilter);
         this.router.get('/rondaActiva',ControladorPersona.rondaActiva);
-        this.router.get('/friendList',ControladorPersona.friendList);
+        this.router.get('/friendListFilter',ControladorPersona.friendListFilter);
         this.router.get('/invitaciones',ControladorPersona.invitaciones);
     }
 }
