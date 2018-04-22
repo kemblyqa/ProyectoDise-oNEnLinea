@@ -149,7 +149,8 @@ export default class gameModel{
         return count;
     }
 
-    AIMove = function (level,turno) {
+    AIMove = function (level,turno) 
+    {
         let result = this.minMax(this, level,turno)[0];
         if (result[1]==null)
             return [result,"t"];
@@ -162,11 +163,16 @@ export default class gameModel{
         if (level==0){
             for(let x=0;x<tablero.gridSize;x++){
                 let moveSc = 0;
-                let movidaAI = tablero.getCellInGrid(x,turno);
-                if (movidaAI == null)
+                let movidaAI = tablero.getCellInGrid(x,turno);if (movidaAI == null)
                     continue;
                 let moveStAI = tablero.isNConnected(movidaAI[0],movidaAI[1],turno)
-                if(moveStAI=="w"){
+                
+                if(movidaAI[0]==tablero.gridSize-1 && 
+                    (movidaAI[1]-1==-1 || tablero.charGrid[movidaAI[0]][movidaAI[1]-1]==-1)&&
+                    (movidaAI[1]+1==tablero.gridSize || tablero.charGrid[movidaAI[0]][movidaAI[1]+1]==-1)){
+                        moveSc =0;
+                    }
+                else if (moveStAI=="w"){
                     moveSc = 1;
                 }
                 else if (moveStAI=="t"){
@@ -178,14 +184,17 @@ export default class gameModel{
                         if (movida == null)
                             continue;
                         let moveSt = tablero.isNConnected(movida[0],movida[1],Math.abs(turno-1));
-                        if (moveSt=="w"){
-                            moveSc=-1;
-                            tablero.charGrid[movida[0]][movida[1]] = -1;
-                            break;
-                        }
-                        else{
-                            moveSc = 0;
-                        }
+                        if(!(movida[0]==tablero.gridSize-1 && 
+                            (movida[1]-1==-1 || tablero.charGrid[movida[0]][movida[1]-1]==-1)&&
+                            (movida[1]+1==tablero.gridSize || tablero.charGrid[movida[0]][movida[1]+1]==-1)))
+                            if (moveSt=="w"){
+                                moveSc=-1;
+                                tablero.charGrid[movida[0]][movida[1]] = -1;
+                                break;
+                            }
+                            else{
+                                moveSc = 0;
+                            }
                         tablero.charGrid[movida[0]][movida[1]] = -1;
                     }
                 }
@@ -195,15 +204,21 @@ export default class gameModel{
                 }
                 tablero.charGrid[movidaAI[0]][movidaAI[1]] = -1;
             }
+            return [bestMove,score];
         }
         else{
             for (let x = 0;x<tablero.gridSize;x++){
                 let moveSc = 0;
-                let movidaAI = tablero.getCellInGrid(x,turno);
-                if (movidaAI == null)
+                let movidaAI = tablero.getCellInGrid(x,turno);if (movidaAI == null)
                     continue;
                 let moveStAI = tablero.isNConnected(movidaAI[0],movidaAI[1],turno)
-                if(moveStAI=="w"){
+                
+                if(movidaAI[0]==tablero.gridSize-1 && 
+                    (movidaAI[1]-1==-1 || tablero.charGrid[movidaAI[0]][movidaAI[1]-1]==-1)&&
+                    (movidaAI[1]+1==tablero.gridSize || tablero.charGrid[movidaAI[0]][movidaAI[1]+1]==-1)){
+                    moveSc =0;
+                }
+                else if(moveStAI=="w"){
                     moveSc=1;
                 }
                 else if (moveStAI=="t" && moveSc ==null){
@@ -215,24 +230,33 @@ export default class gameModel{
                         if (movida == null)
                             continue;
                         let moveSt = tablero.isNConnected(movida[0],movida[1],Math.abs(turno-1));
-                        if (moveSt=="w"){
-                            moveSc=-1;
-                            tablero.charGrid[movida[0]][movida[1]] = -1;
-                            break;
-                        }
-                        else{      
-                            moveSc += (tablero.minMax(tablero, level-1, turno)[1]/tablero.gridSize)/tablero.gridSize;
-                        }
+                        if(!(movida[0]==tablero.gridSize-1 && 
+                            (movida[1]-1==-1 || tablero.charGrid[movida[0]][movida[1]-1]==-1)&&
+                            (movida[1]+1==tablero.gridSize || tablero.charGrid[movida[0]][movida[1]+1]==-1)))
+                            if (moveSt=="w"){
+                                moveSc=-1;
+                                tablero.charGrid[movida[0]][movida[1]] = -1;
+                                break;
+                            }
+                            else{
+                                moveSc += (tablero.minMax(tablero, level-1, turno)[1]/tablero.gridSize)/tablero.gridSize;
+                            }
                         tablero.charGrid[movida[0]][movida[1]] = -1;
                     }
                 }
                 tablero.charGrid[movidaAI[0]][movidaAI[1]] = -1;
                 if (score == null || score < moveSc){
+                    if (!(Math.random()*10<2-level && score!=null)){
+                        score = moveSc;
+                        bestMove = movidaAI;
+                    }
+                }
+                else if(Math.random()*10<2-level){
                     score = moveSc;
                     bestMove = movidaAI;
                 }
             }
+            return [bestMove,score];
         }
-        return [bestMove,score];
     }
 }
