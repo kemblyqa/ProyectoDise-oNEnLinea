@@ -490,13 +490,13 @@ db.system.js.save({
 				return {status:false,data:"algo malo pasó :c"};
 			let richList = [];
 			if(!filtro){
-				let allList = db.Usuarios.find({},{_id:1,nickname:1,detalles:1}).toArray()[0]
+				let allList = db.Usuarios.find({},{_id:1,nickname:1,detalles:1}).toArray()
 				for(let x=0;allList[x]!=null;x++){
 					if (allList[x]._id == id)
 						continue
 					let amigo = false
 					for (let y=0;friendList[y]!=null;y++){
-						if (friendList[y]=allList[x]._id){
+						if (friendList[y]==allList[x]._id){
 							amigo=true
 							break
 						}
@@ -508,8 +508,8 @@ db.system.js.save({
 			else{
 				for(let x = 0; friendList[x]!=null;x++)
 					richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
-				return {status:true,data:richList};
 			}
+			return {status:true,data:richList};
 		}
 		catch(e){
 			return {status:false,data:"Error friendList"}
