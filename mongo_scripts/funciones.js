@@ -161,7 +161,8 @@ db.system.js.save({
 				return {status:false,data:"Error: Debes escoger colores distintos!"};
 			if (idJ1==idJ2 && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
 				return {status:false,data:"Error: No puedes jugar contra ti mismo!"};
-			if (db.Partidas.findOne({"usuarios.0.0":idJ1,"usuarios.1.0":idJ2,estado:true})!=null && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
+			if ((db.Partidas.findOne({"usuarios.0.0":idJ1,"usuarios.1.0":idJ2,estado:true})!=null || 
+				db.Partidas.findOne({"usuarios.0.0":idJ2,"usuarios.1.0":idJ1,estado:true})!=null) && (idJ2!="e" && idJ2!="m" &&idJ2!="h" && idJ2!=""))
 				return {status:false,data:"Error: Existe una partida activa entre ambos usuarios"};
 			fila='[-1';
 			for(x=1;x<size;x++){
@@ -541,7 +542,7 @@ db.system.js.save({
 	_id: "invitar",
 	value: function (idAnfitrion,color,idInvitado,tamano,tamano_linea,nRondas) 
 	{ 
-		if(db.Usuarios.findOne({"invitaciones.anfitrion":idAnfitrion,_id:idInvitado})!=null || 
+		if(db.Usuarios.findOne({"invitaciones.idAnfitrion":idAnfitrion,_id:idInvitado})!=null || 
 			db.Partidas.findOne({"usuarios.0.0":idAnfitrion,"usuarios.1.0":idInvitado,estado:true})!=null ||
 			db.Partidas.findOne({"usuarios.1.0":idInvitado,"usuarios.0.0":idAnfitrion,estado:true})!=null)
 			return {status:false,data:"Error: la invitacion ya existe o ya existe una partida activa entre ambos jugadores"}
@@ -563,7 +564,7 @@ db.system.js.save({
         if (invitacion ==null)
             return {status:false,data:"Error: la invitacion no existe"}
         invitacion = invitacion.invitaciones[0]
-		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
+		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"idAnfitrion": idAnfitrion}}}, false, false)
 		return {status:true,data:invitacion};
 	}
 });

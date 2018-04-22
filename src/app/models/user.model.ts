@@ -8,7 +8,8 @@ export class UserDetails {
     private currentGameID:any
     private botGame:boolean
     private active:boolean = false;
-    private static instance:UserDetails
+    private replayMode = false;
+    private static instance:UserDetails;
 
     setNickNameDetails(nickname: any, details:any){
         this.nickName = nickname
@@ -57,6 +58,7 @@ export class UserDetails {
         return this.active;
     }
 
+    
     static get Instance() {
         if (this.instance === null || this.instance === undefined) {
             this.instance = new UserDetails();
