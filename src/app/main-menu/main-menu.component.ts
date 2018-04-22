@@ -60,6 +60,7 @@ export class MainMenuComponent {
     this.isActiveGames = true
     this.againstPlayer = false
     this.friendsList = []
+    this.newFriendList = []
     //render info to set in menu
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
@@ -258,7 +259,11 @@ export class MainMenuComponent {
     })
     .subscribe(
       resFriendAdded => {
-        
+        if(resFriendAdded["status"]){
+          console.log(resFriendAdded["data"])
+        } else {
+          this.alertGameModal(resFriendAdded["data"])
+        }
       }
     )
   }

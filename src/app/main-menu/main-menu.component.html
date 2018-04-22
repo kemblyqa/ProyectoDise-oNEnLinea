@@ -181,16 +181,14 @@
   </div>
 </div>
 <!-- Games modal -->
-<div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="gamesRegistered" tabindex="-1" role="dialog" aria-labelledby="lblGames" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <div class="row">
-            <h5 class="modal-title col-sm-6" id="exampleModalLabel">Registro de partidas</h5>
-            <div class="col-sm-6">
+            <h5 class="modal-title col-sm-6" id="lblGames">Registro de partidas</h5>
+            <div class="col-sm-6 offset-md-3">
                 <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
             </div>
-          </div>
         </div>
         <div class="modal-body">
           <!-- Show inactive games or active games -->
@@ -348,7 +346,10 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="lblAddF">Posibles nuevos amigos</h5>
+          <h5 class="modal-title col-sm-6" id="lblAddF">Posibles amigos</h5>
+          <div class="col-sm-6 offset-md-3">
+            <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+          </div>
         </div>
         <div class="modal-body">
           <div *ngFor="let friend of newFriendList">
@@ -365,12 +366,10 @@
                   <button type="button" (click)="addFriend(friend._id)" data-dismiss="modal" class="playGameOption">Chat</button>
                 </div>
               </div>  
-            <div class="modal-footer">
-              <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
-            </div>
           </div>
         </div>
       </div>
+    </div>
 </div>
 <!-- free games modal -->
 <div class="modal fade" id="openGames" tabindex="-1" role="dialog" aria-labelledby="labelOpenGames" aria-hidden="true">
