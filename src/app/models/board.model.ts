@@ -119,7 +119,7 @@ export class BuildBoard{
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
                 if(this.gridBoard[rowI][colI] != -1){
-                    this.gridBoard[rowI][colI] != 0 ? document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[0][1] : document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[1][1]                    
+                    this.gridBoard[rowI][colI] != 0 ? document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[1][1] : document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor = this.users[0][1]                    
                 }
             }
         }
