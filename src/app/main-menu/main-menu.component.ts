@@ -45,12 +45,14 @@ export class MainMenuComponent {
   optLevP2:any
 
   //friends
-  friendsPages:any
+  friendsListPages:any
   friendsList:any
+  newFriend:any
 
   //open games
   openGames:Array<any>
   colorSelected:any = "#8A2BE2"
+  
   
   constructor(private service: Service, private router: Router) {
     //juegos activos por defecto
@@ -129,7 +131,7 @@ export class MainMenuComponent {
         }
       }, 
       err =>{
-
+        console.log(JSON.stringify(err))
       }
     )
   }
@@ -176,7 +178,11 @@ export class MainMenuComponent {
   }
 
   friendsModal(){
-    $('#friends').modal('show');
+    $('#friends').modal('show')
+  }
+
+  newFriendsModal(){
+    $('#addFriendModal').modal('show')
   }
 
   allGamesModal(){
@@ -238,10 +244,10 @@ export class MainMenuComponent {
         } 
       ) 
   }
-  replayGame(){
+  replayGame(id:any){
     this.service.getData("/game/jugadas",{
       params: {
-        idPartida: ""
+        idPartida: id
       }
     })
     .subscribe(
@@ -259,24 +265,25 @@ export class MainMenuComponent {
   }
 
   //FRIENDS
-  seeNewFriends(){
-    $("#addFriendModal").modal("show")
+  addFriend(nickname: any){
+    this.service.postData("",{
+      id1: this.idP1,
+      id2: this.idP2
+    })
   }
 
-  addFriend(){}
-
-  
-  seeFriends(){
-    this.service.getData("/user/friendList",{
+  getFriends(){
+    this.service.getData("/user/friendListFilter",{
       params: {
-        idUsuario: this.idP1
+        idUsuario: this.idP1,
+        filtro: true
       }
     })
     .subscribe(
       responseFriends =>{
         if(responseFriends["status"]){
           console.log(JSON.stringify(responseFriends))
-          this.friendsPages = this.menuModel.checkPaginationFriendList(responseFriends["data"])
+          this.friendsListPages = this.menuModel.checkPaginationFriendList(responseFriends["data"])
           this.friendsList = this.menuModel.getFriendsList()
         } else {
           this.alertGameModal(responseFriends["data"])
@@ -289,15 +296,16 @@ export class MainMenuComponent {
   }
 
   getOtherFriends(){
-    this.service.getData("",{
+    this.service.getData("/user/friendListFilter",{
       params: {
-
+        idUsuario: this.idP1,
+        filtro: false
       }
     })
     .subscribe(
       otherFriendsRes =>{
         if(otherFriendsRes["status"]){
-
+          console.log(JSON.stringify(otherFriendsRes))
         } else {
           this.alertGameModal(otherFriendsRes["data"])
         }
