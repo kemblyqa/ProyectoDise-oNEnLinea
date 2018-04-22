@@ -1,3 +1,4 @@
+import { ROUTES } from './../app.routing';
 import { Game } from './../models/game.model';
 import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
@@ -46,7 +47,7 @@ export class MainMenuComponent {
 
   //friends
   friendsListPages:any
-  friendsList:any
+  friendsList:Array<any>
   newFriend:any
 
   //open games
@@ -58,7 +59,7 @@ export class MainMenuComponent {
     //juegos activos por defecto
     this.isActiveGames = true
     this.againstPlayer = false
-
+    this.friendsList = []
     //render info to set in menu
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
@@ -85,6 +86,7 @@ export class MainMenuComponent {
         data => { 
           if(data["status"]){
             this.inactiveGames = data["data"]
+            this.inactiveGames.reverse()
           } else {
             this.alertGameModal(data["data"])
           }
@@ -101,6 +103,7 @@ export class MainMenuComponent {
         data => { 
           if(data["status"]){
             this.activeGames = data["data"]
+            this.activeGames.reverse()
           } else {
             this.alertGameModal(data["data"])
           }
@@ -264,13 +267,36 @@ export class MainMenuComponent {
     .subscribe(
       responseFriends =>{
         if(responseFriends["status"]){
-          this.friendsList = responseFriends["data"]
+          this.parseInfoProfile(responseFriends["data"])
         } else {
           this.alertGameModal(responseFriends["data"])
         }
       },
       errorFriends => {
         console.log(errorFriends)
+      }
+    )
+  }
+
+  parseInfoProfile(list:Array<any>){
+    for(let elem of list){
+      this.friendsList.push(
+        {
+          id: elem["_id"],
+          nickname: elem["nickname"],
+          detalles: elem["detalles"],
+          profilePhoto: this.getGoogleProfilePhoto(elem["_id"])
+        }
+      )
+    }
+  }
+
+  getGoogleProfilePhoto(email:any){
+    this.service.getGoogleProfileData(email)
+    .subscribe(
+      res => {
+        console.log(JSON.stringify(res))
+        return this.menuModel.parseProfilePhotos(res)
       }
     )
   }

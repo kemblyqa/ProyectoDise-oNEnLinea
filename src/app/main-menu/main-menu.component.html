@@ -323,8 +323,8 @@
         <div *ngFor="let friend of friendsList">
           <div class="form-group row centerGameOption">
             <div class="col-sm-4">
-              <!-- <img src="http://picasaweb.google.com/data/entry/api/user/{{friend._id}}@gmail.com?alt=json" 
-              name="imgPerfil" alt="Card image cap"> -->
+              <img src="{{friend.profilePhoto}}" 
+              name="profile" alt="Card image cap">
               <label class="col-form-label">{{friend.nickname}}</label>
             </div>
             <div class="col-sm-4 centerGameOption">

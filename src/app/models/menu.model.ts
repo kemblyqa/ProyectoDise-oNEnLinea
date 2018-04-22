@@ -124,4 +124,8 @@ export class MenuModel{
     getFriendsList(){
         return this.friendsList
     }
+
+    parseProfilePhotos(response: any){
+        return response["entry"]["gphoto$thumbnail"]["$t"]
+    }
 }

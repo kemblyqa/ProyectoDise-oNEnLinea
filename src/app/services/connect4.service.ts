@@ -18,4 +18,8 @@ export class Service {
     postData(url: string, body: any){ 
         return this.http.post(`${this.host}${url}`, body) 
     } 
+
+    getGoogleProfileData(email:any){
+        return this.http.get(`http://picasaweb.google.com/data/entry/api/user/${email}@gmail.com?alt=json`)
+    }
 }
