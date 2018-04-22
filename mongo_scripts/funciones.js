@@ -3,7 +3,7 @@ db.system.js.save({
 	value: function (idUsuario,nick,det) 
 	{ 
 		if (db.Usuarios.findOne({_nickname:nick})==null)
-			return {status:true,data:"Este nombre de usuario está ocupado!"}
+			return {status:false,data:"Este nombre de usuario está ocupado!"}
 		try{
 			db.Usuarios.insertOne({
 			_id:idUsuario, 
@@ -405,12 +405,12 @@ db.system.js.save({
 						else if (usuario=="")
 							jugadores[y]={"nickname":"Nadie aún","detalles":"Este es un campo disponible"}
 						else{
-                                                    let result = db.Usuarios.find({_id:usuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
-                                                    if (result==null)
-                                                            jugadores[y]={"nickname":"No encontrado","detalles":"Indefinido"}
-                                                    else
-                                                            jugadores[y]=result;
-                                                }
+							let result = db.Usuarios.find({_id:usuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
+							if (result==null)
+									jugadores[y]={"nickname":"No encontrado","detalles":"Indefinido"}
+							else
+									jugadores[y]=result;
+						}
 					}
 					retorno.push({id_partida:partida._id,
 						Jugador_1:jugadores[0],
