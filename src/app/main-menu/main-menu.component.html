@@ -351,23 +351,24 @@
           <h5 class="modal-title" id="lblAddF">Posibles nuevos amigos</h5>
         </div>
         <div class="modal-body">
-          <div *ngFor="let friend of friendsList">
-            <div class="form-group row centerGameOption">
-              <div class="col-sm-4">
-                <label class="col-sm-8 col-form-label"> {{friend.nickname}}</label>
-              </div>
-            </div>
-              <div class="col-sm-4 centerGameOption">
-                <label class="col-sm-8 col-form-label"> {{friend.detalles}}</label>
-              </div>
-              <div class="col-sm-4 centerGameOption">
-                <button type="button" (click)="addFriend(friend.nickname)" data-dismiss="modal" class="playGameOption">Agregar</button>
-              </div>
+          <div *ngFor="let friend of newFriendList">
+              <div class="form-group row centerGameOption">
+                <div class="col-sm-4">
+                  <img src="{{friend.profilePhoto}}" 
+                  name="profile" alt="Card image cap">
+                  <label class="col-form-label">{{friend.nickname}}</label>
+                </div>
+                <div class="col-sm-4 centerGameOption">
+                  <label class="col-form-label">{{friend.detalles}}</label>
+                </div>
+                <div class="col-sm-4 centerGameOption">
+                  <button type="button" (click)="addFriend(friend._id)" data-dismiss="modal" class="playGameOption">Chat</button>
+                </div>
+              </div>  
+            <div class="modal-footer">
+              <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
         </div>
       </div>
 </div>
