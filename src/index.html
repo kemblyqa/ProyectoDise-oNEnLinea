@@ -11,6 +11,7 @@
   <script>
       function onSignIn(googleUser) {
         var profile = googleUser.getBasicProfile();
+        console.log(profile.getId())
         document["imgPerfil"].src = profile.getImageUrl();
         document.getElementById("txtEmail").textContent = profile.getEmail().split("@")[0];
         document.getElementById("txtPerfil").hidden=true;

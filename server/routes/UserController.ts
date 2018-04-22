@@ -2,25 +2,43 @@
 import {Router, Request, Response} from "express";
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/connect4');
 
-
-function consulta(query: string, res: Response) {
+function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+        console.log("conexion realizada")
+        return true
+    }).catch(() =>{
+        return false
+    })
+    return false
+}
+function checkConnection(){
+    if(mongoose.connection.readyState!=1){
+        return conectar()
+    }
+    else
+        return true
+
+}
+function consulta(query: string, res: Response) {
+    if (!checkConnection()){
+        resConnectionError(res);
+        return
+    }
+    else{
         mongoose.connection.db.eval(query)
             .then(result =>{
                 if (res!=null)
                     res.json(result);
         })
             .catch(err =>{
-                if (res!=null)
-                    res.json({status:false,data:"Error al realizar la consulta a Mongo"});
+                resConnectionError(res);
         });
-
-    })
-    .catch(() => {res.json({status:false,data:"Error de conexion"})});
+    }
 }
-
+function resConnectionError(res: Response){
+    res.json({status:false,data:"Error al realizar la consulta a Mongo, intente de nuevo más tarde"})
+}
 class ControladorPersona{
     router : Router;
     constructor(){
@@ -118,14 +136,15 @@ class ControladorPersona{
         let color = req.body.color;
         let idAnfitrion = req.body.idAnfitrion;
         if(idUsuario==null||color==null||idAnfitrion==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        mongoose.connect('mongodb://localhost:27017/connect4')
-        .then(() =>{
-            mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
-            .then(result =>{
-                if (!result.status){res.json(result);return;}
-                consulta("nuevaSesion('"+result.data.anfitrion+"','"+result.data.color+"','"+idUsuario+"','"+color+"',"+result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")",res)
-            }).catch(() => res.json({status:false,data:"Error al aceptar invitación"}))
-        }).catch(() => res.json({status:false,data:"Error de conexión"}))
+        if (!checkConnection()){
+            resConnectionError(res);
+            return
+        }
+        mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
+        .then(result =>{
+            if (!result.status){res.json(result);return;}
+            consulta("nuevaSesion('"+result.data.anfitrion+"','"+result.data.color+"','"+idUsuario+"','"+color+"',"+result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")",res)
+        }).catch(() => res.json({status:false,data:"Error al aceptar invitación"}))
     }
 
     public static rechazar(req: Request, res: Response){

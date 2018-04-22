@@ -3,20 +3,40 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //importar objetos desde express
 var express_1 = require("express");
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/connect4');
-function consulta(query, res) {
+function conectar() {
     mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
+        console.log("conexion realizada");
+        return true;
+    }).catch(function () {
+        return false;
+    });
+    return false;
+}
+function checkConnection() {
+    if (mongoose.connection.readyState != 1) {
+        return conectar();
+    }
+    else
+        return true;
+}
+function consulta(query, res) {
+    if (!checkConnection()) {
+        resConnectionError(res);
+        return;
+    }
+    else {
         mongoose.connection.db.eval(query)
             .then(function (result) {
             if (res != null)
                 res.json(result);
         })
             .catch(function (err) {
-            if (res != null)
-                res.json({ status: false, data: "Error al realizar la consulta a Mongo" });
+            resConnectionError(res);
         });
-    })
-        .catch(function () { res.json({ status: false, data: "Error de conexion" }); });
+    }
+}
+function resConnectionError(res) {
+    res.json({ status: false, data: "Error al realizar la consulta a Mongo, intente de nuevo más tarde" });
 }
 var ControladorPersona = (function () {
     function ControladorPersona() {
@@ -139,17 +159,18 @@ var ControladorPersona = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
-        mongoose.connect('mongodb://localhost:27017/connect4')
-            .then(function () {
-            mongoose.connection.db.eval("aceptar('" + idAnfitrion + "','" + idUsuario + "')")
-                .then(function (result) {
-                if (!result.status) {
-                    res.json(result);
-                    return;
-                }
-                consulta("nuevaSesion('" + result.data.anfitrion + "','" + result.data.color + "','" + idUsuario + "','" + color + "'," + result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")", res);
-            }).catch(function () { return res.json({ status: false, data: "Error al aceptar invitación" }); });
-        }).catch(function () { return res.json({ status: false, data: "Error de conexión" }); });
+        if (!checkConnection()) {
+            resConnectionError(res);
+            return;
+        }
+        mongoose.connection.db.eval("aceptar('" + idAnfitrion + "','" + idUsuario + "')")
+            .then(function (result) {
+            if (!result.status) {
+                res.json(result);
+                return;
+            }
+            consulta("nuevaSesion('" + result.data.anfitrion + "','" + result.data.color + "','" + idUsuario + "','" + color + "'," + result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")", res);
+        }).catch(function () { return res.json({ status: false, data: "Error al aceptar invitación" }); });
     };
     ControladorPersona.rechazar = function (req, res) {
         var idUsuario = req.body.idUsuario;

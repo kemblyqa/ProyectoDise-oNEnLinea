@@ -4,20 +4,42 @@ import gameModel from './../models/game.model'
 
 let mongoose = require('mongoose');
 let async = require('async')
-function consulta(query: string, res: Response) {
+function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
+        console.log("conexion realizada")
+        return true
+    }).catch(() =>{
+        return false
+    })
+    return false
+}
+function checkConnection(){
+    if(mongoose.connection.readyState!=1){
+        return conectar()
+    }
+    else
+        return true
+
+}
+function consulta(query: string, res: Response) {
+    if (!checkConnection()){
+        resConnectionError(res);
+        return
+    }
+    else{
         mongoose.connection.db.eval(query)
             .then(result =>{
                 if (res!=null)
                     res.json(result);
         })
             .catch(err =>{
-                if (res!=null)
-                    res.json({status:false,data:"Error al realizar la consulta a Mongo"});
+                resConnectionError(res);
         });
+    }
+}
 
-    })
-    .catch(() => {res.json({status:false,data:"Error de conexion"})});
+function resConnectionError(res: Response){
+    res.json({status:false,data:"Error al realizar la consulta a Mongo, intente de nuevo más tarde"})
 }
 
 class GameController{
@@ -77,35 +99,39 @@ class GameController{
         if(idPartida==null || fila ==null || columna==null || idJugador==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         async.waterfall([
             function(callback){
-                mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
-                    mongoose.connection.db.eval("rondaActiva("+idPartida+")")
-                    .then(result0 =>{
-                        if (!result0.status){res.json(result0);return;}
-                        let ronda = result0.data;
-                        mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
-                            .then(result1 =>{
-                                if (!result1.status){res.json(result1);return;}
-                                if (result1.data.estado.finalizador!=""){
-                                    res.json({status:false,data:"Esta partida está finalizada"});
-                                    return;
-                                }
-                                mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
-                                .then(result2 =>{
-                                    if (!result2.status){res.json(result2);return;}
-                                    let jugadas : Array<Array<any>> = result1.data.jugadas;
-                                    let jugador : number;
-                                    let contrincante : number;
-                                    if (result2.data.usuarios[0][0] == idJugador){
-                                        contrincante = result2.data.usuarios[1][0];
-                                        jugador=0;}
-                                    else if (result2.data.usuarios[1][0] == idJugador){
-                                        contrincante = result2.data.usuarios[0][0];
-                                        jugador=1;}
-                                    else{
-                                        jugador=-1;}
-                                    callback(null,result1.data.tablero,result2.data.tamano_linea,jugadas.length,jugador, contrincante,result2.data.lastMove,result2.data.nRondas)}).catch(err =>{res.json(err);});
-                            }).catch(err =>{res.json({status:false,data:err});})})
-                    }).catch(err =>{res.json({status:false,data:err});});
+                if (!checkConnection()){
+                    resConnectionError(res);
+                    return
+                }
+                mongoose.connection.db.eval("rondaActiva("+idPartida+")")
+                .then(result0 =>{
+                    if (!result0.status){res.json(result0);return;}
+                    let ronda = result0.data;
+                    mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
+                    .then(result1 =>{
+                        if (!result1.status){res.json(result1);return;}
+                        if (result1.data.estado.finalizador!=""){
+                            res.json({status:false,data:"Esta partida está finalizada"});
+                            return;
+                        }
+                        mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
+                        .then(result2 =>{
+                            if (!result2.status){res.json(result2);return;}
+                            let jugadas : Array<Array<any>> = result1.data.jugadas;
+                            let jugador : number;
+                            let contrincante : number;
+                            if (result2.data.usuarios[0][0] == idJugador){
+                                contrincante = result2.data.usuarios[1][0];
+                                jugador=0;}
+                            else if (result2.data.usuarios[1][0] == idJugador){
+                                contrincante = result2.data.usuarios[0][0];
+                                jugador=1;}
+                            else{
+                                jugador=-1;}
+                            callback(null,result1.data.tablero,result2.data.tamano_linea,jugadas.length,jugador, contrincante,result2.data.lastMove,result2.data.nRondas)
+                        }).catch(err =>{res.json({status:false,data:err});});
+                    }).catch(err =>{res.json({status:false,data:err});})
+                }).catch(err =>{res.json({status:false,data:err});})
             },
             function(tablero,size,turno : number,jugador,contrincante,lastMove,nRondas,callback){
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: "+ turno + "\njugador: " +jugador);
@@ -128,22 +154,24 @@ class GameController{
                     }
                     let tupla = model.getCellInGrid(columna,jugador);
                     if (tupla !=null){
-                        mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
-                            mongoose.connection.db.eval("rondaActiva("+idPartida+")").then(result0 =>{
-                                if (!result0.status){res.json(result0);return;}
-                                let ronda = result0.data;
-                                mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+tupla[0]+","+tupla[1]+","+jugador+")").then(() =>{
-                                    let estado = model.isNConnected(tupla[0],tupla[1],jugador);
-                                    if (estado !="p"){
-                                        if (ronda == nRondas-1)
-                                            consulta("finalizarPartida("+idPartida+")",null);
-                                        consulta("finalizarRonda("+idPartida+","+ronda+",'"+idJugador+"','"+estado+"')",null)
-                                        res.json({status:true,data:estado})
-                                    }
-                                    else
-                                        res.json({status:true,data:"p"});
-                                    return;
-                                }).catch(err =>{res.json({status:false,data:err});})
+                        if (!checkConnection()){
+                            resConnectionError(res);
+                            return
+                        }
+                        mongoose.connection.db.eval("rondaActiva("+idPartida+")").then(result0 =>{
+                            if (!result0.status){res.json(result0);return;}
+                            let ronda = result0.data;
+                            mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+tupla[0]+","+tupla[1]+","+jugador+")").then(() =>{
+                                let estado = model.isNConnected(tupla[0],tupla[1],jugador);
+                                if (estado !="p"){
+                                    if (ronda == nRondas-1)
+                                        consulta("finalizarPartida("+idPartida+")",null);
+                                    consulta("finalizarRonda("+idPartida+","+ronda+",'"+idJugador+"','"+estado+"')",null)
+                                    res.json({status:true,data:estado})
+                                }
+                                else
+                                    res.json({status:true,data:"p"});
+                                return;
                             }).catch(err =>{res.json({status:false,data:err});})
                         }).catch(err =>{res.json({status:false,data:err});})
                     }
@@ -190,83 +218,85 @@ class GameController{
         let idJugador = req.query.idJugador;
         let moveFlag = req.query.moveFlag;
         if (idPartida ==null || ronda==null ||idJugador==null || moveFlag==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        mongoose.connect('mongodb://localhost:27017/connect4')
-        .then(() =>{
-            mongoose.connection.db.eval("update("+idPartida+","+ronda+",'"+idJugador+"')")
-            .then(result =>{
-                if (!result.status){res.json(result);return;}
-                if (result.data.estado.causa!=""){
-                    res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
-                }
-                else
-                {
-                    let jugadas : Array<Array<any>> = result.data.jugadas;
-                    let jugador : number;
-                    let turno = jugadas.length%2;
-                    if (result.data.usuarios[0][0] == idJugador){
-                        jugador=0;}
-                    else if (result.data.usuarios[1][0] == idJugador){
-                        jugador=1;}
-                    else{
-                        jugador=-1;}
-                    let tuTurno = jugadas.length%2==jugador?1:jugador==-1?-1:0;
-                    let now = Date();
-                    if (result.data.lastMove !=null && result.data.estado.finalizador=="" && (Date.parse(now)-Date.parse(result.data.lastMove))>300000){
-                        consulta("finalizarPartida("+idPartida+")",null);
-                        let finalizador = result.data.usuarios[tuTurno==1?jugador:Math.abs(jugador-1)][0];
-                        for(let x:number=0;x<result.data.nRondas;x++){
-                            mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
-                            .then(rounData =>{
-                                if (!rounData.status){res.json(rounData);return;}
-                                if (rounData.data.estado.finalizador==""){
-                                    consulta("finalizarRonda("+idPartida+","+x+","+finalizador+",'a')",null)
-                                }
-                            }).catch(err =>{res.json({status:false,data:err});});
-                        }
-                        res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
-                        return;
+        if (!checkConnection()){
+            resConnectionError(res);
+            return
+        }
+        mongoose.connection.db.eval("update("+idPartida+","+ronda+",'"+idJugador+"')")
+        .then(result =>{
+            if (!result.status){res.json(result);return;}
+            if (result.data.estado.causa!=""){
+                res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
+            }
+            else
+            {
+                let jugadas : Array<Array<any>> = result.data.jugadas;
+                let jugador : number;
+                let turno = jugadas.length%2;
+                if (result.data.usuarios[0][0] == idJugador){
+                    jugador=0;}
+                else if (result.data.usuarios[1][0] == idJugador){
+                    jugador=1;}
+                else{
+                    jugador=-1;}
+                let tuTurno = jugadas.length%2==jugador?1:jugador==-1?-1:0;
+                let now = Date();
+                if (result.data.lastMove !=null && result.data.estado.finalizador=="" && (Date.parse(now)-Date.parse(result.data.lastMove))>300000){
+                    consulta("finalizarPartida("+idPartida+")",null);
+                    let finalizador = result.data.usuarios[tuTurno==1?jugador:Math.abs(jugador-1)][0];
+                    for(let x:number=0;x<result.data.nRondas;x++){
+                        mongoose.connection.db.eval("getInfoRonda("+idPartida+","+x+")")
+                        .then(rounData =>{
+                            if (!rounData.status){res.json(rounData);return;}
+                            if (rounData.data.estado.finalizador==""){
+                                consulta("finalizarRonda("+idPartida+","+x+","+finalizador+",'a')",null)
+                            }
+                        }).catch(err =>{res.json({status:false,data:err});});
                     }
-                    else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h") && moveFlag == "false"){
-                        let level = result.data.usuarios[turno][0]=="e"?1:result.data.usuarios[turno][0]=="m"?2:3;
-                        let botGame : gameModel =  new gameModel(result.data.tablero, result.data.tamano_linea);
-                        let resul = botGame.AIMove(level,turno);
-                        mongoose.connect('mongodb://localhost:27017/connect4')
-                            .then(() =>{
-                                mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+turno+")").then(moveOk =>{
-                                    if (!moveOk.status){res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
-                                    return;}
-                                    res.json({status:true,data:{tablero:botGame.charGrid,estado:{finalizador: resul[1]=="p"?"":result.data.usuarios[turno][0],causa:resul[1]=="p"?"":resul[1]},turno:-1}})
-                                    if (resul[1]!="p")
-                                        mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result.data.usuarios[turno][0]+"','"+resul[1]+"')")
-                                }).catch(err =>{res.json({status:false,data:err});});
-                                
-                            }).catch(err =>{res.json({status:false,data:err});});
-                        }
-                    else
-                        res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
+                    res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
+                    return;
                 }
-            }).catch(err =>{res.json({status:false,data:err});})
+                else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h") && moveFlag == "false"){
+                    let level = result.data.usuarios[turno][0]=="e"?1:result.data.usuarios[turno][0]=="m"?2:3;
+                    let botGame : gameModel =  new gameModel(result.data.tablero, result.data.tamano_linea);
+                    let resul = botGame.AIMove(level,turno);
+                    if (!checkConnection()){
+                        resConnectionError(res);
+                        return
+                    }
+                        mongoose.connection.db.eval("jugada("+idPartida+","+ronda+","+resul[0][0]+","+resul[0][1]+","+turno+")").then(moveOk =>{
+                            if (!moveOk.status){res.json({status:true,data:{"tablero":result.data.tablero,"estado":result.data.estado,"turno":-1}});
+                            return;}
+                            res.json({status:true,data:{tablero:botGame.charGrid,estado:{finalizador: resul[1]=="p"?"":result.data.usuarios[turno][0],causa:resul[1]=="p"?"":resul[1]},turno:-1}})
+                            if (resul[1]!="p")
+                                mongoose.connection.db.eval("finalizarRonda("+idPartida+","+ronda+",'"+result.data.usuarios[turno][0]+"','"+resul[1]+"')")
+                        }).catch(err =>{res.json({status:false,data:err});});
+                    }
+                else
+                    res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:"",causa:""},turno:tuTurno}});
+            }
         }).catch(err =>{res.json({status:false,data:err});})
     }
 
     public static start(req: Request, res: Response){
         let idPartida = req.query.idPartida;
         if (idPartida==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        mongoose.connect('mongodb://localhost:27017/connect4')
-        .then(() =>{
-            mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
-            .then(result0 =>{
-                if (!result0.status){res.json(result0);return;}
-                mongoose.connection.db.eval("rondaActiva("+idPartida+")")
-                .then(result1 =>{
-                    if (!result1.status){res.json(result1);return;}
+        if (!checkConnection()){
+            res.json({status:false,data:"Error al realizar la consulta a Mongo!"});
+            return
+        }
+        mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
+        .then(result0 =>{
+            if (!result0.status){res.json(result0);return;}
+            mongoose.connection.db.eval("rondaActiva("+idPartida+")")
+            .then(result1 =>{
+                if (!result1.status){res.json(result1);return;}
+                let ronda = result1.data;
+                mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
+                .then(result2 =>{
+                    if (!result2.status){res.json(result2);return;}
                     let ronda = result1.data;
-                    mongoose.connection.db.eval("getInfoRonda("+idPartida+","+ronda+")")
-                    .then(result2 =>{
-                        if (!result2.status){res.json(result2);return;}
-                        let ronda = result1.data;
-                        res.json({status:true,data:{"tamano":result0.data.tamano,"tamano_linea":result0.data.tamano_linea,"usuarios":result0.data.usuarios,"tablero":result2.data.tablero,"estado":result2.data.estado,"ronda":ronda}});
-                    }).catch(err =>{res.json({status:false,data:err});});
+                    res.json({status:true,data:{"tamano":result0.data.tamano,"tamano_linea":result0.data.tamano_linea,"usuarios":result0.data.usuarios,"tablero":result2.data.tablero,"estado":result2.data.estado,"ronda":ronda}});
                 }).catch(err =>{res.json({status:false,data:err});});
             }).catch(err =>{res.json({status:false,data:err});});
         }).catch(err =>{res.json({status:false,data:err});});
@@ -275,26 +305,27 @@ class GameController{
         let idPartida = req.body.idPartida;
         let idJugador = req.body.idJugador;
         if (idPartida==null || idJugador==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        mongoose.connect('mongodb://localhost:27017/connect4')
-        .then(() =>{
-            mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
-            .then(result0 =>{
-                if (!result0.status){res.json(result0);return;}
-                if ((result0.data.usuarios[0][0] != idJugador && result0.data.usuarios[1][0] != idJugador) || result0.data.estado==false){
-                    res.json({status:false,data:"La partida está inactiva o no admite a este jugador"});
-                }
-                else
-                    mongoose.connection.db.eval("rondaActiva("+idPartida+")")
-                    .then(result1 =>{
-                        if (!result1.status){res.json(result1);return;}
-                        let ronda = result1.data;
-                        for(let x=ronda;x<result0.data.nRondas;x++){
-                            consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
-                        }
-                        consulta("finalizarPartida("+idPartida+")",null);
-                    }).catch(err =>{res.json({status:false,data:err});});
-                    res.json({status:true,data:"Success!"});
-            }).catch(err =>{res.json({status:false,data:err});});
+        if (!checkConnection()){
+            resConnectionError(res);
+            return
+        }
+        mongoose.connection.db.eval("getInfoPartida("+idPartida+")")
+        .then(result0 =>{
+            if (!result0.status){res.json(result0);return;}
+            if ((result0.data.usuarios[0][0] != idJugador && result0.data.usuarios[1][0] != idJugador) || result0.data.estado==false){
+                res.json({status:false,data:"La partida está inactiva o no admite a este jugador"});
+            }
+            else
+                mongoose.connection.db.eval("rondaActiva("+idPartida+")")
+                .then(result1 =>{
+                    if (!result1.status){res.json(result1);return;}
+                    let ronda = result1.data;
+                    for(let x=ronda;x<result0.data.nRondas;x++){
+                        consulta("finalizarRonda("+idPartida+","+x+",'"+idJugador+"','a')",null);
+                    }
+                    consulta("finalizarPartida("+idPartida+")",null);
+                }).catch(err =>{res.json({status:false,data:err});});
+                res.json({status:true,data:"Success!"});
         }).catch(err =>{res.json({status:false,data:err});});
     }
 
@@ -302,6 +333,21 @@ class GameController{
         let page = req.query.page;
         if (page ==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("disponibles("+page+")", res);
+    }
+
+    public static drawMove(req: Request, res: Response){
+        try{
+            let tablero : Array<Array<number>> = JSON.parse(req.query.tablero);
+            let jugada = JSON.parse(req.query.jugada);
+            let turno = req.query.turno;
+            if (tablero ==null || jugada==null || turno==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+            let template = new gameModel(tablero,0)
+            template.getCellInGrid(jugada[1],turno%2)
+            res.json({status:true,data:template.charGrid})
+        }
+        catch(e){
+            res.json({status:false,data:"drawMove error"})
+        }
     }
 
     public routes(): void{
@@ -313,6 +359,7 @@ class GameController{
         this.router.get('/getTablero',GameController.getTablero);
         this.router.get('/start',GameController.start);
         this.router.get('/disponibles',GameController.disponibles);
+        this.router.get('/drawMove',GameController.drawMove);
         //POST
         this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);

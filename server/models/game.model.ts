@@ -1,8 +1,8 @@
 export default class gameModel{
-    charGrid:Array<any>;
+    charGrid:Array<Array<number>>;
     gridSize:number;
     nSize:number;
-    constructor(tablero, sizeN) {
+    constructor(tablero: Array<Array<number>>, sizeN:number) {
         this.charGrid = tablero;
         this.gridSize = tablero.length;
         this.nSize = sizeN;
