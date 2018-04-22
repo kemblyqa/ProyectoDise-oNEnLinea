@@ -185,7 +185,12 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Registro de partidas</h5>
+          <div class="row">
+            <h5 class="modal-title col-sm-6" id="exampleModalLabel">Registro de partidas</h5>
+            <div class="col-sm-6">
+                <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+            </div>
+          </div>
         </div>
         <div class="modal-body">
           <!-- Show inactive games or active games -->
@@ -260,9 +265,6 @@
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
-        </div>
       </div>
     </div>
 </div>
@@ -321,23 +323,25 @@
         <div *ngFor="let friend of friendsList">
           <div class="form-group row centerGameOption">
             <div class="col-sm-4">
-              <label class="col-sm-8 col-form-label"> {{friend.nickname}}</label>
-            </div>
+              <!-- <img src="http://picasaweb.google.com/data/entry/api/user/{{friend._id}}@gmail.com?alt=json" 
+              name="imgPerfil" alt="Card image cap"> -->
+              <label class="col-form-label">{{friend.nickname}}</label>
             </div>
             <div class="col-sm-4 centerGameOption">
-              <label class="col-sm-8 col-form-label"> {{friend.detalles}}</label>
+              <label class="col-form-label">{{friend.detalles}}</label>
             </div>
             <div class="col-sm-4 centerGameOption">
               <button type="button" (click)="seeMessages(friend.nickname)" data-dismiss="modal" class="playGameOption">Chat</button>
             </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" (click)="newFriendsModal()" class="acceptButton">Agregar amigos</button>      
-            <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+          </div>        
         </div>
       </div>
+      <div class="modal-footer">
+          <button type="button" (click)="newFriendsModal()" class="acceptButton">Agregar amigos</button>      
+          <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- add friend modal -->
 <div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="lblAddF" aria-hidden="true">
