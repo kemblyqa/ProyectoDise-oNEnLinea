@@ -13,7 +13,7 @@ db.system.js.save({
 			friends:[],
 			chats:{},
 			invitaciones:[]});
-			return {status:true,data:"Success!"};
+			return {status:true,data:"Registro completo"};
 		}
 		catch(e){
 			return {status:false,data:"Error de inserción"};
@@ -32,7 +32,7 @@ db.system.js.save({
 		     $set: { detalles: det }
 		   }
 		);
-			return {status:true,data:"Success!"};
+			return {status:true,data:"Detalles actualizados!"};
 		}
 		catch(e){
 
@@ -54,7 +54,7 @@ db.system.js.save({
 		     $set: { nickname: nick }
 		   }
 		);
-			return {status:true,data:"Success!"};
+			return {status:true,data:"Has cambiado tu nickname!"};
 		}
 		catch(e){
 
@@ -85,7 +85,7 @@ db.system.js.save({
 			db.Usuarios.update(
 			   { _id: idUsuario },
 			   { $push: { partidas: idPartida } });
-				return {status:true,data:"Success!"};
+				return {status:true,data:"Te has unido a una partida!"};
 			}
 			else
 				return {status:false,data:"Error: los usuarios o colores no son distintos"};
@@ -105,7 +105,7 @@ db.system.js.save({
 				db.Usuarios.update(
 		   			{ _id: idEmisor },
 		   			{ $push: { [idReceptor]:  [Date(),msg]} });
-				return {status:true,data:"Success!"};
+				return {status:true,data:"Mensaje enviado"};
 			}
             else{
             	return {status:false,data:"Error, uno de los usuarios no existe"}
@@ -210,7 +210,7 @@ db.system.js.save({
 			   { $push: {[path] : [fila,columna] } });
 			db.Partidas.update({_id:idPartida},{$set : {['rondas.'+ronda+'.tablero.'+fila+'.'+columna]:jugador}});
 			db.Partidas.update({_id: idPartida}, {$set:{lastMove: Date()}})
-			return {status:true,data:"Success!"};
+			return {status:true,data:"Jugada correcta"};
 		}
 		catch(e){
 			return {status:false,data:"Fallo del sistema al realizar jugada:" +
@@ -268,7 +268,7 @@ db.system.js.save({
 	{ 
         try{
             db.Partidas.update({_id:idPartida},{$set : {['rondas.'+ronda+'.tablero']:tablero}});
-            return {status:true,data:"Success!"}
+            return {status:true,data:"Tablero reescrito!"}
         }
         catch(e){
 			return {status:false,data:"Error setTablero, probablemente la partida o la ronda no corresponden a ningun tablero"}
@@ -298,7 +298,7 @@ db.system.js.save({
         db.Partidas.update(
         	{_id:idPartida},
         	{$set:{['rondas.'+ronda+'.estado.causa']:razon,['rondas.'+ronda+'.estado.finalizador']:idFinalizador}});
-        	return {status:true,data:"Success!"}
+        	return {status:true,data:"Ronda Finalizada"}
 		}
 		catch(e){
 			return {status:false,data:"Error al finalizarRonda: partida o ronda invalidas"};
@@ -314,7 +314,7 @@ db.system.js.save({
         db.Partidas.update(
         	{_id:idPartida},
         	{$set:{'estado':false}});
-        	return {status:true,data:"Success!"};
+        	return {status:true,data:"Partida finalizada"};
 		}
 		catch(e){
 			return {status:false,data:"Error finalizarPartida: probablemente la partida no es valida"};
@@ -470,7 +470,7 @@ db.system.js.save({
 			db.Usuarios.update(
 	   			{_id: id1},
 	   			{ $push: { friends: id2 } });
-			return {status:true,data:"Success!"};
+			return {status:true,data:"Amigo añadido"};
 		}
 		catch(e){
 			return {status:false,data:"Error friend: quiza el usuario no existe"};
@@ -550,7 +550,7 @@ db.system.js.save({
 		else{
 			let anfitrion = db.Usuarios.findOne({_id:idAnfitrion});
 			db.Usuarios.update({_id:idInvitado},{$push:{invitaciones:{idAnfitrion:idAnfitrion,nickname:anfitrion.nickname,color:color,tamano:tamano,tamano_linea:tamano_linea,nRondas:nRondas}}})
-            return {status:true,data:"Success!"};
+            return {status:true,data:"Invitación enviada"};
             }
 	}
 });
@@ -576,7 +576,7 @@ db.system.js.save({
         if (invitacion ==null)
             return {status:false,data:"Error: la invitacion no existe"}
 		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
-		return {status:true,data:"Success!"};
+		return {status:true,data:"Has rechazado una invitacion"};
 	}
 });
 
