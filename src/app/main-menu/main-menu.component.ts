@@ -70,10 +70,6 @@ export class MainMenuComponent {
         this.router.navigateByUrl('/login');
         window.location.reload();
       }
-    //get the games of user
-    this.fillAllGames()
-    this.fillActiveGames()
-    this.fillOpenGames()
   }
 
   //LOGOUT
@@ -83,7 +79,7 @@ export class MainMenuComponent {
   }
 
   //ALL GAMES, FRIENDS, INVITATIONS
-  fillAllGames(){
+  fillinactiveGames(){
     this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
@@ -136,24 +132,6 @@ export class MainMenuComponent {
     )
   }
 
-  fillFriendList(){
-    this.service.getData("/user/friendList",{
-      params: {
-        idUsuario: this.idP1
-      }
-    })
-    .subscribe(
-      dataResponse => {
-        if(dataResponse["status"]){
-          console.log(JSON.stringify(dataResponse))
-          this.friendsList = dataResponse["data"]
-        } else{
-          this.alertGameModal(dataResponse["data"])
-        }
-      }
-    )
-  }
-
   //GAME
   openGame(id:any){
     UserDetails.Instance.setCurrentGameID(id)
@@ -178,6 +156,7 @@ export class MainMenuComponent {
   }
 
   friendsModal(){
+    this.fillFriendList()
     $('#friends').modal('show')
   }
 
@@ -186,6 +165,8 @@ export class MainMenuComponent {
   }
 
   allGamesModal(){
+    this.fillActiveGames()
+    this.fillinactiveGames()
     $('#gamesRegistered').modal('show');
   }
 
@@ -194,6 +175,7 @@ export class MainMenuComponent {
   }
 
   freeGamesModal(){
+    this.fillOpenGames()
     $('#openGames').modal('show');
   }
 
@@ -272,7 +254,7 @@ export class MainMenuComponent {
     })
   }
 
-  getFriends(){
+  fillFriendList(){
     this.service.getData("/user/friendListFilter",{
       params: {
         idUsuario: this.idP1,
@@ -282,9 +264,7 @@ export class MainMenuComponent {
     .subscribe(
       responseFriends =>{
         if(responseFriends["status"]){
-          console.log(JSON.stringify(responseFriends))
-          this.friendsListPages = this.menuModel.checkPaginationFriendList(responseFriends["data"])
-          this.friendsList = this.menuModel.getFriendsList()
+          this.friendsList = responseFriends["data"]
         } else {
           this.alertGameModal(responseFriends["data"])
         }
