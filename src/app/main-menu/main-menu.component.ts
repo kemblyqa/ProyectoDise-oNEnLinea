@@ -46,8 +46,8 @@ export class MainMenuComponent {
   optLevP2:any
 
   //friends
-  friendsListPages:any
   friendsList:Array<any>
+  newFriendList:Array<any>
   newFriend:any
 
   //open games
@@ -164,6 +164,7 @@ export class MainMenuComponent {
   }
 
   newFriendsModal(){
+    this.getOtherFriends()
     $('#addFriendModal').modal('show')
   }
 
@@ -250,14 +251,20 @@ export class MainMenuComponent {
   }
 
   //FRIENDS
-  addFriend(nickname: any){
-    this.service.postData("",{
+  addFriend(friend: any){
+    this.service.postData("/user/friend",{
       id1: this.idP1,
-      id2: this.idP2
+      id2: friend
     })
+    .subscribe(
+      resFriendAdded => {
+        
+      }
+    )
   }
 
   fillFriendList(){
+    this.friendsList = []
     this.service.getData("/user/friendListFilter",{
       params: {
         idUsuario: this.idP1,
@@ -267,7 +274,7 @@ export class MainMenuComponent {
     .subscribe(
       responseFriends =>{
         if(responseFriends["status"]){
-          this.parseInfoProfile(responseFriends["data"])
+          this.getGoogleProfilePhoto(responseFriends["data"], this.friendsList)
         } else {
           this.alertGameModal(responseFriends["data"])
         }
@@ -278,27 +285,22 @@ export class MainMenuComponent {
     )
   }
 
-  parseInfoProfile(list:Array<any>){
-    for(let elem of list){
-      this.friendsList.push(
-        {
-          id: elem["_id"],
-          nickname: elem["nickname"],
-          detalles: elem["detalles"],
-          profilePhoto: this.getGoogleProfilePhoto(elem["_id"])
+  getGoogleProfilePhoto(dataList:Array<any>, newList:Array<any>){
+    for(let elem of dataList){
+      this.service.getGoogleProfileData(elem["_id"])
+      .subscribe(
+        res => {
+          newList.push(
+            {
+              id: elem["_id"],
+              nickname: elem["nickname"],
+              detalles: elem["detalles"],
+              profilePhoto: this.menuModel.parseProfilePhotos(res)
+            }
+          )
         }
       )
     }
-  }
-
-  getGoogleProfilePhoto(email:any){
-    this.service.getGoogleProfileData(email)
-    .subscribe(
-      res => {
-        console.log(JSON.stringify(res))
-        return this.menuModel.parseProfilePhotos(res)
-      }
-    )
   }
 
   getOtherFriends(){
@@ -311,7 +313,7 @@ export class MainMenuComponent {
     .subscribe(
       otherFriendsRes =>{
         if(otherFriendsRes["status"]){
-          console.log(JSON.stringify(otherFriendsRes))
+          this.getGoogleProfilePhoto(otherFriendsRes["data"], this.newFriendList)
         } else {
           this.alertGameModal(otherFriendsRes["data"])
         }
