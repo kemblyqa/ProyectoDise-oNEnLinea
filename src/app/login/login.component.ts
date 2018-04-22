@@ -49,6 +49,7 @@ export class LoginComponent{
     })
       .subscribe(
         resSuccess => {
+          console.log(JSON.stringify(resSuccess))
           resSuccess["status"] ? this.routeTo() : this.alertUser(resSuccess["data"])
         }
       )

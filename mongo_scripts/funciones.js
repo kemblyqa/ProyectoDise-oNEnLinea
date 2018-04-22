@@ -2,8 +2,8 @@ db.system.js.save({
 	_id: "cUsuario",
 	value: function (idUsuario,nick,det) 
 	{ 
-		if (db.Usuarios.findOne({_nickname:nick})==null)
-			return {status:true,data:"Este nombre de usuario está ocupado!"}
+		if (db.Usuarios.findOne({_id:idUsuario})!=null)
+			return {status:false,data:"Este nombre de usuario está ocupado!"}
 		try{
 			db.Usuarios.insertOne({
 			_id:idUsuario, 
@@ -69,7 +69,7 @@ db.system.js.save({
 	{ 
 		try{
 			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] == idUsuario || db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][0] == idUsuario)
-				return {status:false,data:""};
+				return {status:false,data:"No se puede abrir una partida contra el mismo jugador"};
 			ok = false;
 			if (db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[0][0] =="" && db.Partidas.find({_id:idPartida}).toArray()[0].usuarios[1][1]!=color){
 				db.Partidas.update({_id:idPartida},{$set : {'usuarios.0.0' : idUsuario}});
