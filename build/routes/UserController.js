@@ -170,7 +170,16 @@ var ControladorPersona = (function () {
                 res.json(result);
                 return;
             }
-            consulta("nuevaSesion('" + result.data.idAnfitrion + "','" + result.data.color + "','" + idUsuario + "','" + color + "'," + result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")", res);
+            {
+                mongoose.connection.db.eval("nuevaSesion('" + result.data.idAnfitrion + "','"
+                    + result.data.color + "','" + idUsuario + "','" + color + "'," +
+                    result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")").then(function (result1) {
+                    if (result1.status)
+                        res.json({ status: true, data: "Has aceptado y creado la partida correctamente" });
+                    else
+                        res.json({ status: false, data: "Has aceptado la partida, pero ocurrió un error al crearla: " + result1.data });
+                }).catch(function () { res.json({ status: true, data: "Has aceptado la partida, pero ocurrió un error al crearla" }); });
+            }
         }).catch(function () { return res.json({ status: false, data: "Error al aceptar invitación" }); });
     };
     ControladorPersona.rechazar = function (req, res) {
