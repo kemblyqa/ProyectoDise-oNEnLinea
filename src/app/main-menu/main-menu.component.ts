@@ -21,6 +21,7 @@ export class MainMenuComponent {
   inactiveGames:Array<any>
   activeGames:Array<any>
   errorMsg:any
+  successMsg:any
   gameAIOptions:any
   level:any
 
@@ -52,7 +53,11 @@ export class MainMenuComponent {
 
   //open games
   openGames:Array<any>
-  colorSelected:any = "#8A2BE2"
+  openColorSelected:any = "#8A2BE2"
+
+  //invitations
+  myInvitations:Array<any>
+  inviteColorSelected: any = "#8A2BE2"
   
   
   constructor(private service: Service, private router: Router) {
@@ -61,6 +66,8 @@ export class MainMenuComponent {
     this.againstPlayer = false
     this.friendsList = []
     this.newFriendList = []
+    this.myInvitations = []
+
     //render info to set in menu
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
@@ -123,12 +130,7 @@ export class MainMenuComponent {
     })
     .subscribe(
       openGamesResponse => {
-        if(openGamesResponse["status"]){
-          console.log(JSON.stringify(openGamesResponse))
-          this.openGames = openGamesResponse["data"]
-        }else{
-          this.alertGameModal(openGamesResponse["data"])
-        }
+        openGamesResponse["status"] ? this.openGames = openGamesResponse["data"] : this.alertGameModal(openGamesResponse["data"])
       }, 
       err =>{
         console.log(JSON.stringify(err))
@@ -152,6 +154,7 @@ export class MainMenuComponent {
 
   //MODALS MAIN MENU
   parametersModal() {
+    this.fillFriendList()
     $('#parameters').modal('show');
   }
 
@@ -176,6 +179,7 @@ export class MainMenuComponent {
   }
 
   invitationsModal(){
+    this.fillInvitations()
     $('#invitations').modal('show')
   }
 
@@ -211,11 +215,11 @@ export class MainMenuComponent {
         } 
       ) 
   }
-  newGame(){
+  freeGame(){
     this.service.postData("/game/nuevaSesion", {
       idJ1: this.idP1,
       color1: this.nColor,
-      idJ2: this.againstPlayer ? this.idP2 : "",
+      idJ2: "",
       color2: "",  
       size: this.bSize,
       lineSize: this.nSize,
@@ -224,7 +228,7 @@ export class MainMenuComponent {
       .subscribe( 
         response => { 
           console.log(JSON.stringify(response["data"]))
-          response["status"] ? this.fillActiveGames() : this.alertGameModal(response["data"])
+          response["status"] ? this.successModal(response["data"]) : this.alertGameModal(response["data"])
         }, 
         err => { 
           console.log(err) 
@@ -250,6 +254,25 @@ export class MainMenuComponent {
       }
     )
   }
+  inviteGame(){
+    this.service.postData("/user/invitar", {
+      idAnfitrion: this.idP1,
+      color: this.nColor,
+      idInvitado: this.idP2,
+      tamano: this.bSize, 
+      tamano_linea: this.nSize,
+      nRondas: this.nRounds 
+    })
+      .subscribe( 
+        response => { 
+          console.log(JSON.stringify(response["data"]))
+          response["status"] ? this.successModal(response["data"]) : this.alertGameModal(response["data"])
+        }, 
+        err => { 
+          console.log(err) 
+        } 
+      ) 
+  }
 
   //FRIENDS
   addFriend(friend: any){
@@ -259,11 +282,30 @@ export class MainMenuComponent {
     })
     .subscribe(
       resFriendAdded => {
-        if(resFriendAdded["status"]){
-          console.log(resFriendAdded["data"])
-        } else {
-          this.alertGameModal(resFriendAdded["data"])
-        }
+        resFriendAdded["status"] ? this.successModal(resFriendAdded["data"]) : this.alertGameModal(resFriendAdded["data"])
+      }
+    )
+  }
+
+  successModal(msg: any){
+    this.successMsg = msg
+    $('#successModal').modal('show');
+  }
+  
+  fillInvitations(){
+    this.myInvitations = []
+    this.service.getData("/user/invitaciones",{
+      params: {
+        idUsuario: this.idP1,
+        page: 1
+      }
+    })
+    .subscribe(
+      resInvitations => {
+        resInvitations["status"] ? this.myInvitations = resInvitations["data"] : this.alertGameModal(resInvitations["data"])
+      },
+      err => {
+        console.log(JSON.stringify(err))
       }
     )
   }
@@ -278,11 +320,7 @@ export class MainMenuComponent {
     })
     .subscribe(
       responseFriends =>{
-        if(responseFriends["status"]){
-          this.getGoogleProfilePhoto(responseFriends["data"], this.friendsList)
-        } else {
-          this.alertGameModal(responseFriends["data"])
-        }
+        responseFriends["status"] ? this.getGoogleProfilePhoto(responseFriends["data"], this.friendsList) : this.alertGameModal(responseFriends["data"])
       },
       errorFriends => {
         console.log(errorFriends)
@@ -309,6 +347,7 @@ export class MainMenuComponent {
   }
 
   getOtherFriends(){
+    this.newFriendList = []
     this.service.getData("/user/friendListFilter",{
       params: {
         idUsuario: this.idP1,
@@ -317,11 +356,7 @@ export class MainMenuComponent {
     })
     .subscribe(
       otherFriendsRes =>{
-        if(otherFriendsRes["status"]){
-          this.getGoogleProfilePhoto(otherFriendsRes["data"], this.newFriendList)
-        } else {
-          this.alertGameModal(otherFriendsRes["data"])
-        }
+        otherFriendsRes["status"] ? this.getGoogleProfilePhoto(otherFriendsRes["data"], this.newFriendList) : this.alertGameModal(otherFriendsRes["data"])
       },
       err => {
         console.log(JSON.stringify(err))
@@ -334,20 +369,25 @@ export class MainMenuComponent {
     this.service.postData("/game/linkUsuarioPartida",{
       idUsuario: this.idP1,
       idPartida: id,
-      color: this.colorSelected
+      color: this.openColorSelected
     })
     .subscribe(
       dataResponse => {
         console.log(JSON.stringify(dataResponse))
-        if(dataResponse["status"]){
-          this.openGame(id)
-        } else {
-          this.alertGameModal(dataResponse["data"])
-        }
+        dataResponse["status"] ? this.openGame(id) : this.alertGameModal(dataResponse["data"])
       },
       err => {
         console.log(JSON.stringify(err))
       }
     )
+  }
+
+  //INVITATIONS
+  acceptInvitation(id:any){
+
+  }
+
+  declineInvitation(id:any){
+
   }
 }

@@ -71,7 +71,7 @@
             <div *ngIf="againstPlayer">
               <select id="selectedFriend" [(ngModel)]="idP2" class="form-control">
                 <option *ngFor="let friend of friendsList"
-                  [value]="idP2">{{friend.nickname}}</option> 
+                  [value]="friend.id">{{friend.id}}</option> 
               </select>
             </div> 
             <label *ngIf="!againstPlayer">Partida abierta</label>
@@ -88,7 +88,8 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="acceptButton" data-dismiss="modal" (click)="newGame()">Guardar</button>
+        <button type="button" *ngIf="!againstPlayer" class="acceptButton" data-dismiss="modal" (click)="freeGame()">Guardar</button>
+        <button type="button" *ngIf="againstPlayer" class="acceptButton" data-dismiss="modal" (click)="inviteGame()">Guardar</button>
         <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
@@ -283,32 +284,61 @@
   </div>
 </div>
 <!-- invitations modal -->
-<div class="modal fade" id="invitations" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Notifiaciones de {{nickName}}</h5>
+<div class="modal fade" id="invitations" tabindex="-1" role="dialog" aria-labelledby="lblInviteG" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+          <h5 class="modal-title" id="lblInviteG">Notificaciones para {{idP2}}</h5>
+          <div class="row">
+            <label class="col-form-label col-sm-6">Escoja su color:</label>
+            <div class="col-sm-6">
+              <select [(ngModel)]="inviteColorSelected" class="form-control">
+                <option class="{{col.styleName}}" *ngFor="let col of colors"
+                  [value]="col.color">{{col.name}}</option> 
+              </select>
+            </div>
         </div>
-        <div class="modal-body">
-          <!-- Show all games or active games -->
-          <!-- <div *ngIf="active">
-            <div *ngFor="let game of activeGames">
-              <div class="form-group row">
-                <div class="col-sm-9">
-                  <label for="gameInfo" class="col-sm-6 col-form-label">{{game.Jugador_1.nickname}} vs {{game.Jugador_2.nickname}}</label>
+      </div>
+      <div class="modal-body">
+        <div *ngFor="let invitation of myInvitations">
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <div class="row centerGameOption">
+                <div class="spanColor" style.background-color="{{invitation.color}}"></div>
+                <label class="col-sm-8 col-form-label">  {{invitation.nickname}}</label>
+              </div>
+              <div class="row centerGameOption">
+                <label class="col-sm-8 col-form-label">Rondas: {{invitation.nRondas}}</label>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row centerGameOption">
+                <label class="col-sm-8 col-form-label">Tablero: {{invitation.tamano}}</label>
+              </div>
+              <div class="row centerGameOption">
+                <label class="col-sm-8 col-form-label">Victoria: {{invitation.tamano_linea}}</label>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="row centerGameOption">
+                <div class="col-sm-12 col-form-label">
+                  <button type="button" (click)="acceptInvitation(invitation.idAnfitrion)" data-dismiss="modal" class="col-sm-12 acceptButton">Aceptar</button>
                 </div>
-                <div class="col-sm-3">
-                  <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="btn btn-primary">Jugar</button>
+              </div>
+              <div class="row centerGameOption">
+                <div class="col-sm-12 col-form-label">
+                  <button type="button" (click)="declineInvitation(invitation.idAnfitrion)" data-dismiss="modal" class="col-sm-12 cancelButton">Rechazar</button>
                 </div>
               </div>
             </div>
-          </div> -->
-        </div>
-        <div class="modal-footer">
-          <button type="button" data-dismiss="modal" class="acceptButton">Atrás</button>
+          </div>
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
+      </div>
     </div>
+  </div>
 </div>
 <!-- friend list modal -->
 <div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="labFriendL" aria-hidden="true">
@@ -329,13 +359,13 @@
               <label class="col-form-label">{{friend.detalles}}</label>
             </div>
             <div class="col-sm-4 centerGameOption">
-              <button type="button" (click)="seeMessages(friend.nickname)" data-dismiss="modal" class="playGameOption">Chat</button>
+              <button type="button" (click)="seeMessages(friend.id)" data-dismiss="modal" class="playGameOption">Chat</button>
             </div>
           </div>        
         </div>
       </div>
       <div class="modal-footer">
-          <button type="button" (click)="newFriendsModal()" class="acceptButton">Agregar amigos</button>      
+          <button type="button" (click)="newFriendsModal()" data-dismiss="modal" class="acceptButton">Agregar amigos</button>      
           <button type="button" data-dismiss="modal" class="cancelButton">Atrás</button>
       </div>
     </div>
@@ -363,7 +393,7 @@
                   <label class="col-form-label">{{friend.detalles}}</label>
                 </div>
                 <div class="col-sm-4 centerGameOption">
-                  <button type="button" (click)="addFriend(friend._id)" data-dismiss="modal" class="playGameOption">Chat</button>
+                  <button type="button" (click)="addFriend(friend.id)" data-dismiss="modal" class="playGameOption">Agregar</button>
                 </div>
               </div>  
           </div>
@@ -371,7 +401,7 @@
       </div>
     </div>
 </div>
-<!-- free games modal -->
+<!-- open games modal -->
 <div class="modal fade" id="openGames" tabindex="-1" role="dialog" aria-labelledby="labelOpenGames" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -380,7 +410,7 @@
             <div class="row">
               <label class="col-form-label col-sm-6">Escoja su color:</label>
               <div class="col-sm-6">
-                <select [(ngModel)]="colorSelected" class="form-control">
+                <select [(ngModel)]="openColorSelected" class="form-control">
                   <option class="{{col.styleName}}" *ngFor="let col of colors"
                     [value]="col.color">{{col.name}}</option> 
                 </select>
@@ -418,4 +448,20 @@
         </div>
       </div>
     </div>
+</div>
+<!-- success modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Éxito</h5>
+      </div>
+      <div class="modal-body">
+        <label for="rSize" class="col-form-label">{{successMsg}}</label> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="acceptButton">Aceptar</button>
+      </div>
+    </div>
+  </div>
 </div>

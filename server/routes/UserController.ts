@@ -123,11 +123,11 @@ class ControladorPersona{
     }
 
     public static invitar(req: Request, res: Response){
-        if (req.body.idAnfitrion == null || req.body.color==null || req.body.IDinvitado == null || req.body.tamano ==null || req.body.tamano_linea==null || req.body.nRondas==null)
+        if (req.body.idAnfitrion == null || req.body.color==null || req.body.idInvitado == null || req.body.tamano ==null || req.body.tamano_linea==null || req.body.nRondas==null)
         {res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        console.log("invitar('"+req.body.idAnfitrion+"','"+req.body.color+"','"+req.body.IDinvitado+"',"
+        console.log("invitar('"+req.body.idAnfitrion+"','"+req.body.color+"','"+req.body.idInvitado+"',"
         +req.body.tamano+","+req.body.tamano_linea+","+req.body.nRondas+")")
-        consulta("invitar('"+req.body.idAnfitrion+"','"+req.body.color+"','"+req.body.IDinvitado+"',"
+        consulta("invitar('"+req.body.idAnfitrion+"','"+req.body.color+"','"+req.body.idInvitado+"',"
         +req.body.tamano+","+req.body.tamano_linea+","+req.body.nRondas+")", res);
     }
 
