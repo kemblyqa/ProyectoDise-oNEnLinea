@@ -311,11 +311,11 @@
     </div>
 </div>
 <!-- friend list modal -->
-<div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="friends" tabindex="-1" role="dialog" aria-labelledby="labFriendL" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Lista de amigos</h5>
+        <h5 class="modal-title" id="labFriendL">Lista de amigos</h5>
       </div>
       <div class="modal-body">
         <div *ngFor="let friend of friendsList">
@@ -328,7 +328,7 @@
               <label class="col-sm-8 col-form-label"> {{friend.detalles}}</label>
             </div>
             <div class="col-sm-4 centerGameOption">
-              <button type="button" (click)="seeMessages(friend.id_partida)" data-dismiss="modal" class="playGameOption">Chat</button>
+              <button type="button" (click)="seeMessages(friend.nickname)" data-dismiss="modal" class="playGameOption">Chat</button>
             </div>
           </div>
         </div>

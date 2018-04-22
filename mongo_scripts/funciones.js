@@ -491,7 +491,7 @@ db.system.js.save({
 			let richList = [];
 			for(let x = 0; friendList[x]!=null;x++)
 				richList.push(db.Usuarios.findOne({_id:friendList[x]},{nickname:1,detalles:1,_id:1}))
-			return {status:true,dat:richList};
+			return {status:true,data:richList};
 		}
 		catch(e){
 			return {status:false,data:"Error friendList"}

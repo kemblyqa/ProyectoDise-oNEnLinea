@@ -134,6 +134,24 @@ export class MainMenuComponent {
     )
   }
 
+  fillFriendList(){
+    this.service.getData("/user/friendList",{
+      params: {
+        idUsuario: this.idP1
+      }
+    })
+    .subscribe(
+      dataResponse => {
+        if(dataResponse["status"]){
+          console.log(JSON.stringify(dataResponse))
+          this.friendsList = dataResponse["data"]
+        } else{
+          this.alertGameModal(dataResponse["data"])
+        }
+      }
+    )
+  }
+
   //GAME
   openGame(id:any){
     UserDetails.Instance.setCurrentGameID(id)
