@@ -15,6 +15,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./main-menu.component.css']
 })
 export class MainMenuComponent {
+  //service data
+  userUrl:string
+  gameUrl:string
   //model
   menuModel: MenuModel;
   colors: Array<any>
@@ -24,13 +27,11 @@ export class MainMenuComponent {
   successMsg:any
   gameAIOptions:any
   level:any
-
   //get player data
   idP1:any
   nickName:any
   idP2:any
   statusGame:any
-
   //board parameters
   nSize: number
   bSize: number
@@ -38,36 +39,33 @@ export class MainMenuComponent {
   nColor: string = "#8A2BE2"
   isActiveGames: boolean
   againstPlayer:boolean
-
   //AI params
   optGame:any = "jugador"
   nAIColorP1:any = "#8A2BE2"
   nAIColorP2:any = "#7FFF00"
   optLevP1:any
   optLevP2:any
-
   //friends
   friendsList:Array<any>
   newFriendList:Array<any>
   newFriend:any
-
   //open games
   openGames:Array<any>
   openColorSelected:any = "#8A2BE2"
-
   //invitations
   myInvitations:Array<any>
   inviteColorSelected: any = "#8A2BE2"
   
-  
   constructor(private service: Service, private router: Router) {
+    //service data
+    this.userUrl = "/user/"
+    this.gameUrl = "/game/"
     //juegos activos por defecto
     this.isActiveGames = true
     this.againstPlayer = false
     this.friendsList = []
     this.newFriendList = []
     this.myInvitations = []
-
     //render info to set in menu
     this.menuModel = new MenuModel()
     this.colors = this.menuModel.getColorList()
@@ -80,16 +78,14 @@ export class MainMenuComponent {
         window.location.reload();
       }
   }
-
   //LOGOUT
   exit(){
     this.router.navigateByUrl('/login');
     window.location.reload();
   }
-
   //ALL GAMES, FRIENDS, INVITATIONS
   fillinactiveGames(){
-    this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: false}})
+    this.service.getData(`${this.userUrl}gameListFilter`,{params:{idUsuario: this.idP1, filtro: false}})
       .subscribe( 
         data => { 
           if(data["status"]){
@@ -104,9 +100,8 @@ export class MainMenuComponent {
         } 
       )
   }
-
   fillActiveGames(){
-    this.service.getData("/user/gameListFilter",{params:{idUsuario: this.idP1, filtro: true}})
+    this.service.getData(`${this.userUrl}gameListFilter`,{params:{idUsuario: this.idP1, filtro: true}})
       .subscribe( 
         data => { 
           if(data["status"]){
@@ -121,9 +116,8 @@ export class MainMenuComponent {
         } 
       )
   }
-
   fillOpenGames(){
-    this.service.getData("/game/disponibles",{
+    this.service.getData(`${this.gameUrl}disponibles`,{
       params: {
         page: 1
       }
@@ -137,13 +131,11 @@ export class MainMenuComponent {
       }
     )
   }
-
   //GAME
   openGame(id:any){
     UserDetails.Instance.setCurrentGameID(id)
     this.router.navigate(['/tablero'])
   }
-
   gameModeChange(value){
     console.log("switching visibility")
     if (value == "bot")
@@ -151,53 +143,43 @@ export class MainMenuComponent {
     else
       document.getElementById("botlvl1").hidden=true
   }
-
   //MODALS MAIN MENU
   parametersModal() {
     this.fillFriendList()
     $('#parameters').modal('show');
   }
-
   optionsAIModal(){
     $("#paramsAI").modal("show")
   }
-
   friendsModal(){
     this.fillFriendList()
     $('#friends').modal('show')
   }
-
   newFriendsModal(){
     this.getOtherFriends()
     $('#addFriendModal').modal('show')
   }
-
   allGamesModal(){
     this.fillActiveGames()
     this.fillinactiveGames()
     $('#gamesRegistered').modal('show');
   }
-
   invitationsModal(){
     this.fillInvitations()
     $('#invitations').modal('show')
   }
-
   freeGamesModal(){
     this.fillOpenGames()
     $('#openGames').modal('show');
   }
-
   messagesModal(){}
-
   alertGameModal(msg: any){
     this.errorMsg = msg
     $('#failed').modal('show')
   }
-
   //INIT GAMES
   newAIGame(){
-    this.service.postData("/game/nuevaSesion", {
+    this.service.postData(`${this.gameUrl}nuevaSesion`, {
       idJ1: this.optGame == "bot" ? this.optLevP1 : this.idP1, //player or bot
       color1: this.nAIColorP1,
       idJ2: this.optLevP2,  //bot
@@ -216,7 +198,7 @@ export class MainMenuComponent {
       ) 
   }
   freeGame(){
-    this.service.postData("/game/nuevaSesion", {
+    this.service.postData(`${this.gameUrl}nuevaSesion`, {
       idJ1: this.idP1,
       color1: this.nColor,
       idJ2: "",
@@ -236,7 +218,7 @@ export class MainMenuComponent {
       ) 
   }
   replayGame(id:any){
-    this.service.getData("/game/jugadas",{
+    this.service.getData(`${this.gameUrl}jugadas`,{
       params: {
         idPartida: id
       }
@@ -255,7 +237,7 @@ export class MainMenuComponent {
     )
   }
   inviteGame(){
-    this.service.postData("/user/invitar", {
+    this.service.postData(`${this.userUrl}invitar`, {
       idAnfitrion: this.idP1,
       color: this.nColor,
       idInvitado: this.idP2,
@@ -273,10 +255,9 @@ export class MainMenuComponent {
         } 
       ) 
   }
-
   //FRIENDS
   addFriend(friend: any){
-    this.service.postData("/user/friend",{
+    this.service.postData(`${this.userUrl}friend`,{
       id1: this.idP1,
       id2: friend
     })
@@ -286,15 +267,13 @@ export class MainMenuComponent {
       }
     )
   }
-
   successModal(msg: any){
     this.successMsg = msg
     $('#successModal').modal('show');
   }
-  
   fillInvitations(){
     this.myInvitations = []
-    this.service.getData("/user/invitaciones",{
+    this.service.getData(`${this.userUrl}invitaciones`,{
       params: {
         idUsuario: this.idP1,
         page: 1
@@ -309,10 +288,9 @@ export class MainMenuComponent {
       }
     )
   }
-
   fillFriendList(){
     this.friendsList = []
-    this.service.getData("/user/friendListFilter",{
+    this.service.getData(`${this.userUrl}friendListFilter`,{
       params: {
         idUsuario: this.idP1,
         filtro: true
@@ -327,7 +305,6 @@ export class MainMenuComponent {
       }
     )
   }
-
   getGoogleProfilePhoto(dataList:Array<any>, newList:Array<any>){
     for(let elem of dataList){
       this.service.getGoogleProfileData(elem["_id"])
@@ -345,10 +322,9 @@ export class MainMenuComponent {
       )
     }
   }
-
   getOtherFriends(){
     this.newFriendList = []
-    this.service.getData("/user/friendListFilter",{
+    this.service.getData(`${this.userUrl}friendListFilter`,{
       params: {
         idUsuario: this.idP1,
         filtro: false
@@ -363,17 +339,15 @@ export class MainMenuComponent {
       }
     )
   }
-
   //OPEN GAMES
   openFreeGame(id:any){
-    this.service.postData("/game/linkUsuarioPartida",{
+    this.service.postData(`${this.gameUrl}linkUsuarioPartida`,{
       idUsuario: this.idP1,
       idPartida: id,
       color: this.openColorSelected
     })
     .subscribe(
       dataResponse => {
-        console.log(JSON.stringify(dataResponse))
         dataResponse["status"] ? this.openGame(id) : this.alertGameModal(dataResponse["data"])
       },
       err => {
@@ -381,13 +355,35 @@ export class MainMenuComponent {
       }
     )
   }
-
   //INVITATIONS
   acceptInvitation(id:any){
-
+    this.service.postData(`${this.userUrl}aceptar`,{
+      idUsuario: this.idP1,
+      color: this.inviteColorSelected,
+      idAnfitrion: id
+    })
+    .subscribe(
+      resAccept => {
+        resAccept["status"] ? this.successModal(resAccept["data"]) : this.alertGameModal(resAccept["data"])
+        this.invitationsModal()
+      },
+      err => {
+        this.alertGameModal(err)
+      }
+    )
   }
-
   declineInvitation(id:any){
-
+    this.service.postData(`${this.userUrl}rechazar`,{
+      idUsuario: this.idP1,
+      idAnfitrion: id
+    })
+    .subscribe(
+      resDecline => {
+        resDecline["status"] ? this.fillInvitations() : this.alertGameModal(resDecline["data"])
+      },
+      err => {
+        this.alertGameModal(err)
+      }
+    )
   }
 }
