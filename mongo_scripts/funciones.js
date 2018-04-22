@@ -548,7 +548,8 @@ db.system.js.save({
 		else if (db.Usuarios.findOne({_id:idAnfitrion})==null || db.Usuarios.findOne({_id:idInvitado})==null)
 			return {status:false,data:"Uno de los usuarios no existe!"}
 		else{
-			db.Usuarios.update({_id:idInvitado},{$push:{invitaciones:{anfitrion:idAnfitrion,color:color,tamano:tamano,tamano_linea:tamano_linea,nRondas:nRondas}}})
+			let anfitrion = db.Usuarios.findOne({_id:idAnfitrion});
+			db.Usuarios.update({_id:idInvitado},{$push:{invitaciones:{idAnfitrion:idAnfitrion,nickname:anfitrion.nickname,color:color,tamano:tamano,tamano_linea:tamano_linea,nRondas:nRondas}}})
             return {status:true,data:"Success!"};
             }
 	}
