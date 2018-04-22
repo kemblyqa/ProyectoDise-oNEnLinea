@@ -357,13 +357,13 @@ db.system.js.save({
 	  return({status:true,data:{"nickname":"Nadie aún","detalles":"Este es un campo disponible"}})
 	let result = db.Usuarios.find({_id:idUsuario},{_id:1,nickname:1,detalles:1}).toArray()[0];
 	if (result==null)
-	   return {status:false,data:"Error checkUsuario: el usuario '"+idUsuario+"'no existe"}
+	   return {status:false,data:"userNULL"}
 	  else
   
 		 return ({status:true,data:result});
 	  }
 	  catch(e){
-	   return {status:false,data:"Error checkUsuario: quiza el usuario no existe"}
+	   return {status:false,data:"userNULL"}
 	  }
 	}
 	 });
@@ -559,7 +559,7 @@ db.system.js.save({
 	_id: "aceptar",
 	value: function (idAnfitrion, idUsuario) 
 	{ 
-		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.anfitrion":idAnfitrion})
+		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.idAnfitrion":idAnfitrion})
         if (invitacion ==null)
             return {status:false,data:"Error: la invitacion no existe"}
         invitacion = invitacion.invitaciones[0]

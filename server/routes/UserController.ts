@@ -135,6 +135,7 @@ class ControladorPersona{
         let idUsuario = req.body.idUsuario;
         let color = req.body.color;
         let idAnfitrion = req.body.idAnfitrion;
+        console.log(`${idUsuario} ${color} ${idAnfitrion}`)
         if(idUsuario==null||color==null||idAnfitrion==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         if (!checkConnection()){
             resConnectionError(res);
@@ -143,7 +144,7 @@ class ControladorPersona{
         mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
         .then(result =>{
             if (!result.status){res.json(result);return;}
-            consulta("nuevaSesion('"+result.data.anfitrion+"','"+result.data.color+"','"+idUsuario+"','"+color+"',"+result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")",res)
+            consulta("nuevaSesion('"+result.data.idAnfitrion+"','"+result.data.color+"','"+idUsuario+"','"+color+"',"+result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")",res)
         }).catch(() => res.json({status:false,data:"Error al aceptar invitación"}))
     }
 

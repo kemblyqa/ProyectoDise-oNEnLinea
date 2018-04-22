@@ -30,9 +30,11 @@ export class LoginComponent{
             this.nickname = resUser["data"]["nickname"];
             this.details = resUser["data"]["detalles"];
             this.routeTo()
-          } else {
+          } else if (resUser["data"]=="userNULL"){
             this.register()
           }
+          else
+            this.alertUser(resUser["data"])
         }
       )
   }
