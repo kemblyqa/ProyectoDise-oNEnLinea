@@ -373,6 +373,7 @@ export class MainMenuComponent {
     )
   }
   declineInvitation(id:any){
+    console.log(id)
     this.service.postData(`${this.userUrl}rechazar`,{
       idUsuario: this.idP1,
       idAnfitrion: id

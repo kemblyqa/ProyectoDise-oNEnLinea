@@ -288,7 +288,7 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-          <h5 class="modal-title" id="lblInviteG">Notificaciones para {{idP2}}</h5>
+          <h5 class="modal-title" id="lblInviteG">Invitaciones</h5>
           <div class="row">
             <label class="col-form-label col-sm-6">Escoja su color:</label>
             <div class="col-sm-6">
@@ -327,7 +327,7 @@
               </div>
               <div class="row centerGameOption">
                 <div class="col-sm-12 col-form-label">
-                  <button type="button" (click)="declineInvitation(invitation.idAnfitrion)" data-dismiss="modal" class="col-sm-12 cancelButton">Rechazar</button>
+                  <button type="button" (click)="declineInvitation(invitation.idAnfitrion)" class="col-sm-12 cancelButton">Rechazar</button>
                 </div>
               </div>
             </div>
@@ -355,11 +355,8 @@
               name="profile" alt="Card image cap">
               <label class="col-form-label">{{friend.nickname}}</label>
             </div>
-            <div class="col-sm-4 centerGameOption">
-              <label class="col-form-label">{{friend.detalles}}</label>
-            </div>
-            <div class="col-sm-4 centerGameOption">
-              <button type="button" (click)="seeMessages(friend.id)" data-dismiss="modal" class="playGameOption">Chat</button>
+            <div class="col-sm-8">
+              <label class="col-form-label">Detalles: {{friend.detalles}}</label>
             </div>
           </div>        
         </div>
@@ -389,8 +386,8 @@
                   name="profile" alt="Card image cap">
                   <label class="col-form-label">{{friend.nickname}}</label>
                 </div>
-                <div class="col-sm-4 centerGameOption">
-                  <label class="col-form-label">{{friend.detalles}}</label>
+                <div class="col-sm-4">
+                  <label class="col-form-label">Detalles: {{friend.detalles}}</label>
                 </div>
                 <div class="col-sm-4 centerGameOption">
                   <button type="button" (click)="addFriend(friend.id)" data-dismiss="modal" class="playGameOption">Agregar</button>

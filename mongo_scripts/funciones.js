@@ -573,10 +573,10 @@ db.system.js.save({
 	_id: "rechazar",
 	value: function (idAnfitrion, idUsuario) 
 	{ 
-		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.anfitrion":idAnfitrion})
+		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.idAnfitrion":idAnfitrion})
         if (invitacion ==null)
             return {status:false,data:"Error: la invitacion no existe"}
-		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
+		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"idAnfitrion": idAnfitrion}}}, false, false)
 		return {status:true,data:"Has rechazado una invitacion"};
 	}
 });
