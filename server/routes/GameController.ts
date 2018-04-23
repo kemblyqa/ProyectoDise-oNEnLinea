@@ -4,6 +4,8 @@ import gameModel from './../models/game.model'
 
 let mongoose = require('mongoose');
 let async = require('async')
+
+conectar();
 function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
         console.log("conexion realizada")

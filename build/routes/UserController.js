@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //importar objetos desde express
 var express_1 = require("express");
 var mongoose = require('mongoose');
+conectar();
 function conectar() {
     mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
         console.log("conexion realizada");
