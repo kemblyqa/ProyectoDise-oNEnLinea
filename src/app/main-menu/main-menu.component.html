@@ -71,7 +71,7 @@
             <div *ngIf="againstPlayer">
               <select id="selectedFriend" [(ngModel)]="idP2" class="form-control">
                 <option *ngFor="let friend of friendsList"
-                  [value]="friend.id">{{friend.id}}</option> 
+                  [value]="friend.id">{{friend.nickname}}</option> 
               </select>
             </div> 
             <label *ngIf="!againstPlayer">Partida abierta</label>
