@@ -64,6 +64,7 @@ export class BuildBoard{
     }
 
     getSecondPlayer(){
+        console.log(this.users[1][0])
         return this.users[1][0]
     }
 

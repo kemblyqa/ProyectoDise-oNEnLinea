@@ -67,6 +67,7 @@ class ControladorPersona{
         let idOne   = req.query.idOne;
         let idTwo   = req.query.idTwo;
         if(idOne==null || idTwo==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+        console.log("getChatLog('"+idOne+"','"+idTwo+"')")
         consulta("getChatLog('"+idOne+"','"+idTwo+"')",res);
     }
 
