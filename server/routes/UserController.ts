@@ -144,6 +144,9 @@ class ControladorPersona{
         mongoose.connection.db.eval("aceptar('"+idAnfitrion+"','"+idUsuario+"')")
         .then(result =>{
             if (!result.status){res.json(result);return;}{
+                console.log("nuevaSesion('"+result.data.idAnfitrion+"','"
+                +result.data.color+"','"+idUsuario+"','"+color+"',"+
+                result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")")
                 mongoose.connection.db.eval("nuevaSesion('"+result.data.idAnfitrion+"','"
                 +result.data.color+"','"+idUsuario+"','"+color+"',"+
                 result.data.tamano+","+result.data.tamano_linea+","+result.data.nRondas+")").then(result1 =>{

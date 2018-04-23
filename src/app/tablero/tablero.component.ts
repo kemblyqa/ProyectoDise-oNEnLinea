@@ -77,6 +77,7 @@ export class TableroComponent {
         } else {
           this.errorMsg = resData["data"]
         }
+        this.tab.setActiveRound(0)
       }
     )
   }
@@ -111,7 +112,6 @@ export class TableroComponent {
     }
     //replay mode
     else{
-      this.tab.setActiveRound(0)
       let tablero = []
       for(let x = 0;x<this.tab.gridSize;x++){
         tablero.push([])
@@ -162,6 +162,7 @@ export class TableroComponent {
   }
 
   nextMove(){
+    console.log(this.tab.gridBoard)
     if (this.jugadas.length==0){
       this.service.getData("/game/estadoAvanzado",{
         params: {
@@ -178,12 +179,12 @@ export class TableroComponent {
             console.log(JSON.stringify(err))
           }
         )
-      this.playerRound++;
-      if(this.playerRound>=this.tab.nRounds){
+      if(this.playerRound+1>=this.tab.nRounds){
         document.getElementById("nextButton").hidden=true;
         UserDetails.Instance.setreplayMode(false);
         return;
       }
+      this.playerRound++;
       this.initBoard();
       return;
     }
@@ -282,7 +283,9 @@ export class TableroComponent {
         this.openModalEndGame()
     }
   }
-
+  resetBoard(){
+    this.tab.resetBoardGrid();
+  }
   backToMenu(){
     $("#wrapper").toggleClass("toggled");
   }

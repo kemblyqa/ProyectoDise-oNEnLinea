@@ -125,6 +125,14 @@ export class BuildBoard{
         }
     }
 
+    resetBoardGrid(){
+        for (let rowI = 0; rowI < this.gridSize; rowI++) {
+            for (let colI = 0; colI < this.gridSize; colI++) {
+                document.getElementById(this.buttonIDs[rowI][colI]).style.backgroundColor="#FFFFFF"
+            }
+        }
+    }
+
     //show in the board the status of turn
     verifyGameTurn(turn:any):any{
         //turno: [0] No es mi turno, [1] Si es mi turno, [-1] Juego terminado
