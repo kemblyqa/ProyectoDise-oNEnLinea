@@ -9,13 +9,15 @@
     </div>
     <div class="chatbox">
       <div class="messages">
-        <div *ngFor="let message of chatLog" [class.right]="message[0]" [class.left]="!message[0]">
-          {{message[1]}}
+        <div *ngFor="let message of chatLog" class="buble" [class.bubleLeft]="message[0]">
+          <p [class.right]="message[0]" [class.left]="!message[0]">
+              {{message[1]}}
+          </p>
         </div>
       </div>
       <div class="input-container">
-        <input type="text" class="inputtext" [(ngModel)]="replyMessage">
-        <button class="replyBtn" (click)="sendMessage()">Enviar</button>
+        <input [disabled]="botGameStatus" type="text" class="inputtext" [(ngModel)]="replyMessage">
+        <button [disabled]="botGameStatus" class="replyBtn" (click)="sendMessage()">Enviar</button>
       </div>
     </div>
     <div class="chat-footer">

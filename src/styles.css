@@ -5,6 +5,11 @@ body {
     background: url("assets/icons/back.jpg");
 }
 
+.imageB {
+    border-radius: 50%;
+    width: 20%;
+}
+
 .centerDiv{
     margin:0 auto;
     width: 100%;
