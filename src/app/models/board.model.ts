@@ -63,6 +63,10 @@ export class BuildBoard{
         }
     }
 
+    getSecondPlayer(){
+        return this.users[1][0]
+    }
+
     setTurn(turn:any){
         this.turn = turn
     }

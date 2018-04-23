@@ -38,10 +38,11 @@ export class TableroComponent {
   dialogEndGame:string
   errorMsg:string
   chatLog:Array<any>
+  replyMessage:any
 
   //watching mode
-  jugadas : Array<any>;
-  counterJugadas : number;
+  jugadas:Array<any>;
+  counterJugadas:number
 
   constructor(private service:Service,private router:Router) {
     //init variables to be used in the controller
@@ -90,8 +91,55 @@ export class TableroComponent {
   },{
     "text":"I am fine",
     "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  },{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
   }]
-  replyMessage = "";
 
   reply(){
     this.messages.push({
@@ -99,6 +147,35 @@ export class TableroComponent {
       "self":true
     })
     this.replyMessage = "";
+  }
+
+  fillChatLog(){
+    this.service.getData("/user/getChatLog",{
+      params: {
+        idOne: this.playerID,
+        idTwo: this.tab.getSecondPlayer()
+      }
+    })
+    .subscribe(
+      resChat => {
+        console.log(JSON.stringify(resChat))
+        resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
+      }
+    )
+  }
+
+  sendMessage(){
+    this.service.postData("/user/enviarMsg",{
+      idEmisor: this.playerID,
+      idReceptor: this.tab.getSecondPlayer(),
+      msg: this.replyMessage
+    })
+    .subscribe(
+      resChatSent => {
+        console.log(JSON.stringify(resChatSent))
+        resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
+      }
+    )
   }
 
   initBoard(){
