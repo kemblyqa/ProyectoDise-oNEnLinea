@@ -49,3 +49,7 @@ body, html {
 .g-signin2 > div{
     margin: 0 auto;
 }
+
+.material-icons {
+    font-size: 48px;
+}

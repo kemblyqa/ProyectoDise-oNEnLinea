@@ -71,7 +71,6 @@ var ControladorPersona = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
-        console.log("getChatLog('" + idOne + "','" + idTwo + "')");
         consulta("getChatLog('" + idOne + "','" + idTwo + "')", res);
     };
     ControladorPersona.setDetails = function (req, res) {

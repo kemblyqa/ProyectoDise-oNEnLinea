@@ -1,3 +1,5 @@
+import { UserDetails } from "./user.model";
+
 export class BuildBoard{
     //in the board are filled
     buttonIDs:Array<any>
@@ -63,9 +65,12 @@ export class BuildBoard{
         }
     }
 
-    getSecondPlayer(){
-        console.log(this.users[1][0])
-        return this.users[1][0]
+    getOtherPlayer(){
+        return UserDetails.Instance.getUserID() == this.users[0][0] ? this.users[1][0] : this.users[0][0]
+    }
+
+    parseProfilePhotos(response: any){
+        return response["entry"]["gphoto$thumbnail"]["$t"]
     }
 
     setTurn(turn:any){

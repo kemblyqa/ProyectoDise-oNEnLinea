@@ -39,6 +39,8 @@ export class TableroComponent {
   errorMsg:string
   chatLog:Array<any>
   replyMessage:any
+  profilePicture:string
+  secondPlayerNickname:string
 
   //watching mode
   jugadas:Array<any>;
@@ -84,12 +86,12 @@ export class TableroComponent {
       }
     )
   }
-
   fillChatLog(){
+    console.log(this.playerID, this.tab.getOtherPlayer())
     this.service.getData("/user/getChatLog",{
       params: {
         idOne: this.playerID,
-        idTwo: this.tab.getSecondPlayer()
+        idTwo: this.tab.getOtherPlayer()
       }
     })
     .subscribe(
@@ -98,11 +100,10 @@ export class TableroComponent {
       }
     )
   }
-
   sendMessage(){
     this.service.postData("/user/enviarMsg",{
       idEmisor: this.playerID,
-      idReceptor: this.tab.getSecondPlayer(),
+      idReceptor: this.tab.getOtherPlayer(),
       msg: this.replyMessage
     })
     .subscribe(
@@ -112,9 +113,9 @@ export class TableroComponent {
       }
     )
   }
-
   initBoard(){
     //playing mode
+    this.getBasicInfoChat()
     if (!UserDetails.Instance.getreplayMode()){
       //get the board to fill
       this.service.getData("/user/rondaActiva",{params:{idPartida: this.playerIdGame}})
@@ -190,7 +191,6 @@ export class TableroComponent {
         }
       ) 
   }
-
   nextMove(){
     if (this.jugadas.length==0){
       this.service.getData("/game/estadoAvanzado",{
@@ -237,7 +237,6 @@ export class TableroComponent {
         }
       )
   }
-
   updateGameEvent(){
     this.timer = setInterval(() => {
       this.service.getData("/game/update",{
@@ -269,16 +268,13 @@ export class TableroComponent {
         this.moveFlag=false;
     }, 3000)
   }
-
   notificate(data: any){
     this.errorMsg = data
     $("#notification").modal("show")
   }
-
   openModalEndGame(){
     $("#end").modal('show')
   }
-
   gameIsEnded(){
     switch(this.tab.verifyReasonEndGame(this.playerID, this.botGameStatus)){
       case "w":
@@ -319,5 +315,43 @@ export class TableroComponent {
   }
   backToMenu(){
     $("#wrapper").toggleClass("toggled");
+  }
+  mainMenu(){
+    clearInterval(this.timer)
+    this.router.navigate(['/menu'])
+  }
+  left(){
+    clearInterval(this.timer)
+    this.service.postData("/game/abandono",{
+      idPartida: this.playerIdGame,
+      idJugador: this.playerID
+    })
+    .subscribe(
+      dataResponse => {
+        if(!dataResponse["status"]){
+          this.notificate(dataResponse["data"])
+        } else {
+          this.mainMenu()
+        }
+      }
+    )
+  }
+  getBasicInfoChat(){
+    this.service.getGoogleProfileData(this.tab.getOtherPlayer())
+    .subscribe(
+      resProfile => {
+        this.profilePicture = this.tab.parseProfilePhotos(resProfile)
+        this.service.getData("/user/checkUsuario",{
+          params: {
+            idUsuario: this.tab.getOtherPlayer()
+          }
+        })
+        .subscribe(
+          resNickname => {
+            this.secondPlayerNickname = resNickname["data"]["nickname"]
+          }
+        )
+      }
+    )
   }
 }
