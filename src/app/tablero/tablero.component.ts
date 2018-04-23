@@ -258,7 +258,6 @@ export class TableroComponent {
   }
 
   nextMove(){
-    console.log(this.tab.gridBoard)
     if (this.jugadas.length==0){
       this.service.getData("/game/estadoAvanzado",{
         params: {
@@ -331,7 +330,6 @@ export class TableroComponent {
             } else {
               this.errorMsg = resMove["data"]
             }
-            
           },
           err => {
             console.log(JSON.stringify(err))
@@ -351,7 +349,6 @@ export class TableroComponent {
   }
 
   gameIsEnded(){
-    clearInterval(this.timer)
     switch(this.tab.verifyReasonEndGame(this.playerID, this.botGameStatus)){
       case "w":
         this.dialogEndGame = "Yeahh!! Has ganado exitosamente "
@@ -377,6 +374,13 @@ export class TableroComponent {
         this.dialogEndGame = "Juego de bots terminado "
         this.dialogTitleEndGame = "TERMINADO...."
         this.openModalEndGame()
+    }
+    if(this.tab.nRounds-1==this.playerRound){
+      clearInterval(this.timer)
+    }
+    else{
+      this.playerRound++;
+      this.resetBoard()
     }
   }
   resetBoard(){

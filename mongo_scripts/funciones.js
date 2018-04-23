@@ -113,40 +113,43 @@ db.system.js.save({
         }
     });
 
-db.system.js.save({
-	_id: "getChatLog", 
-	value : function (idOne,idTwo) 
-	{
-		try{
-            var R1=db.Usuarios.find({_id:idOne},{['chats.'+idTwo]:1,_id:0}).toArray()[0].chats[idTwo];
-            var R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
-            lista=[];
-            while(R1.length>0 || R2.length>0){
-                if(R1.length>0 && R2.length>0){
-                    fechaOne = Date.parse(R1[0][0]);
-                    fechaTwo = Date.parse(R2[0][0]);
-                    if(fechaOne<fechaTwo)
-                        lista.unshift([0,R1.shift()[1]]);
-                    else
-                        lista.unshift([1,R2.shift()[1]]);
-                }
-                else if(R1.length>0){
-                    while(R1.length>0)
-                        lista.unshift([0,R1.shift()[1]]);
-                }
-                else{
-                    while(R2.length>0)
-                        lista.unshift([1,R2.shift()[1]]);
-                }
-        	}
-            return {status:true,data:lista.reverse()};
+	db.system.js.save({
+		_id: "getChatLog", 
+		value : function (idOne,idTwo) 
+		{
+			try{
+						
+				let R1=db.Usuarios.find({_id:idOne},{['chats.'+idTwo]:1,_id:0}).toArray()[0].chats[idTwo];
+				let R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
+				lista=[];
+				if(R1==null || R2==null)
+					return {status:false,data:[]}
+				while(R1[0]!=null || R2[0]!=null){
+					if(R1[0]!=null && R2[0]!=null){
+						fechaOne = Date.parse(R1[0][0]);
+						fechaTwo = Date.parse(R2[0][0]);
+						if(fechaOne<fechaTwo)
+							lista.unshift([true,R1.shift()[1]]);
+						else
+							lista.unshift([false,R2.shift()[1]]);
+					}
+					else if(R1[0]!=null){
+						while(R1[0]!=null)
+							lista.unshift([true,R1.shift()[1]]);
+					}
+					else{
+						while(R2[0]!=null)
+							lista.unshift([false,R2.shift()[1]]);
+					}
+				}
+				return {status:true,data:lista.reverse()};
+				}
+			catch(e)
+				{
+				return {status:false,data:"Error: probablemente alguno de los usuarios no existen"}
+				}
 			}
-		catch(e)
-			{
-			return {status:false,data:"Error: probablemente alguno de los usuarios no existen"}
-			}
-		}
-    });
+		});
 
 db.system.js.save({
 	_id: "nuevaSesion",
