@@ -72,6 +72,9 @@ export class MainMenuComponent {
     this.gameAIOptions = this.menuModel.getAIOptions()
     this.level = this.menuModel.getLevels()
     this.idP1 = UserDetails.Instance.getUserID()
+
+    //set replay off
+    UserDetails.Instance.setreplayMode(false)
     this.nickName = UserDetails.Instance.getNickName()
     if (!UserDetails.Instance.getActive()){
         this.router.navigateByUrl('/login');
@@ -218,23 +221,8 @@ export class MainMenuComponent {
       ) 
   }
   replayGame(id:any){
-    this.service.getData(`${this.gameUrl}jugadas`,{
-      params: {
-        idPartida: id
-      }
-    })
-    .subscribe(
-      dataRes => {
-        if(dataRes["status"]){
-          dataRes["data"]
-        } else {
-          this.alertGameModal(dataRes["data"])
-        }
-      }, 
-      err => {
-        console.log(JSON.stringify(err))
-      }
-    )
+    UserDetails.Instance.setreplayMode(true);
+    this.openGame(id);
   }
   inviteGame(){
     this.service.postData(`${this.userUrl}invitar`, {

@@ -171,6 +171,9 @@ var ControladorPersona = (function () {
                 return;
             }
             {
+                console.log("nuevaSesion('" + result.data.idAnfitrion + "','"
+                    + result.data.color + "','" + idUsuario + "','" + color + "'," +
+                    result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")");
                 mongoose.connection.db.eval("nuevaSesion('" + result.data.idAnfitrion + "','"
                     + result.data.color + "','" + idUsuario + "','" + color + "'," +
                     result.data.tamano + "," + result.data.tamano_linea + "," + result.data.nRondas + ")").then(function (result1) {

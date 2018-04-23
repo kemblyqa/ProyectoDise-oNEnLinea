@@ -20,7 +20,7 @@
   <!-- /#sidebar-wrapper -->
 
   <!-- Page Content -->
-  <div id="page-content-wrapper">
+ <div id="page-content-wrapper">
     <div class="container-fluid">
       <!-- Page Main Content -->
       <div id="main">
@@ -29,10 +29,10 @@
           <div class="row">
             <div class="col-md-11">
               <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
-              <button type="button" class="btn btn-default" id="nextButton">>>></button>
               <!-- board -->
                 <div class="container centerDiv">
-                  <div class="tBoard">
+                  <button type="button" class="btn btn-danger" id="nextButton" (click)="nextMove()" style="margin-bottom: 1%;text-align:right" hidden>>>></button>
+                  <div class="tBoard"> 
                       <table class="board" id="tableBoard">
                           <tr *ngFor= "let column of buttonIDs">
                             <td *ngFor= "let cell of column">
@@ -85,3 +85,20 @@
     </div>
   </div>
 </div>
+
+<!-- notification -->
+<div class="modal fade" id="notification" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Fin de la ronda</h5>
+        </div>
+        <div class="modal-body">
+          <label for="rSize" class="col-form-label">{{errorMsg}}</label> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" class="acceptButton" (click)="resetBoard()">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
