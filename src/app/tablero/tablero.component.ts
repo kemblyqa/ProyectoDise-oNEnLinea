@@ -85,70 +85,6 @@ export class TableroComponent {
     )
   }
 
-  messages = [{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  },{
-    "text":"Hi How are you?",
-    "self":false
-  },{
-    "text":"I am fine",
-    "self":true
-  }]
-
-  reply(){
-    this.messages.push({
-      "text":this.replyMessage,
-      "self":true
-    })
-    this.replyMessage = "";
-  }
-
   fillChatLog(){
     this.service.getData("/user/getChatLog",{
       params: {
@@ -158,7 +94,6 @@ export class TableroComponent {
     })
     .subscribe(
       resChat => {
-        console.log(JSON.stringify(resChat))
         resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
       }
     )
@@ -172,8 +107,8 @@ export class TableroComponent {
     })
     .subscribe(
       resChatSent => {
-        console.log(JSON.stringify(resChatSent))
         resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
+        this.replyMessage = ""
       }
     )
   }
@@ -193,6 +128,7 @@ export class TableroComponent {
                 resBoard => {
                   if(resBoard["status"]){
                     this.tab.setGrid(resBoard["data"])
+                    this.fillChatLog()
                     this.updateGameEvent()
                   }
                 }
@@ -251,8 +187,6 @@ export class TableroComponent {
       }).subscribe(
         status => {
           this.moveFlag=status["status"]
-          console.log(`-->jugador: ${UserDetails.Instance.getUserID()}
-          -->estado: ${status["data"]}`)
         }
       ) 
   }
@@ -268,10 +202,6 @@ export class TableroComponent {
         .subscribe(
           response =>{
             this.notificate(response["data"])
-            
-          },
-          err => {
-            console.log(JSON.stringify(err))
           }
         )
       if(this.playerRound+1>=this.tab.nRounds){
@@ -335,6 +265,7 @@ export class TableroComponent {
             console.log(JSON.stringify(err))
           }
         )
+        this.fillChatLog()
         this.moveFlag=false;
     }, 3000)
   }

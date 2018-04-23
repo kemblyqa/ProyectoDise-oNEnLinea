@@ -123,7 +123,7 @@ db.system.js.save({
 				let R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
 				lista=[];
 				if(R1==null || R2==null)
-					return {status:false,data:[]}
+					return {status:true,data:[]}
 				while(R1[0]!=null || R2[0]!=null){
 					if(R1[0]!=null && R2[0]!=null){
 						fechaOne = Date.parse(R1[0][0]);
