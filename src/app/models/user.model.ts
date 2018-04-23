@@ -5,6 +5,7 @@ export class UserDetails {
     private userID:any
     private nickName:string
     private details?:string
+    private url:string
     private currentGameID:any
     private botGame:boolean
     private active:boolean = false;
@@ -47,15 +48,19 @@ export class UserDetails {
     isBotGame(){
         return this.botGame
     }
-    setActive(id,nick,det){
+    setActive(id,nick,det,url){
         console.log(`SetActive: ${id} ,${nick}, ${det}`)
         this.nickName=nick;
         this.userID=id;
         this.details=det;
+        this.url = url;
         this.active = true;
     }
     getActive(){
         return this.active;
+    }
+    getUrl(){
+        return this.url;
     }
 
     setreplayMode(mode){

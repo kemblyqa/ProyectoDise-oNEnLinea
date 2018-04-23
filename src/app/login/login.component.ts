@@ -63,7 +63,7 @@ export class LoginComponent{
   }
 
   routeTo(){
-    UserDetails.Instance.setActive(document.getElementById("txtEmail").textContent,this.nickname,this.details)
+    UserDetails.Instance.setActive(document.getElementById("txtEmail").textContent,this.nickname,this.details,document["imgPerfil"].src)
     this.router.navigate(['/menu'])
   }
 }
