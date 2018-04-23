@@ -1,16 +1,21 @@
 <div id="wrapper">
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
-    <ul class="sidebar-nav">
-      <li class="sidebar-brand">
-        <a>N en línea!</a>
-      </li>
-      <div *ngFor="let i of sideBarItems">
-        <li>
-          <a routerLink="/{{i.href}}" routerLinkActive="active">{{i.text}}</a>
-        </li>
+    <!-- chat with player -->
+    <div class="chat-header">
+      <label class="sidebar-brand">Chat con jugador</label>
+    </div>
+    <div class="chatbox">
+      <div class="messages">
+        <div *ngFor="let message of messages" [class.right]="message.self">
+          {{message.text}}
+        </div>
       </div>
-    </ul>
+      <div class="input-container">
+        <input type="text" class="inputtext" [(ngModel)]="replyMessage">
+        <button class="replyBtn" (click)="reply()">Enviar</button>
+      </div>
+    </div>
   </div>
   <!-- /#sidebar-wrapper -->
 

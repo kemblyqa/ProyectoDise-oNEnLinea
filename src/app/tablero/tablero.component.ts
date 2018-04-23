@@ -22,6 +22,7 @@ export class TableroComponent {
   movePosition:Array<any>
   playerTurn:any
   playerNickname:any
+  playerSecondNickname:any
   playerRound:any
   playerIdGame:any
   playerID:any
@@ -36,6 +37,7 @@ export class TableroComponent {
   dialogTitleEndGame:string
   dialogEndGame:string
   errorMsg:string
+  chatLog:Array<any>
 
   //watching mode
   jugadas : Array<any>;
@@ -80,6 +82,23 @@ export class TableroComponent {
         this.tab.setActiveRound(0)
       }
     )
+  }
+
+  messages = [{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  }]
+  replyMessage = "";
+
+  reply(){
+    this.messages.push({
+      "text":this.replyMessage,
+      "self":true
+    })
+    this.replyMessage = "";
   }
 
   initBoard(){
