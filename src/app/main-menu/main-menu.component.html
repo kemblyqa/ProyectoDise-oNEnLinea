@@ -1,4 +1,5 @@
 <!-- Main menu content -->
+<button class="btn btn-dark" (click)="showProfileModal()" style="margin-top: 1%;margin-left: 1%;" id="profileButton"><img src={{imgUrl}} name="imgPerfil" style="border-radius: 50%;width: 20%;float: left">{{nickName}}</button>
 <div class="container justify-content-center">
   <div class="card centerMenu">
     <div class="card-header">
@@ -122,10 +123,10 @@
             </div>
           </div>
 
-          <div class="form-group row">
-            <div class="col-sm-4 offset-md-1">
+          <div class="form-group row" style="margin: 1%">
+            <div class="col offset-md-1">
                 <div class="row">
-                    <label class="col-form-label">Color {{optGame}} 1</label>
+                    <label class="col-form-label">{{optGame}} 1</label>
                   </div>
                   <div class="row">
                     <select id="selectedColor1" [(ngModel)]="nAIColorP1" class="form-control">
@@ -134,7 +135,7 @@
                     </select>
                   </div>
             </div>
-            <div class="col-sm-4 offset-md-2" id="botlvl1" hidden>
+            <div class="col offset-md-2" id="botlvl1"  hidden>
               <div class="row">
                 <label class="col-form-label">Dificultad</label>
               </div>
@@ -146,10 +147,10 @@
                 </div>
             </div>
           </div>
-          <div class="form-group row">
-              <div class="col-sm-4 offset-md-1">
+          <div class="form-group row" style="margin: 1%">
+              <div class="col offset-md-1">
                   <div class="row">
-                      <label class="col-form-label">Color bot 2</label>
+                      <label class="col-form-label">bot 2</label>
                     </div>
                   <div class="row">
                     <select id="selectedColor2" [(ngModel)]="nAIColorP2" class="form-control">
@@ -158,7 +159,7 @@
                     </select>
                   </div>
               </div>
-              <div class="col-sm-4 offset-md-2">
+              <div class="col offset-md-2">
                 <div class="row">
                   <label class="col-form-label">Dificultad</label>
                 </div>
@@ -192,13 +193,13 @@
           <!-- Show inactive games or active games -->
           <div class="form-check">
               <div class="row">
-                <div class="col-sm-6">
+                <div class="col">
                   <input class="form-check-input" type="radio" id="activeGameStatus" [value]="true" [(ngModel)]="isActiveGames">
                   <label class="form-check-label" for="activeGameStatus">
                     Activos ahora
                   </label>
                 </div>
-                <div class="col-sm-6">
+                <div class="col">
                   <input class="form-check-input" type="radio" id="inactiveGameStatus" [value]= "false" [(ngModel)]="isActiveGames">
                   <label class="form-check-label" for="inactiveGameStatus">
                     Inactivos
@@ -207,54 +208,54 @@
               </div>
             </div>
           <div [hidden]="!isActiveGames">
-            <div *ngFor="let game of activeGames">
+            <div *ngFor="let game of activeGames" class="itemcard">
               <div class="form-group row">
-                <div class="col-sm-4">
+                <div class="col" style="margin-left: 5%">
                   <div class="row centerGameOption">
                     <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
-                    <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
+                    <label class="col col-form-label">  {{game.Jugador_1.nickname}}</label>
                   </div>
                   <div class="row centerGameOption">
                     <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
-                    <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
+                    <label class="col col-form-label">  {{game.Jugador_2.nickname}}</label>
                   </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col">
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
+                    <label class="col-form-label">Tablero: {{game.tamano}}</label>
                   </div>
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Victoria: {{game.linea}}</label>
+                    <label class="col-form-label">Victoria: {{game.linea}}</label>
                   </div>
                 </div>
-                <div class="col-sm-4 centerGameOption">
+                <div class="col centerGameOption">
                   <button type="button" (click)="openGame(game.id_partida)" data-dismiss="modal" class="playGameOption">Jugar</button>
                 </div>
               </div>
             </div>
           </div>
           <div [hidden]="isActiveGames">
-            <div *ngFor="let game of inactiveGames">
+            <div *ngFor="let game of inactiveGames" class="itemcard">
               <div class="form-group row">
-                <div class="col-sm-4">
+                <div class="col" style="margin-left: 5%">
                   <div class="row centerGameOption">
                     <div class="spanColor" style.background-color="{{game.colors[0]}}"></div>
-                    <label class="col-sm-8 col-form-label">  {{game.Jugador_1.nickname}}</label>
+                    <label class="col col-form-label">  {{game.Jugador_1.nickname}}</label>
                   </div>
                   <div class="row centerGameOption">
                     <div class="spanColor" style.background-color="{{game.colors[1]}}"></div>
-                    <label class="col-sm-8 col-form-label">  {{game.Jugador_2.nickname}}</label>
+                    <label class="col col-form-label">  {{game.Jugador_2.nickname}}</label>
                   </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="col">
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Tablero: {{game.tamano}}</label>
+                    <label class="col-form-label">Tablero: {{game.tamano}}</label>
                   </div>
                   <div class="row centerGameOption">
-                    <label class="col-sm-8 col-form-label">Victoria: {{game.linea}}</label>
+                    <label class="col-form-label">Victoria: {{game.linea}}</label>
                   </div>
                 </div>                
-                <div class="col-sm-4 centerGameOption">
+                <div class="col">
                   <button type="button" (click)=replayGame(game.id_partida) data-dismiss="modal" class="viewGameOption">Ver</button>
                 </div>
               </div>
@@ -287,8 +288,8 @@
       <div class="modal-header">
           <h5 class="modal-title" id="lblInviteG">Invitaciones</h5>
           <div class="row">
-            <label class="col-form-label col-sm-6">Escoja su color:</label>
-            <div class="col-sm-6">
+            <label class="col-form-label col" style="text-align: center">Escoja su color:</label>
+            <div class="col">
               <select [(ngModel)]="inviteColorSelected" class="form-control">
                 <option class="{{col.styleName}}" *ngFor="let col of colors"
                   [value]="col.color">{{col.name}}</option> 
@@ -297,34 +298,34 @@
         </div>
       </div>
       <div class="modal-body">
-        <div *ngFor="let invitation of myInvitations">
+        <div *ngFor="let invitation of myInvitations" class="itemcard">
           <div class="form-group row">
-            <div class="col-sm-4">
+            <div class="col">
               <div class="row centerGameOption">
                 <div class="spanColor" style.background-color="{{invitation.color}}"></div>
-                <label class="col-sm-8 col-form-label">  {{invitation.nickname}}</label>
+                <label class="col-form-label">  {{invitation.nickname}}</label>
               </div>
               <div class="row centerGameOption">
-                <label class="col-sm-8 col-form-label">Rondas: {{invitation.nRondas}}</label>
-              </div>
-            </div>
-            <div class="col-sm-4">
-              <div class="row centerGameOption">
-                <label class="col-sm-8 col-form-label">Tablero: {{invitation.tamano}}</label>
-              </div>
-              <div class="row centerGameOption">
-                <label class="col-sm-8 col-form-label">Victoria: {{invitation.tamano_linea}}</label>
+                <label class="col-form-label">Rondas: {{invitation.nRondas}}</label>
               </div>
             </div>
-            <div class="col-sm-4">
+            <div class="col">
               <div class="row centerGameOption">
-                <div class="col-sm-12 col-form-label">
-                  <button type="button" (click)="acceptInvitation(invitation.idAnfitrion)" data-dismiss="modal" class="col-sm-12 acceptButton">Aceptar</button>
+                <label class="col-form-label">Tablero: {{invitation.tamano}}</label>
+              </div>
+              <div class="row centerGameOption">
+                <label class="col-form-label">Victoria: {{invitation.tamano_linea}}</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="row centerGameOption">
+                <div class="col-form-label">
+                  <button type="button" (click)="acceptInvitation(invitation.idAnfitrion)" data-dismiss="modal" class="col acceptButton" style="margin-right: 2%">Aceptar</button>
                 </div>
               </div>
               <div class="row centerGameOption">
-                <div class="col-sm-12 col-form-label">
-                  <button type="button" (click)="declineInvitation(invitation.idAnfitrion)" class="col-sm-12 cancelButton">Rechazar</button>
+                <div class="col-form-label">
+                  <button type="button" (click)="declineInvitation(invitation.idAnfitrion)" class="col cancelButton" style="margin-right: 2%">Rechazar</button>
                 </div>
               </div>
             </div>
@@ -347,12 +348,12 @@
       <div class="modal-body">
         <div *ngFor="let friend of friendsList">
           <div class="form-group row centerGameOption">
-            <div class="col-sm-4">
+            <div class="col">
               <img src="{{friend.profilePhoto}}" 
               name="profile" alt="Card image cap">
               <label class="col-form-label">{{friend.nickname}}</label>
             </div>
-            <div class="col-sm-8">
+            <div class="col">
               <label class="col-form-label">Detalles: {{friend.detalles}}</label>
             </div>
           </div>        
@@ -378,15 +379,17 @@
         <div class="modal-body">
           <div *ngFor="let friend of newFriendList">
               <div class="form-group row centerGameOption">
-                <div class="col-sm-4">
+                <div class="col">
                   <img src="{{friend.profilePhoto}}" 
                   name="profile" alt="Card image cap">
+                </div>
+                <div class="col">
                   <label class="col-form-label">{{friend.nickname}}</label>
                 </div>
-                <div class="col-sm-4">
+                <div class="col">
                   <label class="col-form-label">Detalles: {{friend.detalles}}</label>
                 </div>
-                <div class="col-sm-4 centerGameOption">
+                <div class="col centerGameOption">
                   <button type="button" (click)="addFriend(friend.id)" data-dismiss="modal" class="playGameOption">Agregar</button>
                 </div>
               </div>  
@@ -412,26 +415,26 @@
           </div>
         </div>
         <div class="modal-body">
-          <div *ngFor="let open of openGames">
+          <div *ngFor="let open of openGames" class="itemcard">
             <div class="form-group row">
-              <div class="col-sm-4">
+              <div class="col" style="margin-left: 5%;float: left;">
                 <div class="row centerGameOption">
                   <div class="spanColor" style.background-color="{{open.color}}"></div>
-                  <label class="col-sm-8 col-form-label">  {{open.creador}}</label>
+                  <label class="col-form-label">  {{open.creador}}</label>
                 </div>
                 <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Rondas: {{open.rondas}}</label>
+                  <label class="col-form-label">Rondas: {{open.rondas}}</label>
                 </div>
               </div>
-              <div class="col-sm-4">
+              <div class="col">
                 <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Tablero: {{open.tamano}}</label>
+                  <label class="col-form-label">Tablero: {{open.tamano}}</label>
                 </div>
                 <div class="row centerGameOption">
-                  <label class="col-sm-8 col-form-label">Victoria: {{open.victoria}}</label>
+                  <label class="col-form-label">Victoria: {{open.victoria}}</label>
                 </div>
               </div>
-              <div class="col-sm-4 centerGameOption">
+              <div class="col centerGameOption">
                 <button type="button" (click)="openFreeGame(open.idPartida)" data-dismiss="modal" class="playGameOption">Jugar</button>
               </div>
             </div>
@@ -459,3 +462,31 @@
     </div>
   </div>
 </div>
+<!-- Profile Modal -->
+<div class="modal fade" id="Profile" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <img src={{imgUrl}} style="width: 25%;"><h5 class="modal-title" id="exampleModalLabel">REGISTRO DE JUGADOR</h5>
+        </div>
+        <div class="modal-body">
+          <div class="form-group row">
+            <label for="nSize" class="col-sm-6 col-form-label">Nickname</label>
+            <div class="col-sm-6">
+                <label for="nSize" class="col-sm-6 col-form-label">{{nickName}}</label>
+            </div>
+          </div>
+          <div class="form-group row"> 
+            <label for="rSize" class="col-sm-6 col-form-label">Estado</label> 
+            <div class="col-sm-6"> 
+              <input type="text" [(ngModel)]="details" class="form-control" id="idDetails" placeholder="...."> 
+            </div> 
+          </div> 
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="updateStatus()" data-dismiss="modal" class="acceptButton">Aceptar</button>
+          <button type="button" class="cancelButton" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>

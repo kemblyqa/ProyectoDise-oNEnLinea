@@ -30,6 +30,8 @@ export class MainMenuComponent {
   //get player data
   idP1:any
   nickName:any
+  imgUrl:string
+  details:string;
   idP2:any
   statusGame:any
   //board parameters
@@ -72,6 +74,8 @@ export class MainMenuComponent {
     this.gameAIOptions = this.menuModel.getAIOptions()
     this.level = this.menuModel.getLevels()
     this.idP1 = UserDetails.Instance.getUserID()
+    this.imgUrl=UserDetails.Instance.getUrl();
+    this.details=UserDetails.Instance.getDetails();
 
     //set replay off
     UserDetails.Instance.setreplayMode(false)
@@ -359,6 +363,20 @@ export class MainMenuComponent {
         this.alertGameModal(err)
       }
     )
+  }
+  updateStatus(){
+    this.service.postData(`${this.userUrl}setDetails`,{
+      idUsuario: this.idP1,
+      det : this.details
+    })
+    .subscribe(
+      resFriendAdded => {
+        resFriendAdded["status"] ? this.successModal(resFriendAdded["data"]) : this.alertGameModal(resFriendAdded["data"])
+      }
+    )
+  }
+  showProfileModal(){
+    $('#Profile').modal('show')
   }
   declineInvitation(id:any){
     console.log(id)

@@ -118,7 +118,7 @@ db.system.js.save({
 		value : function (idOne,idTwo) 
 		{
 			try{
-						
+				
 				let R1=db.Usuarios.find({_id:idOne},{['chats.'+idTwo]:1,_id:0}).toArray()[0].chats[idTwo];
 				let R2=db.Usuarios.find({_id:idTwo},{['chats.'+idOne]:1,_id:0}).toArray()[0].chats[idOne];
 				lista=[];

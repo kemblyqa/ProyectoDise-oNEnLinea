@@ -1,10 +1,25 @@
-.centerMenu{
-    margin: auto;
-    width: 50%;
-    margin-top: 5%;
-    margin-bottom: 5%;
+@media all and (orientation:portrait) {
+    .centerMenu{
+        margin: auto;
+        min-width: 50%;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
 }
-
+    
+@media all and (orientation:landscape) {
+    .centerMenu{
+        margin: auto;
+        width: 50%;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+}
+.itemcard{
+    background-color: rgb(221, 221, 221);
+    border-radius: 2%;
+    margin: 1%;
+}
 .spanColor{
     width: 20px;
     height: 20px;
@@ -32,6 +47,8 @@
     font-weight: bold;
     font-size: large;
     border: none;
+    float: right;
+    margin: 5%;
 }
 
 .centerMenuItem {
