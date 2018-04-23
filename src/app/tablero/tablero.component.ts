@@ -22,6 +22,7 @@ export class TableroComponent {
   movePosition:Array<any>
   playerTurn:any
   playerNickname:any
+  playerSecondNickname:any
   playerRound:any
   playerIdGame:any
   playerID:any
@@ -36,6 +37,7 @@ export class TableroComponent {
   dialogTitleEndGame:string
   dialogEndGame:string
   errorMsg:string
+  chatLog:Array<any>
 
   constructor(private service:Service,private router:Router) {
     //init variables to be used in the controller
@@ -75,6 +77,23 @@ export class TableroComponent {
           }
         }
       )
+  }
+
+  messages = [{
+    "text":"Hi How are you?",
+    "self":false
+  },{
+    "text":"I am fine",
+    "self":true
+  }]
+  replyMessage = "";
+
+  reply(){
+    this.messages.push({
+      "text":this.replyMessage,
+      "self":true
+    })
+    this.replyMessage = "";
   }
 
   initBoard(){
