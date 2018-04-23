@@ -337,10 +337,10 @@ class GameController{
 
     public static drawMove(req: Request, res: Response){
         try{
-            let tablero : Array<Array<number>> = JSON.parse(req.query.tablero);
-            let jugada = JSON.parse(req.query.jugada);
+            if (req.query.tablero ==null || req.query.jugada==null || req.query.turno==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+            let tablero : Array<Array<number>> = typeof req.query.tablero === "object"?req.query.tablero:JSON.parse(req.query.tablero);
+            let jugada = typeof req.query.jugada==="object"?req.query.jugada:JSON.parse(req.query.jugada);
             let turno = req.query.turno;
-            if (tablero ==null || jugada==null || turno==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
             let template = new gameModel(tablero,0)
             template.getCellInGrid(jugada[1],turno%2)
             res.json({status:true,data:template.charGrid})
@@ -348,6 +348,35 @@ class GameController{
         catch(e){
             res.json({status:false,data:"drawMove error"})
         }
+    }
+    public static jugadas(req: Request, res: Response){
+        let idPartida=req.query.idPartida;
+        let ronda=req.query.ronda;
+        if(idPartida == null || ronda == null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+        consulta("jugadas("+idPartida+","+ronda+")",res);
+    }
+    public static estadoAvanzado(req: Request, res: Response){
+        let idPartida=req.query.idPartida;
+        let ronda=req.query.ronda;
+        if(idPartida == null || ronda == null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
+        if (!checkConnection()){
+            resConnectionError(res);
+            return
+        }
+        mongoose.connection.db.eval("estadoAvanzado("+idPartida+","+ronda+")").then(result0 =>{
+            if (!result0.status){res.json(result0);return;}
+            mongoose.connection.db.eval("checkUsuario('"+result0.data.finalizador+"')").then(result1 =>{
+                if (!result1.status){res.json(result1);return;}
+                if(result0.data.causa=="a")
+                    res.json({status:true,data:result1.data.nickname+ " ha abandonado la partida"})
+                else if (result0.data.causa=="w")
+                    res.json({status:true,data:result1.data.nickname+ " ha ganado la ronda"})
+                else if (result0.data.causa=="t")
+                    res.json({status:true,data:result1.data.nickname+ " ha empatado la ronda"})
+                else
+                    res.json({status:true,data:"Esta partida sigue en curso"})
+            });
+        });
     }
 
     public routes(): void{
@@ -360,6 +389,8 @@ class GameController{
         this.router.get('/start',GameController.start);
         this.router.get('/disponibles',GameController.disponibles);
         this.router.get('/drawMove',GameController.drawMove);
+        this.router.get('/jugadas',GameController.jugadas);
+        this.router.get('/estadoAvanzado',GameController.estadoAvanzado);
         //POST
         this.router.post('/finPartida',GameController.finPartida);
         this.router.post('/setTablero',GameController.setTablero);

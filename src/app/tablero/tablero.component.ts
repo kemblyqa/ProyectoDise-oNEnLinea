@@ -37,49 +37,55 @@ export class TableroComponent {
   dialogEndGame:string
   errorMsg:string
 
+  //watching mode
+  jugadas : Array<any>;
+  counterJugadas : number;
+
   constructor(private service:Service,private router:Router) {
     //init variables to be used in the controller
     if (!UserDetails.Instance.getActive()){
       this.router.navigateByUrl('/login');
       window.location.reload();
     }
+    this.playerRound = 0
     this.playerNickname = UserDetails.Instance.getNickName()
     this.playerIdGame = UserDetails.Instance.getCurrentGameID() 
     this.playerID = UserDetails.Instance.getUserID()
-    
     //get data of current game
     this.service.getData("/game/getInfoPartida",{params: {idPartida: this.playerIdGame}})
-      .subscribe(
-        resData => {
-          if(resData["status"]){
-            //add data to BuildTablero
-            this.tab = new BuildBoard(
-              resData["data"]["tamano"],
-              resData["data"]["tamano_linea"], 
-              resData["data"]["estado"],
-              resData["data"]["nRondas"],
-              resData["data"]["usuarios"]
-            )
-            //get the nSize to show in modal after finish
-            this.nSize = resData["data"]["tamano_linea"]
-            //get if is a botgame to render the correct modal
-            this.botGameStatus = resData["data"]["usuarios"][0][0] == "e"  || resData["data"]["usuarios"][0][0] == "m" || resData["data"]["usuarios"][0][0] == "h" ? true : false
-            //this get the ids and render the buttons in the template
-            this.buttonIDs = this.tab.getIdButtonCells()
-            //then init the board
-            this.initBoard()
-            //create the items of sidebar
-            this.sideBarItems = this.tab.getSideBarItems()
-          } else {
-            this.errorMsg = resData["data"]
-          }
+    .subscribe(
+      resData => {
+        if(resData["status"]){
+          //add data to BuildTablero
+          this.tab = new BuildBoard(
+            resData["data"]["tamano"],
+            resData["data"]["tamano_linea"], 
+            resData["data"]["estado"],
+            resData["data"]["nRondas"],
+            resData["data"]["usuarios"]
+          )
+          //get the nSize to show in modal after finish
+          this.nSize = resData["data"]["tamano_linea"]
+          //get if is a botgame to render the correct modal
+          this.botGameStatus = resData["data"]["usuarios"][0][0] == "e"  || resData["data"]["usuarios"][0][0] == "m" || resData["data"]["usuarios"][0][0] == "h" ? true : false
+          //this get the ids and render the buttons in the template
+          this.buttonIDs = this.tab.getIdButtonCells()
+          //then init the board
+          this.initBoard()
+          //create the items of sidebar
+          this.sideBarItems = this.tab.getSideBarItems()
+        } else {
+          this.errorMsg = resData["data"]
         }
-      )
+      }
+    )
   }
 
   initBoard(){
-    //get the board to fill
-    this.service.getData("/user/rondaActiva",{params:{idPartida: this.playerIdGame}})
+    //playing mode
+    if (!UserDetails.Instance.getreplayMode()){
+      //get the board to fill
+      this.service.getData("/user/rondaActiva",{params:{idPartida: this.playerIdGame}})
       .subscribe(
         resLastRound => {
           if(resLastRound["status"]){
@@ -102,6 +108,38 @@ export class TableroComponent {
           console.log(err)
         }
       )
+    }
+    //replay mode
+    else{
+      this.tab.setActiveRound(0)
+      let tablero = []
+      for(let x = 0;x<this.tab.gridSize;x++){
+        tablero.push([])
+        for(let y = 0;y<this.tab.gridSize;y++){
+          tablero[x].push(-1)
+        }
+      }
+      this.tab.setGrid(tablero)
+      this.service.getData("/game/jugadas",
+      {params: {
+          idPartida: this.playerIdGame,
+          ronda: this.playerRound
+        }
+      })
+      .subscribe(
+        moveList =>{
+          if(moveList["status"]){
+            this.jugadas = moveList["data"]["jugadas"];
+            console.log(moveList["data"]["jugadas"])
+            this.counterJugadas = 0;
+            document.getElementById("nextButton").hidden=false;
+          }
+          else{
+            alert(moveList["data"])
+          }
+        }
+      )
+    }
   }
   //button event
   touchButton(e){
@@ -121,6 +159,57 @@ export class TableroComponent {
           -->estado: ${status["data"]}`)
         }
       ) 
+  }
+
+  nextMove(){
+    if (this.jugadas.length==0){
+      this.service.getData("/game/estadoAvanzado",{
+        params: {
+          idPartida: this.playerIdGame,
+          ronda: this.playerRound
+        }
+      })
+        .subscribe(
+          response =>{
+            this.notificate(response["data"])
+            
+          },
+          err => {
+            console.log(JSON.stringify(err))
+          }
+        )
+      this.playerRound++;
+      if(this.playerRound>=this.tab.nRounds){
+        document.getElementById("nextButton").hidden=true;
+        UserDetails.Instance.setreplayMode(false);
+        return;
+      }
+      this.initBoard();
+      return;
+    }
+
+    this.service.getData("/game/drawMove",{
+      params: {
+        tablero: JSON.stringify(this.tab.gridBoard),
+        jugada: this.jugadas[0],
+        turno: this.counterJugadas%2
+      }
+    })
+      .subscribe(
+        newBoard =>{
+          if(newBoard["status"]){
+            this.counterJugadas++;
+            this.jugadas.shift();
+            //update board
+            this.tab.setGrid(newBoard["data"]) 
+          } else {
+            alert(newBoard["data"])
+          }
+        },
+        err => {
+          console.log(JSON.stringify(err))
+        }
+      )
   }
 
   updateGameEvent(){
@@ -153,6 +242,11 @@ export class TableroComponent {
         )
         this.moveFlag=false;
     }, 3000)
+  }
+
+  notificate(data: any){
+    this.errorMsg = data
+    $("#notification").modal("show")
   }
 
   openModalEndGame(){

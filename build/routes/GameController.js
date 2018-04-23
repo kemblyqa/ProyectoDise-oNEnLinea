@@ -411,13 +411,13 @@ var GameController = (function () {
     };
     GameController.drawMove = function (req, res) {
         try {
-            var tablero = JSON.parse(req.query.tablero);
-            var jugada = JSON.parse(req.query.jugada);
-            var turno = req.query.turno;
-            if (tablero == null || jugada == null || turno == null) {
+            if (req.query.tablero == null || req.query.jugada == null || req.query.turno == null) {
                 res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
                 return;
             }
+            var tablero = typeof req.query.tablero === "object" ? req.query.tablero : JSON.parse(req.query.tablero);
+            var jugada = typeof req.query.jugada === "object" ? req.query.jugada : JSON.parse(req.query.jugada);
+            var turno = req.query.turno;
             var template = new game_model_1.default(tablero, 0);
             template.getCellInGrid(jugada[1], turno % 2);
             res.json({ status: true, data: template.charGrid });
@@ -425,6 +425,47 @@ var GameController = (function () {
         catch (e) {
             res.json({ status: false, data: "drawMove error" });
         }
+    };
+    GameController.jugadas = function (req, res) {
+        var idPartida = req.query.idPartida;
+        var ronda = req.query.ronda;
+        if (idPartida == null || ronda == null) {
+            res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
+            return;
+        }
+        consulta("jugadas(" + idPartida + "," + ronda + ")", res);
+    };
+    GameController.estadoAvanzado = function (req, res) {
+        var idPartida = req.query.idPartida;
+        var ronda = req.query.ronda;
+        if (idPartida == null || ronda == null) {
+            res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
+            return;
+        }
+        if (!checkConnection()) {
+            resConnectionError(res);
+            return;
+        }
+        mongoose.connection.db.eval("estadoAvanzado(" + idPartida + "," + ronda + ")").then(function (result0) {
+            if (!result0.status) {
+                res.json(result0);
+                return;
+            }
+            mongoose.connection.db.eval("checkUsuario('" + result0.data.finalizador + "')").then(function (result1) {
+                if (!result1.status) {
+                    res.json(result1);
+                    return;
+                }
+                if (result0.data.causa == "a")
+                    res.json({ status: true, data: result1.data.nickname + " ha abandonado la partida" });
+                else if (result0.data.causa == "w")
+                    res.json({ status: true, data: result1.data.nickname + " ha ganado la ronda" });
+                else if (result0.data.causa == "t")
+                    res.json({ status: true, data: result1.data.nickname + " ha empatado la ronda" });
+                else
+                    res.json({ status: true, data: "Esta partida sigue en curso" });
+            });
+        });
     };
     GameController.prototype.routes = function () {
         //GET
@@ -436,6 +477,8 @@ var GameController = (function () {
         this.router.get('/start', GameController.start);
         this.router.get('/disponibles', GameController.disponibles);
         this.router.get('/drawMove', GameController.drawMove);
+        this.router.get('/jugadas', GameController.jugadas);
+        this.router.get('/estadoAvanzado', GameController.estadoAvanzado);
         //POST
         this.router.post('/finPartida', GameController.finPartida);
         this.router.post('/setTablero', GameController.setTablero);

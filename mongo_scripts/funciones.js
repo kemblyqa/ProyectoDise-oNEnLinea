@@ -573,10 +573,10 @@ db.system.js.save({
 	_id: "rechazar",
 	value: function (idAnfitrion, idUsuario) 
 	{ 
-		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.anfitrion":idAnfitrion})
+		let invitacion = db.Usuarios.findOne({_id:idUsuario,"invitaciones.idAnfitrion":idAnfitrion})
         if (invitacion ==null)
             return {status:false,data:"Error: la invitacion no existe"}
-		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"anfitrion": idAnfitrion}}}, false, false)
+		db.Usuarios.update({_id:idUsuario}, {$pull:{ "invitaciones": {"idAnfitrion": idAnfitrion}}}, false, false)
 		return {status:true,data:"Has rechazado una invitacion"};
 	}
 });
@@ -610,6 +610,36 @@ db.system.js.save({
                             nRondas:ronda.nRondas,
                             usuarios:ronda.usuarios,
                         	tamano_linea:ronda.tamano_linea}}
+                }
+	}
+});
+
+db.system.js.save({
+	_id: "jugadas",
+	value: function (idPartida,nRonda) 
+	{ 
+		let ronda = db.Partidas.findOne({_id:idPartida},
+                {"rondas.jugadas":1})
+                if (ronda==null)
+                    return {status:false,data:"No existe la ronda " + nRonda + " en la partida " + idPartida}
+                else{
+                    return {status:true,
+                        data:{
+                            jugadas:ronda.rondas[nRonda].jugadas}}
+                }
+	}
+});
+
+db.system.js.save({
+	_id: "estadoAvanzado",
+	value: function (idPartida,nRonda) 
+	{ 
+		let ronda = db.Partidas.findOne({_id:idPartida},
+                {"rondas.estado":1})
+                if (ronda==null || ronda.rondas[nRonda]==null)
+                    return {status:false,data:"No existe la ronda " + nRonda + " en la partida " + idPartida}
+                else{
+                    return {status:true,data:ronda.rondas[nRonda].estado}
                 }
 	}
 });

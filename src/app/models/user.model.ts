@@ -58,7 +58,12 @@ export class UserDetails {
         return this.active;
     }
 
-    
+    setreplayMode(mode){
+        this.replayMode=mode
+    }
+    getreplayMode(){
+        return this.replayMode;
+    }
     static get Instance() {
         if (this.instance === null || this.instance === undefined) {
             this.instance = new UserDetails();
