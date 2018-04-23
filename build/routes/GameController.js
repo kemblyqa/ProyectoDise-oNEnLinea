@@ -5,6 +5,7 @@ var express_1 = require("express");
 var game_model_1 = require("./../models/game.model");
 var mongoose = require('mongoose');
 var async = require('async');
+conectar();
 function conectar() {
     mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
         console.log("conexion realizada");

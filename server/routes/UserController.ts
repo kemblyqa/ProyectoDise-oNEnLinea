@@ -3,6 +3,7 @@ import {Router, Request, Response} from "express";
 
 const mongoose = require('mongoose');
 
+conectar()
 function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
         console.log("conexion realizada")
