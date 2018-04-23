@@ -3,11 +3,13 @@
   <div id="sidebar-wrapper">
     <!-- chat with player -->
     <div class="chat-header">
-      <label class="sidebar-brand">Chat con jugador</label>
+      <img class="imageB" src="{{profilePicture}}" 
+        name="profile" alt="Card image cap">
+      <label width class="sidebar-brand">  Chat con: {{secondPlayerNickname}}</label>
     </div>
     <div class="chatbox">
       <div class="messages">
-        <div *ngFor="let message of chatLog" [class.right]="message[0]">
+        <div *ngFor="let message of chatLog" [class.right]="message[0]" [class.left]="!message[0]">
           {{message[1]}}
         </div>
       </div>
@@ -15,6 +17,10 @@
         <input type="text" class="inputtext" [(ngModel)]="replyMessage">
         <button class="replyBtn" (click)="sendMessage()">Enviar</button>
       </div>
+    </div>
+    <div class="chat-footer">
+      <i (click)="mainMenu()" style="margin-right: 20px" class="material-icons">home</i>
+      <i (click)="left()" class="material-icons">directions_run</i>
     </div>
   </div>
   <!-- /#sidebar-wrapper -->
@@ -28,7 +34,7 @@
           <!-- First row with the board -->
           <div class="row">
             <div class="col-md-11">
-              <span style="font-size:40px;cursor:pointer;color:rgb(170, 132, 26)" (click)="backToMenu()">&#9776;</span>
+              <span style="font-size:40px;cursor:pointer;color:rgb(252, 54, 80);" (click)="backToMenu()">&#9776;</span>
               <!-- board -->
                 <div class="container centerDiv">
                   <button type="button" class="btn btn-danger" id="nextButton" (click)="nextMove()" style="margin-bottom: 1%;text-align:right" hidden>>>></button>
@@ -101,4 +107,4 @@
         </div>
       </div>
     </div>
-  </div>
+</div>
