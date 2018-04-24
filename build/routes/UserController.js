@@ -87,7 +87,6 @@ var ControladorPersona = (function () {
             res.json({ status: true, data: [[true, "Jugando contra bot"]] });
             return;
         }
-        console.log("getChatLog('" + idOne + "','" + idTwo + "')");
         consulta("getChatLog('" + idOne + "','" + idTwo + "')", res);
     };
     ControladorPersona.setDetails = function (req, res) {
