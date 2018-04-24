@@ -148,7 +148,7 @@ export default class gameModel{
         }
         return count;
     }
-
+    //realiza una jugada en el tablero, usando minmax, pero con un margen de error premeditado
     AIMove = function (level,turno) 
     {
         let result = this.minMax(this, level,turno)[0];
@@ -157,6 +157,7 @@ export default class gameModel{
         else
             return [this.getCellInGrid(result[1],turno),this.isNConnected(result[0],result[1],turno)];
     }
+    //funcion minmax, esta función no es 100% precisa, para simular una aleatoriedad en la partida
     minMax = function (tablero : gameModel, level, turno){
         let score = null;
         let bestMove = [null,null];
@@ -246,12 +247,12 @@ export default class gameModel{
                 }
                 tablero.charGrid[movidaAI[0]][movidaAI[1]] = -1;
                 if (score == null || score < moveSc){
-                    if (!(Math.random()*10<2-level && score!=null)){
+                    if (!(Math.random()*10<1-level && score!=null)){
                         score = moveSc;
                         bestMove = movidaAI;
                     }
                 }
-                else if(Math.random()*10<2-level){
+                else if(Math.random()*10<1-level){
                     score = moveSc;
                     bestMove = movidaAI;
                 }

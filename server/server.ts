@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 const path = require('path');
 const http = require('http');
 
-
+//configuración del servidor node
 class Server{
     public app: express.Application;
     constructor() {
@@ -32,7 +32,8 @@ class Server{
         });
     }
 
-    // application routes
+
+    //rutas de frontend y backend
     public routes(): void {
 
         this.app.use('/user', UserController);

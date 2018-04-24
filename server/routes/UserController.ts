@@ -3,6 +3,7 @@ import {Router, Request, Response} from "express";
 
 const mongoose = require('mongoose');
 
+//esta sección es repetida de GameController
 conectar()
 function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
@@ -40,6 +41,8 @@ function consulta(query: string, res: Response) {
 function resConnectionError(res: Response){
     res.json({status:false,data:"Error al realizar la consulta a Mongo, intente de nuevo más tarde"})
 }
+
+//las diferencias con GameController comienzan aquí
 class ControladorPersona{
     router : Router;
     constructor(){
@@ -47,6 +50,7 @@ class ControladorPersona{
         this.routes();
     }
 
+    //crea un nuevo jugador
     public static crearUsuario(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let nick = req.body.nick;
@@ -55,6 +59,7 @@ class ControladorPersona{
         consulta("cUsuario('"+idUsuario+"','"+nick+"','"+det+"')",res);
     }
 
+    //envia un mensaje
     public static chat(req: Request, res: Response){
         let idEmisor    = req.body.idEmisor;
         let idReceptor  = req.body.idReceptor;
@@ -65,6 +70,7 @@ class ControladorPersona{
         consulta("chat('"+idEmisor+"','"+idReceptor+"','"+msg+"')",res);
     }
 
+    //obtiene todos los mensajes entre dos jugadores, ordenados y diferenciados
     public static getChat(req: Request, res: Response){
         let idOne   = req.query.idOne;
         let idTwo   = req.query.idTwo;
@@ -74,6 +80,7 @@ class ControladorPersona{
         consulta("getChatLog('"+idOne+"','"+idTwo+"')",res);
     }
 
+    //actualiza los detalles de un jugador
     public  static setDetails(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let det = req.body.det;
@@ -81,6 +88,7 @@ class ControladorPersona{
         consulta("uDetalles('"+idUsuario+"','"+det+"')", res);
     }
 
+    //cambia el nickname de un usuario
     public static changeNick(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let nick = req.body.nick;
@@ -88,18 +96,21 @@ class ControladorPersona{
         consulta("uNickname('"+idUsuario+"','"+nick+"')", res);
     }
 
+    //comprueba la existencia de un usuario y retorna sus datos publicos
     public static checkUsuario(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         if(idUsuario==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("checkUsuario('"+idUsuario+"')", res);
     }
 
+    //similar a checkUsuario, pero usa el nick de la cuenta a consultar
     public static checkNick(req: Request, res: Response){
         let nick = req.query.nick;
         if (nick==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("checkNick('"+nick+"')", res);
     }
 
+    //obtiene la lista de partidas activas o inactivas, dependiendo del filtro
     public static gameListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
@@ -107,12 +118,14 @@ class ControladorPersona{
         consulta("gameListFilter('"+idUsuario+"',"+filtro+")",res)
     }
 
+    //obtiene la ronda activa de una partida
     public static rondaActiva(req: Request, res: Response){
         let idPartida = req.query.idPartida;
         if (idPartida==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("rondaActiva("+idPartida+")", res);
     }
 
+    //obtiene una lista de todos los usuarios, el filtro de busqueda es: amigos/no amigos
     public static friendListFilter(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let filtro = req.query.filtro;
@@ -120,6 +133,7 @@ class ControladorPersona{
         consulta("friendListFilter('"+idUsuario+"',"+filtro+")", res);
     }
 
+    //añade a alguien como tu amigo
     public static friend(req: Request, res: Response){
         let id1 = req.body.id1;
         let id2 = req.body.id2;
@@ -127,6 +141,7 @@ class ControladorPersona{
         consulta("friend('"+id1+"','"+id2+"')", res);
     }
 
+    //invita a otro usuario a una partida
     public static invitar(req: Request, res: Response){
         if (req.body.idAnfitrion == null || req.body.color==null || req.body.idInvitado == null || req.body.tamano ==null || req.body.tamano_linea==null || req.body.nRondas==null)
         {res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
@@ -136,6 +151,7 @@ class ControladorPersona{
         +req.body.tamano+","+req.body.tamano_linea+","+req.body.nRondas+")", res);
     }
 
+    //acepta una invitacion
     public static aceptar(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let color = req.body.color;
@@ -164,6 +180,7 @@ class ControladorPersona{
         }).catch(() => res.json({status:false,data:"Error al aceptar invitación"}))
     }
 
+    //elimina una invitacion
     public static rechazar(req: Request, res: Response){
         let idUsuario = req.body.idUsuario;
         let idAnfitrion = req.body.idAnfitrion;
@@ -171,6 +188,7 @@ class ControladorPersona{
         consulta("rechazar('"+idAnfitrion+"','"+idUsuario+"')", res);
     }
 
+    //obtiene la lista de invitaciones de un usuario
     public static invitaciones(req: Request, res: Response){
         let idUsuario = req.query.idUsuario;
         let page = req.query.page;
@@ -178,7 +196,7 @@ class ControladorPersona{
         consulta("invitaciones('"+idUsuario+"',"+page+")", res);
     }
 
-
+//similar a GameController
     public routes(): void{
         //POST
         this.router.post('/crearUsuario',ControladorPersona.crearUsuario);

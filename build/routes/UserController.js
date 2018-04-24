@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //importar objetos desde express
 var express_1 = require("express");
 var mongoose = require('mongoose');
+//esta sección es repetida de GameController
 conectar();
 function conectar() {
     mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
@@ -39,11 +40,13 @@ function consulta(query, res) {
 function resConnectionError(res) {
     res.json({ status: false, data: "Error al realizar la consulta a Mongo, intente de nuevo más tarde" });
 }
+//las diferencias con GameController comienzan aquí
 var ControladorPersona = (function () {
     function ControladorPersona() {
         this.router = express_1.Router();
         this.routes();
     }
+    //crea un nuevo jugador
     ControladorPersona.crearUsuario = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var nick = req.body.nick;
@@ -54,6 +57,7 @@ var ControladorPersona = (function () {
         }
         consulta("cUsuario('" + idUsuario + "','" + nick + "','" + det + "')", res);
     };
+    //envia un mensaje
     ControladorPersona.chat = function (req, res) {
         var idEmisor = req.body.idEmisor;
         var idReceptor = req.body.idReceptor;
@@ -72,6 +76,7 @@ var ControladorPersona = (function () {
         }
         consulta("chat('" + idEmisor + "','" + idReceptor + "','" + msg + "')", res);
     };
+    //obtiene todos los mensajes entre dos jugadores, ordenados y diferenciados
     ControladorPersona.getChat = function (req, res) {
         var idOne = req.query.idOne;
         var idTwo = req.query.idTwo;
@@ -89,6 +94,7 @@ var ControladorPersona = (function () {
         }
         consulta("getChatLog('" + idOne + "','" + idTwo + "')", res);
     };
+    //actualiza los detalles de un jugador
     ControladorPersona.setDetails = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var det = req.body.det;
@@ -98,6 +104,7 @@ var ControladorPersona = (function () {
         }
         consulta("uDetalles('" + idUsuario + "','" + det + "')", res);
     };
+    //cambia el nickname de un usuario
     ControladorPersona.changeNick = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var nick = req.body.nick;
@@ -107,6 +114,7 @@ var ControladorPersona = (function () {
         }
         consulta("uNickname('" + idUsuario + "','" + nick + "')", res);
     };
+    //comprueba la existencia de un usuario y retorna sus datos publicos
     ControladorPersona.checkUsuario = function (req, res) {
         var idUsuario = req.query.idUsuario;
         if (idUsuario == null) {
@@ -115,6 +123,7 @@ var ControladorPersona = (function () {
         }
         consulta("checkUsuario('" + idUsuario + "')", res);
     };
+    //similar a checkUsuario, pero usa el nick de la cuenta a consultar
     ControladorPersona.checkNick = function (req, res) {
         var nick = req.query.nick;
         if (nick == null) {
@@ -123,6 +132,7 @@ var ControladorPersona = (function () {
         }
         consulta("checkNick('" + nick + "')", res);
     };
+    //obtiene la lista de partidas activas o inactivas, dependiendo del filtro
     ControladorPersona.gameListFilter = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var filtro = req.query.filtro;
@@ -132,6 +142,7 @@ var ControladorPersona = (function () {
         }
         consulta("gameListFilter('" + idUsuario + "'," + filtro + ")", res);
     };
+    //obtiene la ronda activa de una partida
     ControladorPersona.rondaActiva = function (req, res) {
         var idPartida = req.query.idPartida;
         if (idPartida == null) {
@@ -140,6 +151,7 @@ var ControladorPersona = (function () {
         }
         consulta("rondaActiva(" + idPartida + ")", res);
     };
+    //obtiene una lista de todos los usuarios, el filtro de busqueda es: amigos/no amigos
     ControladorPersona.friendListFilter = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var filtro = req.query.filtro;
@@ -149,6 +161,7 @@ var ControladorPersona = (function () {
         }
         consulta("friendListFilter('" + idUsuario + "'," + filtro + ")", res);
     };
+    //añade a alguien como tu amigo
     ControladorPersona.friend = function (req, res) {
         var id1 = req.body.id1;
         var id2 = req.body.id2;
@@ -158,6 +171,7 @@ var ControladorPersona = (function () {
         }
         consulta("friend('" + id1 + "','" + id2 + "')", res);
     };
+    //invita a otro usuario a una partida
     ControladorPersona.invitar = function (req, res) {
         if (req.body.idAnfitrion == null || req.body.color == null || req.body.idInvitado == null || req.body.tamano == null || req.body.tamano_linea == null || req.body.nRondas == null) {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
@@ -168,6 +182,7 @@ var ControladorPersona = (function () {
         consulta("invitar('" + req.body.idAnfitrion + "','" + req.body.color + "','" + req.body.idInvitado + "',"
             + req.body.tamano + "," + req.body.tamano_linea + "," + req.body.nRondas + ")", res);
     };
+    //acepta una invitacion
     ControladorPersona.aceptar = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var color = req.body.color;
@@ -202,6 +217,7 @@ var ControladorPersona = (function () {
             }
         }).catch(function () { return res.json({ status: false, data: "Error al aceptar invitación" }); });
     };
+    //elimina una invitacion
     ControladorPersona.rechazar = function (req, res) {
         var idUsuario = req.body.idUsuario;
         var idAnfitrion = req.body.idAnfitrion;
@@ -211,6 +227,7 @@ var ControladorPersona = (function () {
         }
         consulta("rechazar('" + idAnfitrion + "','" + idUsuario + "')", res);
     };
+    //obtiene la lista de invitaciones de un usuario
     ControladorPersona.invitaciones = function (req, res) {
         var idUsuario = req.query.idUsuario;
         var page = req.query.page;
@@ -220,6 +237,7 @@ var ControladorPersona = (function () {
         }
         consulta("invitaciones('" + idUsuario + "'," + page + ")", res);
     };
+    //similar a GameController
     ControladorPersona.prototype.routes = function () {
         //POST
         this.router.post('/crearUsuario', ControladorPersona.crearUsuario);

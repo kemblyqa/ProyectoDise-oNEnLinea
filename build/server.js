@@ -6,6 +6,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var path = require('path');
 var http = require('http');
+//configuración del servidor node
 var Server = (function () {
     function Server() {
         this.app = express();
@@ -28,7 +29,7 @@ var Server = (function () {
             next();
         });
     };
-    // application routes
+    //rutas de frontend y backend
     Server.prototype.routes = function () {
         this.app.use('/user', UserController_1.default);
         this.app.use('/game', GameController_1.default);

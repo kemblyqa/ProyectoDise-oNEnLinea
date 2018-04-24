@@ -1,10 +1,11 @@
 //importar objetos desde express
 import {Router, Request, Response} from "express";
+//importar modelo de tablero de juego
 import gameModel from './../models/game.model'
 
 let mongoose = require('mongoose');
 let async = require('async')
-
+//conecta el backend a la base de datos
 conectar();
 function conectar(){
     mongoose.connect('mongodb://localhost:27017/connect4').then(() =>{
@@ -15,6 +16,7 @@ function conectar(){
     })
     return false
 }
+//comprueba que la conexión está activa, y trata de solucionar problemas
 function checkConnection(){
     if(mongoose.connection.readyState!=1){
         return conectar()
@@ -23,6 +25,7 @@ function checkConnection(){
         return true
 
 }
+//ejecuta una función almacenada en la base de datos
 function consulta(query: string, res: Response) {
     if (!checkConnection()){
         resConnectionError(res);
@@ -40,23 +43,27 @@ function consulta(query: string, res: Response) {
     }
 }
 
+//maneja errores de conexión a la base de datos
 function resConnectionError(res: Response){
     res.json({status:false,data:"Error al realizar la consulta a Mongo, intente de nuevo más tarde"})
 }
 
+//api relacionada a juegos
 class GameController{
     router : Router;
     constructor(){
         this.router = Router();
         this.routes();
     }
-
+    //funciones asignadas a las rutas
+    //finaliza una partida
     public static finPartida(req: Request, res: Response){
         let idPartida = req.body.idPartida;
         if (idPartida==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("finalizarPartida("+idPartida+")", res);
     }
 
+    //finaliza una ronda
     public static finRonda(req: Request, res: Response){
         let idPartida=req.body.idPartida;
         let ronda=req.body.ronda;
@@ -65,20 +72,15 @@ class GameController{
         if(idPartida==null || ronda==null || idFinalizador==null || razon==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("finalizarRonda("+idPartida+","+ronda+","+idFinalizador+",'"+razon+"')", res);
     }
-
-    public static getRegistro(req: Request, res: Response){
-        let idPartida = req.query.idPartida;
-        let ronda = req.query.ronda;
-        if(idPartida==null ||ronda==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
-        consulta("getChatLog("+idPartida+","+ronda+")",res);
-    }
-
+    
+    //obtiene la información de la partida
     public static getInfoPartida(req: Request, res: Response){
         let idPartida = req.query.idPartida;
         if(idPartida == null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("getInfoPartida("+idPartida+")",res);
     }
 
+    //obtiene los detalles de la ronda
     public static getInfoRonda(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
@@ -86,6 +88,7 @@ class GameController{
         consulta("getInfoRonda("+idPartida+","+ronda+")",res);
     }
 
+    //obtiene el tablero de una ronda
     public static getTablero(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
@@ -93,6 +96,7 @@ class GameController{
         consulta("getTablero("+idPartida+","+ronda+")",res);
     }
 
+    //hace una jugada en una ronda
     public static jugada(req: Request, res: Response){
         let idPartida=req.body.idPartida;
         let fila = req.body.fila;
@@ -105,6 +109,7 @@ class GameController{
                     resConnectionError(res);
                     return
                 }
+                //obtiene todos los detalles importantes de la ronda actual
                 mongoose.connection.db.eval("rondaActiva("+idPartida+")")
                 .then(result0 =>{
                     if (!result0.status){res.json(result0);return;}
@@ -135,8 +140,10 @@ class GameController{
                     }).catch(err =>{res.json({status:false,data:err});})
                 }).catch(err =>{res.json({status:false,data:err});})
             },
+            //funcion que se encarga de evaluar, realizar y comprobar la jugada
             function(tablero,size,turno : number,jugador,contrincante,lastMove,nRondas,callback){
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: "+ turno + "\njugador: " +jugador);
+                //declara un tablero con los datos obtenidos de la base de datos
                 let model = new gameModel(tablero,size);
                 if (turno%2==jugador){
                     let now = Date();
@@ -154,6 +161,7 @@ class GameController{
                         res.json({status:true,data:"a"});
                         return;
                     }
+                    //obtiene la tupla donde queda la ficha y comprueba el estado del juego, realiza la jugada en la base de datos
                     let tupla = model.getCellInGrid(columna,jugador);
                     if (tupla !=null){
                         if (!checkConnection()){
@@ -186,6 +194,7 @@ class GameController{
         ])
     }
 
+    //sobreescribe el tablero de una ronda
     public static setTablero(req: Request, res: Response){
         let idPartida=req.body.idPartida;
         let ronda=req.body.ronda;
@@ -194,6 +203,7 @@ class GameController{
         consulta("setTablero("+idPartida+","+ronda+","+tablero+")",res);
     }
 
+    //añade un jugador a una partida vacía
     public static linkUsuario(req: Request, res: Response){
         let idPartida=req.body.idPartida;
         let idUsuario=req.body.idUsuario;
@@ -202,6 +212,7 @@ class GameController{
         consulta("linkUsuarioPartida("+idPartida+",'"+idUsuario+"','"+color+"')",res);
     }
 
+    //crea un nuevo juego
     public static newGame(req: Request, res: Response){
         let idJ1 = req.body.idJ1;
         let color1 = req.body.color1;
@@ -214,6 +225,7 @@ class GameController{
         consulta("nuevaSesion('"+idJ1+"','"+color1+"','"+idJ2+"','"+color2+"',"+size+","+lineSize+","+nRondas+")",res);
     }
 
+    //obtiene detalles de la ronda solicitada, realiza jugadas de bots si es el turno de un robot
     public static update(req: Request, res: Response){
         let idPartida = req.query.idPartida;
         let ronda = req.query.ronda;
@@ -258,6 +270,7 @@ class GameController{
                     res.json({status:true,data:{tablero:result.data.tablero,estado:{finalizador:finalizador,causa:"a"},turno:-1}});
                     return;
                 }
+                //comprueba si es necesario que un robot haga una jugada
                 else if((result.data.usuarios[turno][0]=="e" || result.data.usuarios[turno][0]=="m" || result.data.usuarios[turno][0]=="h") && moveFlag == "false"){
                     let level = result.data.usuarios[turno][0]=="e"?1:result.data.usuarios[turno][0]=="m"?2:3;
                     let botGame : gameModel =  new gameModel(result.data.tablero, result.data.tamano_linea);
@@ -280,6 +293,7 @@ class GameController{
         }).catch(err =>{res.json({status:false,data:err});})
     }
 
+    //obtiene todos los datos necesarios para cargar una partida en el frontend
     public static start(req: Request, res: Response){
         let idPartida = req.query.idPartida;
         if (idPartida==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
@@ -303,6 +317,8 @@ class GameController{
             }).catch(err =>{res.json({status:false,data:err});});
         }).catch(err =>{res.json({status:false,data:err});});
     }
+
+    //abandona una partida completa
     public static abandono(req: Request, res: Response){
         let idPartida = req.body.idPartida;
         let idJugador = req.body.idJugador;
@@ -331,12 +347,14 @@ class GameController{
         }).catch(err =>{res.json({status:false,data:err});});
     }
 
+    //muestra una lista de partidas disponibles
     public static disponibles(req: Request, res: Response){
         let page = req.query.page;
         if (page ==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("disponibles("+page+")", res);
     }
 
+    //recibe un tablero, coordenadas y turno de juego; realiza la jugada y devuelve el nuevo tablero
     public static drawMove(req: Request, res: Response){
         try{
             if (req.query.tablero ==null || req.query.jugada==null || req.query.turno==null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
@@ -351,12 +369,14 @@ class GameController{
             res.json({status:false,data:"drawMove error"})
         }
     }
+    //retorna la lista de jugadas realizadas en un tablero
     public static jugadas(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
         if(idPartida == null || ronda == null){res.json({status:false,data:"Error de consulta: no se ha recibido uno de los parametros"});return}
         consulta("jugadas("+idPartida+","+ronda+")",res);
     }
+    //retorna un comentario agradable acerca del estado actual de una ronda
     public static estadoAvanzado(req: Request, res: Response){
         let idPartida=req.query.idPartida;
         let ronda=req.query.ronda;
@@ -381,10 +401,10 @@ class GameController{
         });
     }
 
+    //declaración de rutas y metodos
     public routes(): void{
         //GET
         this.router.get('/update',GameController.update);
-        this.router.get('/getGamelog',GameController.getRegistro);
         this.router.get('/getInfoPartida',GameController.getInfoPartida);
         this.router.get('/getInfoRonda',GameController.getInfoRonda);
         this.router.get('/getTablero',GameController.getTablero);
@@ -403,7 +423,7 @@ class GameController{
         this.router.post('/abandono',GameController.abandono);
     }
 }
-
+//retorno del enrutador
 const gameCTRL = new GameController();
 const router = gameCTRL.router;
 export default router;

@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //importar objetos desde express
 var express_1 = require("express");
+//importar modelo de tablero de juego
 var game_model_1 = require("./../models/game.model");
 var mongoose = require('mongoose');
 var async = require('async');
+//conecta el backend a la base de datos
 conectar();
 function conectar() {
     mongoose.connect('mongodb://localhost:27017/connect4').then(function () {
@@ -15,6 +17,7 @@ function conectar() {
     });
     return false;
 }
+//comprueba que la conexión está activa, y trata de solucionar problemas
 function checkConnection() {
     if (mongoose.connection.readyState != 1) {
         return conectar();
@@ -22,6 +25,7 @@ function checkConnection() {
     else
         return true;
 }
+//ejecuta una función almacenada en la base de datos
 function consulta(query, res) {
     if (!checkConnection()) {
         resConnectionError(res);
@@ -38,14 +42,18 @@ function consulta(query, res) {
         });
     }
 }
+//maneja errores de conexión a la base de datos
 function resConnectionError(res) {
     res.json({ status: false, data: "Error al realizar la consulta a Mongo, intente de nuevo más tarde" });
 }
+//api relacionada a juegos
 var GameController = (function () {
     function GameController() {
         this.router = express_1.Router();
         this.routes();
     }
+    //funciones asignadas a las rutas
+    //finaliza una partida
     GameController.finPartida = function (req, res) {
         var idPartida = req.body.idPartida;
         if (idPartida == null) {
@@ -54,6 +62,7 @@ var GameController = (function () {
         }
         consulta("finalizarPartida(" + idPartida + ")", res);
     };
+    //finaliza una ronda
     GameController.finRonda = function (req, res) {
         var idPartida = req.body.idPartida;
         var ronda = req.body.ronda;
@@ -65,15 +74,7 @@ var GameController = (function () {
         }
         consulta("finalizarRonda(" + idPartida + "," + ronda + "," + idFinalizador + ",'" + razon + "')", res);
     };
-    GameController.getRegistro = function (req, res) {
-        var idPartida = req.query.idPartida;
-        var ronda = req.query.ronda;
-        if (idPartida == null || ronda == null) {
-            res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
-            return;
-        }
-        consulta("getChatLog(" + idPartida + "," + ronda + ")", res);
-    };
+    //obtiene la información de la partida
     GameController.getInfoPartida = function (req, res) {
         var idPartida = req.query.idPartida;
         if (idPartida == null) {
@@ -82,6 +83,7 @@ var GameController = (function () {
         }
         consulta("getInfoPartida(" + idPartida + ")", res);
     };
+    //obtiene los detalles de la ronda
     GameController.getInfoRonda = function (req, res) {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
@@ -91,6 +93,7 @@ var GameController = (function () {
         }
         consulta("getInfoRonda(" + idPartida + "," + ronda + ")", res);
     };
+    //obtiene el tablero de una ronda
     GameController.getTablero = function (req, res) {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
@@ -100,6 +103,7 @@ var GameController = (function () {
         }
         consulta("getTablero(" + idPartida + "," + ronda + ")", res);
     };
+    //hace una jugada en una ronda
     GameController.jugada = function (req, res) {
         var idPartida = req.body.idPartida;
         var fila = req.body.fila;
@@ -115,6 +119,7 @@ var GameController = (function () {
                     resConnectionError(res);
                     return;
                 }
+                //obtiene todos los detalles importantes de la ronda actual
                 mongoose.connection.db.eval("rondaActiva(" + idPartida + ")")
                     .then(function (result0) {
                     if (!result0.status) {
@@ -157,8 +162,10 @@ var GameController = (function () {
                     }).catch(function (err) { res.json({ status: false, data: err }); });
                 }).catch(function (err) { res.json({ status: false, data: err }); });
             },
+            //funcion que se encarga de evaluar, realizar y comprobar la jugada
             function (tablero, size, turno, jugador, contrincante, lastMove, nRondas, callback) {
                 console.log("tablero: " + tablero + "\ntamano: " + size + "\nturno: " + turno + "\njugador: " + jugador);
+                //declara un tablero con los datos obtenidos de la base de datos
                 var model = new game_model_1.default(tablero, size);
                 if (turno % 2 == jugador) {
                     var now = Date();
@@ -182,6 +189,7 @@ var GameController = (function () {
                         res.json({ status: true, data: "a" });
                         return;
                     }
+                    //obtiene la tupla donde queda la ficha y comprueba el estado del juego, realiza la jugada en la base de datos
                     var tupla_1 = model.getCellInGrid(columna, jugador);
                     if (tupla_1 != null) {
                         if (!checkConnection()) {
@@ -216,6 +224,7 @@ var GameController = (function () {
             }
         ]);
     };
+    //sobreescribe el tablero de una ronda
     GameController.setTablero = function (req, res) {
         var idPartida = req.body.idPartida;
         var ronda = req.body.ronda;
@@ -226,6 +235,7 @@ var GameController = (function () {
         }
         consulta("setTablero(" + idPartida + "," + ronda + "," + tablero + ")", res);
     };
+    //añade un jugador a una partida vacía
     GameController.linkUsuario = function (req, res) {
         var idPartida = req.body.idPartida;
         var idUsuario = req.body.idUsuario;
@@ -236,6 +246,7 @@ var GameController = (function () {
         }
         consulta("linkUsuarioPartida(" + idPartida + ",'" + idUsuario + "','" + color + "')", res);
     };
+    //crea un nuevo juego
     GameController.newGame = function (req, res) {
         var idJ1 = req.body.idJ1;
         var color1 = req.body.color1;
@@ -250,6 +261,7 @@ var GameController = (function () {
         }
         consulta("nuevaSesion('" + idJ1 + "','" + color1 + "','" + idJ2 + "','" + color2 + "'," + size + "," + lineSize + "," + nRondas + ")", res);
     };
+    //obtiene detalles de la ronda solicitada, realiza jugadas de bots si es el turno de un robot
     GameController.update = function (req, res) {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
@@ -331,6 +343,7 @@ var GameController = (function () {
             }
         }).catch(function (err) { res.json({ status: false, data: err }); });
     };
+    //obtiene todos los datos necesarios para cargar una partida en el frontend
     GameController.start = function (req, res) {
         var idPartida = req.query.idPartida;
         if (idPartida == null) {
@@ -366,6 +379,7 @@ var GameController = (function () {
             }).catch(function (err) { res.json({ status: false, data: err }); });
         }).catch(function (err) { res.json({ status: false, data: err }); });
     };
+    //abandona una partida completa
     GameController.abandono = function (req, res) {
         var idPartida = req.body.idPartida;
         var idJugador = req.body.idJugador;
@@ -402,6 +416,7 @@ var GameController = (function () {
             res.json({ status: true, data: "Success!" });
         }).catch(function (err) { res.json({ status: false, data: err }); });
     };
+    //muestra una lista de partidas disponibles
     GameController.disponibles = function (req, res) {
         var page = req.query.page;
         if (page == null) {
@@ -410,6 +425,7 @@ var GameController = (function () {
         }
         consulta("disponibles(" + page + ")", res);
     };
+    //recibe un tablero, coordenadas y turno de juego; realiza la jugada y devuelve el nuevo tablero
     GameController.drawMove = function (req, res) {
         try {
             if (req.query.tablero == null || req.query.jugada == null || req.query.turno == null) {
@@ -427,6 +443,7 @@ var GameController = (function () {
             res.json({ status: false, data: "drawMove error" });
         }
     };
+    //retorna la lista de jugadas realizadas en un tablero
     GameController.jugadas = function (req, res) {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
@@ -436,6 +453,7 @@ var GameController = (function () {
         }
         consulta("jugadas(" + idPartida + "," + ronda + ")", res);
     };
+    //retorna un comentario agradable acerca del estado actual de una ronda
     GameController.estadoAvanzado = function (req, res) {
         var idPartida = req.query.idPartida;
         var ronda = req.query.ronda;
@@ -468,10 +486,10 @@ var GameController = (function () {
             });
         });
     };
+    //declaración de rutas y metodos
     GameController.prototype.routes = function () {
         //GET
         this.router.get('/update', GameController.update);
-        this.router.get('/getGamelog', GameController.getRegistro);
         this.router.get('/getInfoPartida', GameController.getInfoPartida);
         this.router.get('/getInfoRonda', GameController.getInfoRonda);
         this.router.get('/getTablero', GameController.getTablero);
@@ -491,6 +509,7 @@ var GameController = (function () {
     };
     return GameController;
 }());
+//retorno del enrutador
 var gameCTRL = new GameController();
 var router = gameCTRL.router;
 exports.default = router;
