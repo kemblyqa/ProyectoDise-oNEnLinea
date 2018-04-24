@@ -49,7 +49,6 @@ export class UserDetails {
         return this.botGame
     }
     setActive(id,nick,det,url){
-        console.log(`SetActive: ${id} ,${nick}, ${det}`)
         this.nickName=nick;
         this.userID=id;
         this.details=det;

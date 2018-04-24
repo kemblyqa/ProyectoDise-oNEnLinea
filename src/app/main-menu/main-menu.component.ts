@@ -1,5 +1,4 @@
 import { ROUTES } from './../app.routing';
-import { Game } from './../models/game.model';
 import { UserDetails } from './../models/user.model';
 import { Service } from './../services/connect4.service';
 import { Component, OnInit } from '@angular/core';

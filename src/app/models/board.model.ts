@@ -40,17 +40,6 @@ export class BuildBoard{
         this.nRounds = roundSize
         this.users[0] = [usersIDsColors[0][0], usersIDsColors[0][1]]
         this.users[1] = [usersIDsColors[1][0], usersIDsColors[1][1]]
-        
-        //sidebar elems
-        this.sideBarItems = [{
-            id:1,
-            text:"Abandonar partida",
-            href:"/menu"
-        },{
-            id:2,
-            text:"Volver al menú",
-            href:"/menu"
-        }]
         this.fill()
     }
 
@@ -63,14 +52,6 @@ export class BuildBoard{
                 c++
             }
         }
-    }
-
-    getOtherPlayer(){
-        return UserDetails.Instance.getUserID() == this.users[0][0] ? this.users[1][0] : this.users[0][0]
-    }
-
-    parseProfilePhotos(response: any){
-        return response["entry"]["gphoto$thumbnail"]["$t"]
     }
 
     setTurn(turn:any){
@@ -114,6 +95,17 @@ export class BuildBoard{
         return this.gameStatus;
     }
 
+    /* get the other player id */
+    getOtherPlayer(){
+        return UserDetails.Instance.getUserID() == this.users[0][0] ? this.users[1][0] : this.users[0][0]
+    }
+
+    /* parse the json of Google API response to get the profile picture link */
+    parseProfilePhotos(response: any){
+        return response["entry"]["gphoto$thumbnail"]["$t"]
+    }
+
+    /* get the position id of cells grid to paint the button */
     getRowColButtonID(id){
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
@@ -123,9 +115,8 @@ export class BuildBoard{
             }
         }
     }
-
+    /* updates the board with the colors of players */
     updateBoardGrid(){
-        //fill the buttons with players
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
                 if(this.gridBoard[rowI][colI] != -1){
@@ -135,6 +126,7 @@ export class BuildBoard{
         }
     }
 
+    /* resets the board with no colors */
     resetBoardGrid(){
         for (let rowI = 0; rowI < this.gridSize; rowI++) {
             for (let colI = 0; colI < this.gridSize; colI++) {
@@ -143,7 +135,7 @@ export class BuildBoard{
         }
     }
 
-    //show in the board the status of turn
+    /* show in the board the status of turn */
     verifyGameTurn(turn:any):any{
         //turno: [0] No es mi turno, [1] Si es mi turno, [-1] Juego terminado
         if(turn == 0){
@@ -155,13 +147,13 @@ export class BuildBoard{
         }
     }
 
-    //finalizador: winner or last move before end game
-    //show if win, lose, tie, or leave
+    /* check if game is ended */
     verifyIfGameIsEnded(status: any){
         this.gameStatus = status
         return this.gameStatus["causa"] !== "" ? true : false
     }
 
+    /* check the ended game reason */
     verifyReasonEndGame(playerID: any, botStatus: boolean){
         if(botStatus){
             return "r"
