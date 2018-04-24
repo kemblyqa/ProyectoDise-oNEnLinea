@@ -17,7 +17,7 @@
   }
   .container {
     width: 100%;
-    height: 100%;
+    height: 100% !important;
     max-width: max-content;
   }
   .tBoard{
@@ -35,6 +35,27 @@
     padding:0%;
     line-height: 0%;
     width: auto;
+  }
+
+  #wrapper {
+    padding-left: 0;
+  }
+  #wrapper.toggled {
+    padding-left: 280px;
+  }
+  #sidebar-wrapper {
+    width: 0;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    width: 280px;
+  }
+  #page-content-wrapper {
+    padding: 20px;
+    position: relative;
+  }
+  #wrapper.toggled #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
   }
 }
   
@@ -57,7 +78,7 @@
   }
   .container {
     width: 100%;
-    height: 100%;
+    height: 100% !important;
     max-width: max-content;
   }
   .tBoard{
@@ -75,6 +96,27 @@
     padding:0%;
     line-height: 0%;
     width: auto;
+  }
+
+  #wrapper {
+    padding-left: 0;
+  }
+  #wrapper.toggled {
+    padding-left: 280px;
+  }
+  #sidebar-wrapper {
+    width: 0;
+  }
+  #wrapper.toggled #sidebar-wrapper {
+    width: 280px;
+  }
+  #page-content-wrapper {
+    padding: 20px;
+    position: relative;
+  }
+  #wrapper.toggled #page-content-wrapper {
+    position: relative;
+    margin-right: 0;
   }
 }
 
@@ -160,28 +202,6 @@ body {
   color: #fff;
   background: none;
 }
-@media(min-width:768px) {
-  #wrapper {
-    padding-left: 0;
-  }
-  #wrapper.toggled {
-    padding-left: 280px;
-  }
-  #sidebar-wrapper {
-    width: 0;
-  }
-  #wrapper.toggled #sidebar-wrapper {
-    width: 280px;
-  }
-  #page-content-wrapper {
-    padding: 20px;
-    position: relative;
-  }
-  #wrapper.toggled #page-content-wrapper {
-    position: relative;
-    margin-right: 0;
-  }
-}
 
 .bubleRight{
   text-align: right;
@@ -189,14 +209,14 @@ body {
 .right{
   border-radius: 5%;
   display: inline;
-  background-color: tomato;
+  background-color: rgb(255, 181, 71);
   padding: 3%;
   margin-left: 5%;
 }
 .left{
   border-radius: 5%;
   display: inline;
-  background-color: yellowgreen;
+  background-color: rgb(50, 205, 133);
   padding: 3%;
   margin-left: 5%;
 }

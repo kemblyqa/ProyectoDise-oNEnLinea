@@ -204,8 +204,7 @@ export class MainMenuComponent {
     })
       .subscribe( 
         response => { 
-          console.log(JSON.stringify(response["data"]))
-          response["status"] ? this.successModal(response["data"]) : this.alertGameModal(response["data"])
+          response["status"] ? this.successModal("Partida creada con éxito!") : this.alertGameModal(response["data"])
         }
       ) 
   }
