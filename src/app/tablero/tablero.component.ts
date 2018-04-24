@@ -39,7 +39,8 @@ export class TableroComponent {
   //needed in dialogs and notificatios
   dialogTitleEndGame:string
   dialogEndGame:string
-  errorMsg:string
+  notMsg:string
+  notTittle:string
   chatLog:Array<any>
   replyMessage:any
   profilePicture:string
@@ -87,7 +88,8 @@ export class TableroComponent {
           //create the items of sidebar
           this.sideBarItems = this.tab.getSideBarItems()
         } else {
-          this.errorMsg = resData["data"]
+          this.notTittle = "Error"
+          this.notMsg = resData["data"]
         }
         this.tab.setActiveRound(0)
       }
@@ -107,7 +109,7 @@ export class TableroComponent {
     )
   }
   sendMessage(){
-    if(this.replyMessage !== ""){
+    if(this.replyMessage !== "" && this.replyMessage!==undefined){
       this.service.postData(`${this.userUrl}enviarMsg`,{
         idEmisor: this.playerID,
         idReceptor: this.tab.getOtherPlayer(),
@@ -143,7 +145,8 @@ export class TableroComponent {
                 }
               )
           } else {
-            this.errorMsg = resLastRound["data"]
+            this.notTittle = "Error"
+            this.notMsg = resLastRound["data"]
           }
         }
       )
@@ -262,7 +265,8 @@ export class TableroComponent {
               //verify if the game is ended
               this.tab.verifyIfGameIsEnded(resMove["data"]["estado"]) ? this.gameIsEnded() : null 
             } else {
-              this.errorMsg = resMove["data"]
+              this.notTittle = "Error"
+              this.notMsg = resMove["data"]
             }
           },
           err => {
@@ -274,7 +278,8 @@ export class TableroComponent {
     }, 3000)
   }
   notificate(data: any){
-    this.errorMsg = data
+    this.notTittle="Info"
+    this.notMsg = data
     $("#notification").modal("show")
   }
   openModalEndGame(){
@@ -345,7 +350,16 @@ export class TableroComponent {
   getBasicInfoChat(){
     if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
       this.profilePicture = "../../assets/icons/download.png"
-      this.secondPlayerNickname = `bot ${this.tab.getOtherPlayer()}`
+      this.service.getData(`${this.userUrl}checkUsuario`,{
+        params: {
+          idUsuario: this.tab.getOtherPlayer()
+        }
+      })
+      .subscribe(
+        resNickname => {
+          this.secondPlayerNickname = resNickname["data"]["nickname"]
+        }
+      )
     } else {
       this.service.getGoogleProfileData(this.tab.getOtherPlayer())
       .subscribe(
