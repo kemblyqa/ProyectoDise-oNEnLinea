@@ -9,10 +9,12 @@
     </div>
     <div class="chatbox">
       <div class="messages">
-        <div *ngFor="let message of chatLog" class="buble" [class.bubleLeft]="message[0]">
-          <p [class.right]="message[0]" [class.left]="!message[0]">
+        <div *ngFor="let message of chatLog">
+          <div [class.justify-content-start]="!message[0]" [class.justify-content-end]="message[0]" class="row">
+            <label [class.right]="message[0]" [class.left]="!message[0]">
               {{message[1]}}
-          </p>
+            </label>
+          </div>
         </div>
       </div>
       <div class="input-container">

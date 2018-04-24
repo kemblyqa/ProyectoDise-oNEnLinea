@@ -62,6 +62,14 @@ var ControladorPersona = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
+        if (idReceptor == "") {
+            res.json({ status: false, data: "No hay nadie con quién hablar aquí..." });
+            return;
+        }
+        if (idReceptor == "e" || idReceptor == "m" || idReceptor == "h") {
+            res.json({ status: false, data: "Los robots no hablan mucho...." });
+            return;
+        }
         consulta("chat('" + idEmisor + "','" + idReceptor + "','" + msg + "')", res);
     };
     ControladorPersona.getChat = function (req, res) {
@@ -71,6 +79,15 @@ var ControladorPersona = (function () {
             res.json({ status: false, data: "Error de consulta: no se ha recibido uno de los parametros" });
             return;
         }
+        if (idOne == "" || idTwo == "") {
+            res.json({ status: true, data: [[true, "Este chat no está conectado a otros jugadores"]] });
+            return;
+        }
+        if (idTwo == "e" || idTwo == "m" || idTwo == "h") {
+            res.json({ status: true, data: [[true, "Jugando contra bot"]] });
+            return;
+        }
+        console.log("getChatLog('" + idOne + "','" + idTwo + "')");
         consulta("getChatLog('" + idOne + "','" + idTwo + "')", res);
     };
     ControladorPersona.setDetails = function (req, res) {

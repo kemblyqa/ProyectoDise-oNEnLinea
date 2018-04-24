@@ -109,17 +109,19 @@ export class TableroComponent {
     }
   }
   sendMessage(){
-    this.service.postData(`${this.userUrl}enviarMsg`,{
-      idEmisor: this.playerID,
-      idReceptor: this.tab.getOtherPlayer(),
-      msg: this.replyMessage
-    })
-    .subscribe(
-      resChatSent => {
-        resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
-        this.replyMessage = ""
-      }
-    )
+    if(this.replyMessage !== ""){
+      this.service.postData(`${this.userUrl}enviarMsg`,{
+        idEmisor: this.playerID,
+        idReceptor: this.tab.getOtherPlayer(),
+        msg: this.replyMessage
+      })
+      .subscribe(
+        resChatSent => {
+          resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
+          this.replyMessage = ""
+        }
+      )
+    }
   }
   initBoard(){
     //playing mode
