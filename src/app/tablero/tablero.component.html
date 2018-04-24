@@ -2,10 +2,15 @@
   <!-- Sidebar -->
   <div id="sidebar-wrapper">
     <!-- chat with player -->
-    <div class="chat-header">
-      <img class="imageB" src="{{profilePicture}}" 
-        name="profile" alt="Card image cap">
-      <label width class="sidebar-brand">  Chat con: {{secondPlayerNickname}}</label>
+    <div class="row chat-header">
+      <div class="col-md-10">
+        <img class="imageB" src="{{profilePicture}}" 
+          name="profile" alt="Card image cap">
+        <label width class="sidebar-brand">  Chat con: {{secondPlayerNickname}}</label>
+      </div>
+      <div class="col-md-2 bubleRight">
+        <span style="font-size:25px;cursor:pointer;color:rgb(252, 54, 80);" (click)="backToMenu()">&#9776;</span>
+      </div>
     </div>
     <div class="chatbox">
       <div class="messages">
@@ -18,8 +23,8 @@
         </div>
       </div>
       <div class="input-container">
-        <input [disabled]="botGameStatus" type="text" class="inputtext" [(ngModel)]="replyMessage">
-        <button [disabled]="botGameStatus" class="replyBtn" (click)="sendMessage()">Enviar</button>
+        <input type="text" class="inputtext" [(ngModel)]="replyMessage">
+        <button class="replyBtn" (click)="sendMessage()">Enviar</button>
       </div>
     </div>
     <div class="chat-footer">
@@ -38,7 +43,7 @@
           <!-- First row with the board -->
           <div class="row">
             <div class="col-md-11">
-              <span style="font-size:40px;cursor:pointer;color:rgb(252, 54, 80);" (click)="backToMenu()">&#9776;</span>
+              <span [hidden]="wrapButton" style="font-size:40px;cursor:pointer;color:rgb(252, 54, 80);" (click)="backToMenu()">&#9776;</span>
               <!-- board -->
                 <div class="container centerDiv">
                   <button type="button" class="btn btn-danger" id="nextButton" (click)="nextMove()" style="margin-bottom: 1%;text-align:right" hidden>>>></button>

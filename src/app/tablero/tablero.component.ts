@@ -31,6 +31,7 @@ export class TableroComponent {
 
   //board model
   tab:BuildBoard
+  wrapButton:boolean
   timer:any
   userUrl:any
   gameUrl:any
@@ -52,6 +53,7 @@ export class TableroComponent {
     //service data
     this.userUrl = "/user/"
     this.gameUrl = "/game/"
+    this.wrapButton = false
     //init variables to be used in the controller
     if (!UserDetails.Instance.getActive()){
       this.router.navigateByUrl('/login');
@@ -92,21 +94,17 @@ export class TableroComponent {
     )
   }
   fillChatLog(){
-    if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
-      null
-    } else {
-      this.service.getData(`${this.userUrl}getChatLog`,{
-        params: {
-          idOne: this.playerID,
-          idTwo: this.tab.getOtherPlayer()
-        }
-      })
-      .subscribe(
-        resChat => {
-          resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
-        }
-      )
-    }
+    this.service.getData(`${this.userUrl}getChatLog`,{
+      params: {
+        idOne: this.playerID,
+        idTwo: this.tab.getOtherPlayer()
+      }
+    })
+    .subscribe(
+      resChat => {
+        resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
+      }
+    )
   }
   sendMessage(){
     if(this.replyMessage !== ""){
@@ -147,9 +145,6 @@ export class TableroComponent {
           } else {
             this.errorMsg = resLastRound["data"]
           }
-        },
-        err => {
-          console.log(err)
         }
       )
     }
@@ -324,6 +319,7 @@ export class TableroComponent {
     this.tab.resetBoardGrid();
   }
   backToMenu(){
+    this.wrapButton = !this.wrapButton
     $("#wrapper").toggleClass("toggled");
   }
   mainMenu(){
