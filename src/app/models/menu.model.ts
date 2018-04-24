@@ -110,6 +110,7 @@ export class MenuModel{
         return this.colors;
     }
 
+    /* checks pagination of friend list */
     checkPaginationFriendList(friendList: Array<any>){
         this.friendsList = friendList
         let pages:number = 0
@@ -125,6 +126,7 @@ export class MenuModel{
         return this.friendsList
     }
 
+    /* parse the json of Google API response to get the profile picture link */
     parseProfilePhotos(response: any){
         return response["entry"]["gphoto$thumbnail"]["$t"]
     }

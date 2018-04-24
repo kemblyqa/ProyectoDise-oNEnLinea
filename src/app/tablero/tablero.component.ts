@@ -15,56 +15,64 @@ import { BuildBoard } from "../models/board.model";
 })
 export class TableroComponent {
 
-  //needed in build of the board
-  buttonIDs:Array<any>
+  /* server data url */
+  userUrl:any
+  gameUrl:any
+
+  /* board model and interval time */
+  tab:BuildBoard
+  timer:any
+
+  /* needed in build of the board */
   sideBarItems: Array<any> 
+  wrapButton:boolean
+  buttonIDs:Array<any>
   nSize:number
   movePosition:Array<any>
+  botGameStatus:boolean
+  
+  /* player game board */
   playerTurn:any
   playerNickname:any
   playerSecondNickname:any
   playerRound:any
   playerIdGame:any
   playerID:any
-  botGameStatus:boolean
-  moveFlag:boolean = false
-
-  //board model
-  tab:BuildBoard
-  wrapButton:boolean
-  timer:any
-  userUrl:any
-  gameUrl:any
   
-  //needed in dialogs and notificatios
+  /* needed in dialogs and notifications */
   dialogTitleEndGame:string
   dialogEndGame:string
   notMsg:string
   notTittle:string
+
+  /* chat render */
   chatLog:Array<any>
   replyMessage:any
   profilePicture:string
   secondPlayerNickname:string
 
-  //watching mode
-  jugadas:Array<any>;
+  /* watching mode */
+  jugadas:Array<any>
   counterJugadas:number
+  moveFlag:boolean = false
 
   constructor(private service:Service,private router:Router) {
-    //service data
+    /* user and game url for requests */
     this.userUrl = "/user/"
     this.gameUrl = "/game/"
+    /* flags for show or hide components */
     this.wrapButton = false
-    //init variables to be used in the controller
+    /* if user is not logged, reload the page on login route */
     if (!UserDetails.Instance.getActive()){
       this.router.navigateByUrl('/login');
       window.location.reload();
     }
+    /* init variables to be used in the controller */
     this.playerRound = 0
     this.playerNickname = UserDetails.Instance.getNickName()
     this.playerIdGame = UserDetails.Instance.getCurrentGameID() 
     this.playerID = UserDetails.Instance.getUserID()
-    //get data of current game
+    /* get data of current game */
     this.service.getData(`${this.gameUrl}getInfoPartida`,{params: {idPartida: this.playerIdGame}})
     .subscribe(
       resData => {
@@ -85,8 +93,6 @@ export class TableroComponent {
           this.buttonIDs = this.tab.getIdButtonCells()
           //then init the board
           this.initBoard()
-          //create the items of sidebar
-          this.sideBarItems = this.tab.getSideBarItems()
         } else {
           this.notTittle = "Error"
           this.notMsg = resData["data"]
@@ -95,34 +101,7 @@ export class TableroComponent {
       }
     )
   }
-  fillChatLog(){
-    this.service.getData(`${this.userUrl}getChatLog`,{
-      params: {
-        idOne: this.playerID,
-        idTwo: this.tab.getOtherPlayer()
-      }
-    })
-    .subscribe(
-      resChat => {
-        resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
-      }
-    )
-  }
-  sendMessage(){
-    if(this.replyMessage !== "" && this.replyMessage!==undefined){
-      this.service.postData(`${this.userUrl}enviarMsg`,{
-        idEmisor: this.playerID,
-        idReceptor: this.tab.getOtherPlayer(),
-        msg: this.replyMessage
-      })
-      .subscribe(
-        resChatSent => {
-          resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
-          this.replyMessage = ""
-        }
-      )
-    }
-  }
+  /* init game requests, set the game */
   initBoard(){
     //playing mode
     this.getBasicInfoChat()
@@ -182,7 +161,7 @@ export class TableroComponent {
       )
     }
   }
-  //button event
+  /* button event and request, when player set a move */
   touchButton(e){
     //get the row and column
     this.movePosition = this.tab.getRowColButtonID(e.target.id)
@@ -199,6 +178,7 @@ export class TableroComponent {
         }
       ) 
   }
+  /* next move request, get the next move of a played game, to view the progress */
   nextMove(){
     if (this.jugadas.length==0){
       this.service.getData(`${this.gameUrl}estadoAvanzado`,{
@@ -245,6 +225,7 @@ export class TableroComponent {
         }
       )
   }
+  /* update request, update the board and the game in a interval of 3 seconds */
   updateGameEvent(){
     this.timer = setInterval(() => {
       this.service.getData(`${this.gameUrl}update`,{
@@ -277,14 +258,87 @@ export class TableroComponent {
         this.moveFlag=false;
     }, 3000)
   }
-  notificate(data: any){
-    this.notTittle="Info"
-    this.notMsg = data
-    $("#notification").modal("show")
+  /* chat log request, fill array with the current chat with players */
+  fillChatLog(){
+    this.service.getData(`${this.userUrl}getChatLog`,{
+      params: {
+        idOne: this.playerID,
+        idTwo: this.tab.getOtherPlayer()
+      }
+    })
+    .subscribe(
+      resChat => {
+        resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
+      }
+    )
   }
-  openModalEndGame(){
-    $("#end").modal('show')
+  /* send message request, send a message to chat */
+  sendMessage(){
+    if(this.replyMessage !== "" && this.replyMessage!==undefined){
+      this.service.postData(`${this.userUrl}enviarMsg`,{
+        idEmisor: this.playerID,
+        idReceptor: this.tab.getOtherPlayer(),
+        msg: this.replyMessage
+      })
+      .subscribe(
+        resChatSent => {
+          resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
+          this.replyMessage = ""
+        }
+      )
+    }
   }
+  /* basic info chat requests, get info to show in chat log */
+  getBasicInfoChat(){
+    if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
+      this.profilePicture = "../../assets/icons/download.png"
+      this.service.getData(`${this.userUrl}checkUsuario`,{
+        params: {
+          idUsuario: this.tab.getOtherPlayer()
+        }
+      })
+      .subscribe(
+        resNickname => {
+          this.secondPlayerNickname = resNickname["data"]["nickname"]
+        }
+      )
+    } else {
+      this.service.getGoogleProfileData(this.tab.getOtherPlayer())
+      .subscribe(
+        resProfile => {
+          this.profilePicture = this.tab.parseProfilePhotos(resProfile)
+          this.service.getData(`${this.userUrl}checkUsuario`,{
+            params: {
+              idUsuario: this.tab.getOtherPlayer()
+            }
+          })
+          .subscribe(
+            resNickname => {
+              this.secondPlayerNickname = resNickname["data"]["nickname"]
+            }
+          )
+        }
+      )
+    }
+  }
+  /* left game request, ends a game with left status */
+  left(){
+    clearInterval(this.timer)
+    this.service.postData(`${this.gameUrl}abandono`,{
+      idPartida: this.playerIdGame,
+      idJugador: this.playerID
+    })
+    .subscribe(
+      dataResponse => {
+        if(!dataResponse["status"]){
+          this.notificate(dataResponse["data"])
+        } else {
+          this.mainMenu()
+        }
+      }
+    )
+  }
+  /* if game ended, render modals to show result to user */
   gameIsEnded(){
     switch(this.tab.verifyReasonEndGame(this.playerID, this.botGameStatus)){
       case "w":
@@ -320,63 +374,28 @@ export class TableroComponent {
       this.resetBoard()
     }
   }
+  /* reset the board for a new round */
   resetBoard(){
     this.tab.resetBoardGrid();
   }
+  /* toggle the sidebar */
   backToMenu(){
     this.wrapButton = !this.wrapButton
     $("#wrapper").toggleClass("toggled");
   }
+  /* back to main menu, route to menu view */
   mainMenu(){
     clearInterval(this.timer)
     this.router.navigate(['/menu'])
   }
-  left(){
-    clearInterval(this.timer)
-    this.service.postData(`${this.gameUrl}abandono`,{
-      idPartida: this.playerIdGame,
-      idJugador: this.playerID
-    })
-    .subscribe(
-      dataResponse => {
-        if(!dataResponse["status"]){
-          this.notificate(dataResponse["data"])
-        } else {
-          this.mainMenu()
-        }
-      }
-    )
+  /* notification modal, show status of any event */
+  notificate(data: any){
+    this.notTittle="Info"
+    this.notMsg = data
+    $("#notification").modal("show")
   }
-  getBasicInfoChat(){
-    if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
-      this.profilePicture = "../../assets/icons/download.png"
-      this.service.getData(`${this.userUrl}checkUsuario`,{
-        params: {
-          idUsuario: this.tab.getOtherPlayer()
-        }
-      })
-      .subscribe(
-        resNickname => {
-          this.secondPlayerNickname = resNickname["data"]["nickname"]
-        }
-      )
-    } else {
-      this.service.getGoogleProfileData(this.tab.getOtherPlayer())
-      .subscribe(
-        resProfile => {
-          this.profilePicture = this.tab.parseProfilePhotos(resProfile)
-          this.service.getData(`${this.userUrl}checkUsuario`,{
-            params: {
-              idUsuario: this.tab.getOtherPlayer()
-            }
-          })
-          .subscribe(
-            resNickname => {
-              this.secondPlayerNickname = resNickname["data"]["nickname"]
-            }
-          )
-        }
-      )
-    }
+  /* end game modal, show the result according with the status of the current player */
+  openModalEndGame(){
+    $("#end").modal('show')
   }
 }
