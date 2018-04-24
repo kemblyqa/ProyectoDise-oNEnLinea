@@ -101,9 +101,6 @@ export class MainMenuComponent {
           } else {
             this.alertGameModal(data["data"])
           }
-        }, 
-        err => { 
-            console.log("Error") 
         } 
       )
   }
@@ -117,10 +114,7 @@ export class MainMenuComponent {
           } else {
             this.alertGameModal(data["data"])
           }
-        }, 
-        err => { 
-            console.log("Error") 
-        } 
+        }
       )
   }
   fillOpenGames(){
@@ -132,9 +126,6 @@ export class MainMenuComponent {
     .subscribe(
       openGamesResponse => {
         openGamesResponse["status"] ? this.openGames = openGamesResponse["data"] : this.alertGameModal(openGamesResponse["data"])
-      }, 
-      err =>{
-        console.log(JSON.stringify(err))
       }
     )
   }
@@ -198,9 +189,6 @@ export class MainMenuComponent {
       .subscribe( 
         response => { 
           response["status"] ? this.openGame(response["data"]) : this.alertGameModal(response["data"])
-        }, 
-        err => { 
-            console.log(err) 
         } 
       ) 
   }
@@ -218,10 +206,7 @@ export class MainMenuComponent {
         response => { 
           console.log(JSON.stringify(response["data"]))
           response["status"] ? this.successModal(response["data"]) : this.alertGameModal(response["data"])
-        }, 
-        err => { 
-          console.log(err) 
-        } 
+        }
       ) 
   }
   replayGame(id:any){
@@ -241,9 +226,6 @@ export class MainMenuComponent {
         response => { 
           console.log(JSON.stringify(response["data"]))
           response["status"] ? this.successModal(response["data"]) : this.alertGameModal(response["data"])
-        }, 
-        err => { 
-          console.log(err) 
         } 
       ) 
   }
@@ -274,9 +256,6 @@ export class MainMenuComponent {
     .subscribe(
       resInvitations => {
         resInvitations["status"] ? this.myInvitations = resInvitations["data"] : this.alertGameModal(resInvitations["data"])
-      },
-      err => {
-        console.log(JSON.stringify(err))
       }
     )
   }
@@ -291,9 +270,6 @@ export class MainMenuComponent {
     .subscribe(
       responseFriends =>{
         responseFriends["status"] ? this.getGoogleProfilePhoto(responseFriends["data"], this.friendsList) : this.alertGameModal(responseFriends["data"])
-      },
-      errorFriends => {
-        console.log(errorFriends)
       }
     )
   }
@@ -325,9 +301,6 @@ export class MainMenuComponent {
     .subscribe(
       otherFriendsRes =>{
         otherFriendsRes["status"] ? this.getGoogleProfilePhoto(otherFriendsRes["data"], this.newFriendList) : this.alertGameModal(otherFriendsRes["data"])
-      },
-      err => {
-        console.log(JSON.stringify(err))
       }
     )
   }
@@ -341,9 +314,6 @@ export class MainMenuComponent {
     .subscribe(
       dataResponse => {
         dataResponse["status"] ? this.openGame(id) : this.alertGameModal(dataResponse["data"])
-      },
-      err => {
-        console.log(JSON.stringify(err))
       }
     )
   }
@@ -358,9 +328,6 @@ export class MainMenuComponent {
       resAccept => {
         resAccept["status"] ? this.successModal(resAccept["data"]) : this.alertGameModal(resAccept["data"])
         this.invitationsModal()
-      },
-      err => {
-        this.alertGameModal(err)
       }
     )
   }
@@ -387,9 +354,6 @@ export class MainMenuComponent {
     .subscribe(
       resDecline => {
         resDecline["status"] ? this.fillInvitations() : this.alertGameModal(resDecline["data"])
-      },
-      err => {
-        this.alertGameModal(err)
       }
     )
   }

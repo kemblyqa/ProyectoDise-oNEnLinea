@@ -160,7 +160,6 @@ body {
   color: #fff;
   background: none;
 }
-
 @media(min-width:768px) {
   #wrapper {
     padding-left: 0;
@@ -182,31 +181,24 @@ body {
     position: relative;
     margin-right: 0;
   }
-  .chatbox{
-    height:150px;
-  }
-  .messages{
-    height:100px;
-  }
 }
 
-/* Mobile style */
-
-@media(max-width: 550px){
-  .chatbox{
-    height:150px;
-  }
-  .messages{
-    height:100px;
-  }
-}
-
-.right{
+.bubleRight{
   text-align: right;
-  background-color: tomato
+}
+.right{
+  border-radius: 5%;
+  display: inline;
+  background-color: tomato;
+  padding: 3%;
+  margin-left: 5%;
 }
 .left{
-  background-color: yellowgreen
+  border-radius: 5%;
+  display: inline;
+  background-color: yellowgreen;
+  padding: 3%;
+  margin-left: 5%;
 }
 .chatbox{
   width:100%;
@@ -214,6 +206,7 @@ body {
   background-color: #fff;
 }
 .messages{
+  max-width: 100%;
   height:400px;
   overflow: auto;
 }
@@ -243,8 +236,4 @@ body {
   margin-top: 11%;
   width: 100%;
   text-align: center;
-}
-.imageB {
-  border-radius: 50%;
-  width: 20%;
 }

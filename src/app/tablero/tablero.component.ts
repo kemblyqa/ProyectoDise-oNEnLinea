@@ -32,6 +32,8 @@ export class TableroComponent {
   //board model
   tab:BuildBoard
   timer:any
+  userUrl:any
+  gameUrl:any
   
   //needed in dialogs and notificatios
   dialogTitleEndGame:string
@@ -47,6 +49,9 @@ export class TableroComponent {
   counterJugadas:number
 
   constructor(private service:Service,private router:Router) {
+    //service data
+    this.userUrl = "/user/"
+    this.gameUrl = "/game/"
     //init variables to be used in the controller
     if (!UserDetails.Instance.getActive()){
       this.router.navigateByUrl('/login');
@@ -57,7 +62,7 @@ export class TableroComponent {
     this.playerIdGame = UserDetails.Instance.getCurrentGameID() 
     this.playerID = UserDetails.Instance.getUserID()
     //get data of current game
-    this.service.getData("/game/getInfoPartida",{params: {idPartida: this.playerIdGame}})
+    this.service.getData(`${this.gameUrl}getInfoPartida`,{params: {idPartida: this.playerIdGame}})
     .subscribe(
       resData => {
         if(resData["status"]){
@@ -72,7 +77,7 @@ export class TableroComponent {
           //get the nSize to show in modal after finish
           this.nSize = resData["data"]["tamano_linea"]
           //get if is a botgame to render the correct modal
-          this.botGameStatus = resData["data"]["usuarios"][0][0] == "e"  || resData["data"]["usuarios"][0][0] == "m" || resData["data"]["usuarios"][0][0] == "h" ? true : false
+          this.botGameStatus = this.tab.getOtherPlayer()  == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h" ? true : false
           //this get the ids and render the buttons in the template
           this.buttonIDs = this.tab.getIdButtonCells()
           //then init the board
@@ -87,44 +92,49 @@ export class TableroComponent {
     )
   }
   fillChatLog(){
-    console.log(this.playerID, this.tab.getOtherPlayer())
-    this.service.getData("/user/getChatLog",{
-      params: {
-        idOne: this.playerID,
-        idTwo: this.tab.getOtherPlayer()
-      }
-    })
-    .subscribe(
-      resChat => {
-        resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
-      }
-    )
+    if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
+      null
+    } else {
+      this.service.getData(`${this.userUrl}getChatLog`,{
+        params: {
+          idOne: this.playerID,
+          idTwo: this.tab.getOtherPlayer()
+        }
+      })
+      .subscribe(
+        resChat => {
+          resChat["status"] ? this.chatLog = resChat["data"] : this.notificate(resChat["data"])
+        }
+      )
+    }
   }
   sendMessage(){
-    this.service.postData("/user/enviarMsg",{
-      idEmisor: this.playerID,
-      idReceptor: this.tab.getOtherPlayer(),
-      msg: this.replyMessage
-    })
-    .subscribe(
-      resChatSent => {
-        resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
-        this.replyMessage = ""
-      }
-    )
+    if(this.replyMessage !== ""){
+      this.service.postData(`${this.userUrl}enviarMsg`,{
+        idEmisor: this.playerID,
+        idReceptor: this.tab.getOtherPlayer(),
+        msg: this.replyMessage
+      })
+      .subscribe(
+        resChatSent => {
+          resChatSent["status"] ? this.fillChatLog() : this.notificate(resChatSent["data"])
+          this.replyMessage = ""
+        }
+      )
+    }
   }
   initBoard(){
     //playing mode
     this.getBasicInfoChat()
     if (!UserDetails.Instance.getreplayMode()){
       //get the board to fill
-      this.service.getData("/user/rondaActiva",{params:{idPartida: this.playerIdGame}})
+      this.service.getData(`${this.userUrl}rondaActiva`,{params:{idPartida: this.playerIdGame}})
       .subscribe(
         resLastRound => {
           if(resLastRound["status"]){
             this.playerRound = resLastRound["data"]
             this.tab.setActiveRound(resLastRound["data"])
-            this.service.getData("/game/getTablero",{params:{idPartida: this.playerIdGame, ronda:this.playerRound}})
+            this.service.getData(`${this.gameUrl}getTablero`,{params:{idPartida: this.playerIdGame, ronda:this.playerRound}})
               .subscribe(
                 resBoard => {
                   if(resBoard["status"]){
@@ -153,7 +163,7 @@ export class TableroComponent {
         }
       }
       this.tab.setGrid(tablero)
-      this.service.getData("/game/jugadas",
+      this.service.getData(`${this.gameUrl}jugadas`,
       {params: {
           idPartida: this.playerIdGame,
           ronda: this.playerRound
@@ -179,7 +189,7 @@ export class TableroComponent {
     //get the row and column
     this.movePosition = this.tab.getRowColButtonID(e.target.id)
     //post the move
-    this.service.postData("/game/jugada",{
+    this.service.postData(`${this.gameUrl}jugada`,{
       idPartida: this.playerIdGame,
       ronda: this.playerRound,
       fila: this.movePosition[0],
@@ -193,7 +203,7 @@ export class TableroComponent {
   }
   nextMove(){
     if (this.jugadas.length==0){
-      this.service.getData("/game/estadoAvanzado",{
+      this.service.getData(`${this.gameUrl}estadoAvanzado`,{
         params: {
           idPartida: this.playerIdGame,
           ronda: this.playerRound
@@ -214,7 +224,7 @@ export class TableroComponent {
       return;
     }
 
-    this.service.getData("/game/drawMove",{
+    this.service.getData(`${this.gameUrl}drawMove`,{
       params: {
         tablero: JSON.stringify(this.tab.gridBoard),
         jugada: this.jugadas[0],
@@ -239,7 +249,7 @@ export class TableroComponent {
   }
   updateGameEvent(){
     this.timer = setInterval(() => {
-      this.service.getData("/game/update",{
+      this.service.getData(`${this.gameUrl}update`,{
         params: {
           idPartida: this.playerIdGame,
           ronda: this.playerRound,
@@ -322,7 +332,7 @@ export class TableroComponent {
   }
   left(){
     clearInterval(this.timer)
-    this.service.postData("/game/abandono",{
+    this.service.postData(`${this.gameUrl}abandono`,{
       idPartida: this.playerIdGame,
       idJugador: this.playerID
     })
@@ -337,21 +347,26 @@ export class TableroComponent {
     )
   }
   getBasicInfoChat(){
-    this.service.getGoogleProfileData(this.tab.getOtherPlayer())
-    .subscribe(
-      resProfile => {
-        this.profilePicture = this.tab.parseProfilePhotos(resProfile)
-        this.service.getData("/user/checkUsuario",{
-          params: {
-            idUsuario: this.tab.getOtherPlayer()
-          }
-        })
-        .subscribe(
-          resNickname => {
-            this.secondPlayerNickname = resNickname["data"]["nickname"]
-          }
-        )
-      }
-    )
+    if(this.tab.getOtherPlayer() == "e"  || this.tab.getOtherPlayer() == "m" || this.tab.getOtherPlayer() == "h"){
+      this.profilePicture = "../../assets/icons/download.png"
+      this.secondPlayerNickname = `bot ${this.tab.getOtherPlayer()}`
+    } else {
+      this.service.getGoogleProfileData(this.tab.getOtherPlayer())
+      .subscribe(
+        resProfile => {
+          this.profilePicture = this.tab.parseProfilePhotos(resProfile)
+          this.service.getData(`${this.userUrl}checkUsuario`,{
+            params: {
+              idUsuario: this.tab.getOtherPlayer()
+            }
+          })
+          .subscribe(
+            resNickname => {
+              this.secondPlayerNickname = resNickname["data"]["nickname"]
+            }
+          )
+        }
+      )
+    }
   }
 }
